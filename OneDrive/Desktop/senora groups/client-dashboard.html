@@ -1,0 +1,1352 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Client portal for Tonio & Senora Migration Law Firm. Manage your visa application documents and track your progress.">
+    <title>Client Portal - Tonio & Senora Migration Law Firm</title>
+    
+    <!-- PWA Meta Tags -->
+    <meta name="application-name" content="TonioSenora">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="TonioSenora">
+    <meta name="format-detection" content="telephone=no">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="msapplication-config" content="/browserconfig.xml">
+    <meta name="msapplication-TileColor" content="#4A0E4E">
+    <meta name="msapplication-tap-highlight" content="no">
+    <meta name="theme-color" content="#4A0E4E">
+    
+    <!-- PWA Manifest -->
+    <link rel="manifest" href="./manifest.json">
+    <meta name="theme-color" content="#4A0E4E">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <meta name="apple-mobile-web-app-title" content="Tonio & Senora">
+    
+    <!-- Icons -->
+    <link rel="icon" type="image/png" sizes="192x192" href="icons/icon-192x192.png">
+    <link rel="icon" type="image/png" sizes="512x512" href="icons/icon-512x512.png">
+    <link rel="apple-touch-icon" href="icons/icon-192x192.png">
+    <link rel="shortcut icon" href="icons/icon-192x192.png">
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body class="dashboard-body">
+    <!-- Navigation -->
+    <nav class="dashboard-nav dashboard-text">
+        <div class="nav-container">
+            <div class="nav-logo">
+                <img src="tonio-senora logo/tonio-senora logo.png" alt="Tonio & Senora" class="logo-image">
+            </div>
+            <div class="nav-user">
+                <button class="theme-toggle" id="themeToggle" onclick="toggleTheme()" title="Toggle Dark Mode">
+                    <i class="fas fa-moon" id="themeIcon"></i>
+                </button>
+                <span id="userName">Welcome, Client</span>
+                <button class="btn btn-outline btn-small" onclick="logout()">Logout</button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Sidebar -->
+    <div class="dashboard-layout">
+        <aside class="sidebar dashboard-text">
+            <ul class="sidebar-menu">
+                <li><a href="#dashboard" class="sidebar-link active" onclick="showSection('dashboard')">
+                    <i class="fas fa-tachometer-alt"></i> Dashboard
+                </a></li>
+                <li><a href="#documents" class="sidebar-link" onclick="showSection('documents')">
+                    <i class="fas fa-file-upload"></i> Documents
+                </a></li>
+                <li><a href="#progress" class="sidebar-link" onclick="showSection('progress')">
+                    <i class="fas fa-chart-line"></i> Progress
+                </a></li>
+                <li><a href="#messages" class="sidebar-link" onclick="showSection('messages')">
+                    <i class="fas fa-envelope"></i> Messages
+                </a></li>
+            </ul>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content dashboard-text">
+            <!-- Dashboard Section -->
+            <section id="dashboard" class="content-section active">
+                <div class="section-header">
+                    <h1>Dashboard</h1>
+                    <p>Welcome to your migration journey dashboard</p>
+                </div>
+                
+                <div class="dashboard-cards">
+                    <div class="card">
+                        <div class="card-header">
+                            <h3>Application Status</h3>
+                            <span class="status-badge status-in-progress">In Progress</span>
+                        </div>
+                        <div class="card-content">
+                            <p>Your application is currently being reviewed by our legal team.</p>
+                            <div class="progress-bar">
+                                <div class="progress-fill" style="width: 0%"></div>
+                            </div>
+                            <span class="progress-text">0% Complete</span>
+                        </div>
+                    </div>
+
+                    <div class="card">
+                        <div class="card-header">
+                            <h3>Next Steps</h3>
+                        </div>
+                        <div class="card-content">
+                            <div class="empty-state">
+                                <i class="fas fa-list-check" style="font-size: 2rem; color: #D4AF37; margin-bottom: 1rem; display: block;"></i>
+                                <h4>No Next Steps Available</h4>
+                                <p>Next steps will appear here once you begin your application process.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="card">
+                        <div class="card-header">
+                            <h3>Recent Activity</h3>
+                        </div>
+                        <div class="card-content">
+                            <div class="empty-state">
+                                <i class="fas fa-history" style="font-size: 2rem; color: #D4AF37; margin-bottom: 1rem; display: block;"></i>
+                                <h4>No Recent Activity</h4>
+                                <p>Your recent activity will appear here as you interact with the system.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="card">
+                        <div class="card-header">
+                            <h3>Occupation List</h3>
+                        </div>
+                        <div class="card-content">
+                            <p>Browse available occupations and their requirements for your chosen assessment authority.</p>
+                            <button class="btn btn-primary" onclick="showOccupationListModal()">
+                                <i class="fas fa-briefcase"></i> Check Occupation List
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Occupation List Section -->
+            <section id="occupation-list" class="content-section">
+                <div class="section-header">
+                    <h1>Occupation List</h1>
+                    <p>Browse available occupations and their requirements</p>
+                </div>
+
+                <div class="occupation-list-container">
+                    <div class="occupation-filters">
+                        <div class="filter-group">
+                            <select id="occupationAuthorityFilter" onchange="filterOccupations()">
+                                <option value="">All Assessment Authorities</option>
+                                <option value="acs">ACS (Australian Computer Society)</option>
+                                <option value="vetassess">VETASSESS</option>
+                                <option value="engineers-australia">Engineers Australia</option>
+                                <option value="ahpra">AHPRA</option>
+                                <option value="osap-tra">OSAP TRA</option>
+                                <option value="msa-tra">MSA TRA</option>
+                            </select>
+                            <input type="text" id="occupationSearch" placeholder="Search occupations..." onkeyup="filterOccupations()">
+                        </div>
+                    </div>
+
+                    <div class="occupation-grid" id="occupationGrid">
+                        <!-- Dynamic content will be loaded here -->
+                    </div>
+                </div>
+            </section>
+
+            <!-- Documents Section -->
+            <section id="documents" class="content-section">
+                <div class="section-header">
+                    <h1>Document Upload</h1>
+                    <p>Upload your required documents based on your visa pathway</p>
+                </div>
+
+                <!-- Conditional Document Access -->
+                <div id="documentAccessContainer">
+                    <!-- Three Compulsory Selection Fields -->
+                    <div class="compulsory-selection-container">
+                   <div class="selection-header">
+                       <h2>Application Details</h2>
+                       <p>Please complete all three selections to proceed with document upload</p>
+                   </div>
+            
+            <div class="selection-fields">
+                <!-- Step 1: Country Selection -->
+                <div class="selection-step active" id="country-selection">
+                    <div class="step-header">
+                        <div class="step-number">1</div>
+                        <h3>Select Your Target Country</h3>
+                        <p>Choose the country you wish to migrate to</p>
+                    </div>
+                    <div class="selection-field">
+                        <select id="countrySelect" onchange="handleCountrySelection()" required>
+                            <option value="">Select Country</option>
+                                <option value="australia">Australia</option>
+                                <option value="canada">Canada</option>
+                            <option value="new-zealand">New Zealand</option>
+                            <option value="uk">United Kingdom</option>
+                            <option value="usa">United States</option>
+                        </select>
+                        <div class="field-status" id="country-status"></div>
+                    </div>
+                </div>
+
+                <!-- Step 2: Visa Type Selection -->
+                <div class="selection-step locked" id="visa-selection">
+                    <div class="step-header">
+                        <div class="step-number">2</div>
+                        <h3>Select Visa Type</h3>
+                        <p>Choose the type of visa you're applying for</p>
+                    </div>
+                    <div class="selection-field">
+                        <select id="visaTypeSelect" onchange="handleVisaTypeSelection()" disabled required>
+                            <option value="">Select Visa Type</option>
+                        </select>
+                        <div class="field-status" id="visa-status"></div>
+                    </div>
+                </div>
+
+                <!-- Step 3: Skill Assessment Authority Selection -->
+                <div class="selection-step locked" id="authority-selection">
+                    <div class="step-header">
+                        <div class="step-number">3</div>
+                        <h3>Select Skill Assessment Authority</h3>
+                        <p>Choose the authority that will assess your skills</p>
+                    </div>
+                    <div class="selection-field">
+                        <select id="authoritySelect" onchange="handleAuthoritySelection()" disabled required>
+                            <option value="">Select Assessment Authority</option>
+                            </select>
+                        <div class="field-status" id="authority-status"></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="selection-actions">
+                <button class="btn btn-primary btn-large" id="proceedToDocumentation" onclick="proceedToDocumentation()" disabled>
+                    <i class="fas fa-arrow-right"></i> Proceed to Documentation
+                </button>
+            </div>
+        </div>
+
+        <!-- Documentation Screen (Hidden Initially) -->
+        <div class="documentation-screen" id="documentationScreen" style="display: none;">
+            <div class="documentation-header">
+                <h2><i class="fas fa-clipboard-list"></i> Here is your document check list - let's start preparing documents</h2>
+                <div class="selected-path-info">
+                    <div class="path-item">
+                        <strong>Country:</strong> <span id="selectedCountryDisplay"></span>
+                    </div>
+                    <div class="path-item">
+                        <strong>Visa Type:</strong> <span id="selectedVisaTypeDisplay"></span>
+                    </div>
+                    <div class="path-item">
+                        <strong>Assessment Authority:</strong> <span id="selectedAuthorityDisplay"></span>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Limited checklist container (permanently hidden) -->
+            <div class="authority-checklist" id="authorityChecklist" style="display: none !important;">
+                <!-- Dynamic checklist will be loaded here -->
+            </div>
+
+            <!-- Enhanced Document Upload Interface (Shown immediately after selections) -->
+            <div class="document-upload-container" id="uploadInterface" style="display: none;">
+                <div class="upload-header">
+                    <h2><i class="fas fa-file-upload"></i> Document Upload</h2>
+                    <div class="authority-info">
+                        <span class="authority-badge" id="selectedAuthorityBadge"></span>
+                    </div>
+                </div>
+                
+                <div class="upload-categories" id="authoritySpecificDocuments">
+                    <!-- Dynamic content will be loaded based on selected authority -->
+                </div>
+
+                <div class="upload-actions">
+                    <button class="btn btn-primary" onclick="submitAllDocuments()">
+                        <i class="fas fa-paper-plane"></i> Submit Documents
+                    </button>
+                </div>
+            </div>
+        </div>
+
+                </div>
+            </section>
+
+    <!-- Occupation List Section -->
+    <section id="occupation-list" class="content-section">
+        <div class="section-header">
+            <h1>Occupation List</h1>
+            <p>Browse available occupations and their requirements</p>
+        </div>
+        
+        <div class="occupation-list-container">
+            <div class="occupation-controls">
+                <button class="btn btn-primary btn-large" onclick="showOccupationListModal()">
+                    <i class="fas fa-search"></i> Browse Occupation List
+                </button>
+            </div>
+        </div>
+    </section>
+
+    <!-- Progress Section -->
+    <section id="progress" class="content-section">
+        <div class="section-header">
+            <h1>Application Progress</h1>
+            <p>Track your migration application progress</p>
+        </div>
+        
+        <div class="progress-container">
+            <div class="progress-overview">
+                <h3>Overall Progress</h3>
+                <div class="progress-bar">
+                    <div class="progress-fill" style="width: 0%"></div>
+                </div>
+                <span class="progress-text">0% Complete</span>
+            </div>
+            
+            <div class="progress-steps">
+                <div class="progress-step completed">
+                    <div class="step-icon">
+                        <i class="fas fa-check"></i>
+                    </div>
+                    <div class="step-content">
+                        <h4>Registration</h4>
+                        <p>Account created and verified</p>
+                    </div>
+                </div>
+                
+                <div class="progress-step">
+                    <div class="step-icon">
+                        <i class="fas fa-file-upload"></i>
+                    </div>
+                    <div class="step-content">
+                        <h4>Document Upload</h4>
+                        <p>Upload required documents</p>
+                    </div>
+                </div>
+                
+                <div class="progress-step">
+                    <div class="step-icon">
+                        <i class="fas fa-clipboard-check"></i>
+                    </div>
+                    <div class="step-content">
+                        <h4>Review</h4>
+                        <p>Documents under review</p>
+                    </div>
+                </div>
+
+                <div class="progress-step">
+                    <div class="step-icon">
+                        <i class="fas fa-paper-plane"></i>
+                    </div>
+                    <div class="step-content">
+                        <h4>Submission</h4>
+                        <p>Application submitted</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Messages Section -->
+    <section id="messages" class="content-section">
+        <div class="section-header">
+            <h1>Messages</h1>
+            <p>Communicate with your migration consultant</p>
+        </div>
+        
+        <div class="messages-container">
+            <div class="messages-list">
+                <div class="message-item">
+                    <div class="message-avatar">
+                        <i class="fas fa-user-tie"></i>
+                    </div>
+                    <div class="message-content">
+                        <div class="message-header">
+                            <h4>Migration Consultant</h4>
+                            <span class="message-time">2 hours ago</span>
+                        </div>
+                        <p>Welcome to your migration portal! Please upload your documents to get started.</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="message-compose">
+                <div class="compose-header">
+                    <h3>Send Message</h3>
+                </div>
+                <div class="compose-form">
+                    <textarea placeholder="Type your message here..." rows="4"></textarea>
+                    <button class="btn btn-primary">
+                        <i class="fas fa-paper-plane"></i> Send Message
+                    </button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Occupation List Modal -->
+    <div id="occupationListModal" class="modal" style="display: none;">
+        <div class="modal-content occupation-modal">
+            <div class="modal-header">
+                <h2><i class="fas fa-briefcase"></i> Occupation List</h2>
+                <span class="close" onclick="closeOccupationListModal()">&times;</span>
+            </div>
+            <div class="modal-body">
+                <div class="occupation-controls">
+                    <div class="search-section">
+                        <div class="search-input-container">
+                            <i class="fas fa-search"></i>
+                            <input type="text" id="occupationSearchInput" placeholder="Search occupations by title, ANZSCO code, or keywords..." onkeyup="filterOccupations()" autocomplete="off">
+                            <button class="clear-search" id="clearSearchBtn" onclick="clearSearch()" style="display: none;">
+                                <i class="fas fa-times"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="filter-section">
+                        <div class="filter-group">
+                            <label for="authorityFilter">Filter by Assessment Authority:</label>
+                            <select id="authorityFilter" onchange="filterOccupations()">
+                                <option value="">All Assessment Authorities</option>
+                                <option value="acs">ACS (Australian Computer Society)</option>
+                                <option value="vetassess">VETASSESS</option>
+                                <option value="engineers-australia">Engineers Australia</option>
+                                <option value="ahpra">AHPRA</option>
+                                <option value="osap-tra">OSAP TRA</option>
+                                <option value="msa-tra">MSA TRA</option>
+                            </select>
+                        </div>
+                        <div class="filter-group">
+                            <label for="demandFilter">Filter by Demand Status:</label>
+                            <select id="demandFilter" onchange="filterOccupations()">
+                                <option value="">All Demand Levels</option>
+                                <option value="high">High Demand</option>
+                                <option value="medium">Medium Demand</option>
+                                <option value="low">Low Demand</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="occupation-stats">
+                    <div class="stat-item">
+                        <span class="stat-label">Total Occupations:</span>
+                        <span class="stat-value" id="totalOccupations">0</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-label">Filtered Results:</span>
+                        <span class="stat-value" id="filteredOccupations">0</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-label">Selected Authority:</span>
+                        <span class="stat-value" id="selectedAuthorityName">All</span>
+                    </div>
+                </div>
+                
+                <div class="occupation-list-container">
+                    <div class="occupation-list" id="occupationList">
+                    <!-- Dynamic content will be loaded here -->
+                    </div>
+                    <div class="loading-indicator" id="occupationLoading" style="display: none;">
+                        <i class="fas fa-spinner fa-spin"></i>
+                        <span>Loading occupations...</span>
+                    </div>
+                    <div class="no-results" id="noResults" style="display: none;">
+                        <i class="fas fa-search"></i>
+                        <h3>No occupations found</h3>
+                        <p>Try adjusting your search criteria or filters</p>
+                    </div>
+                </div>
+
+                <div class="pagination-controls" id="paginationControls" style="display: none;">
+                    <button class="btn btn-outline" id="prevPageBtn" onclick="previousPage()" disabled>
+                        <i class="fas fa-chevron-left"></i> Previous
+                    </button>
+                    <span class="page-info" id="pageInfo">Page 1 of 1</span>
+                    <button class="btn btn-outline" id="nextPageBtn" onclick="nextPage()" disabled>
+                        Next <i class="fas fa-chevron-right"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="client-dashboard.js"></script>
+</body>
+</html>
+                                <div class="file-requirements">
+                                    <span class="file-types">Accepted: PDF, JPG</span>
+                                    <span class="file-size">Max size: 10MB per file</span>
+                                </div>
+                            </div>
+                            <div class="upload-area" data-category="degree-certificates">
+                                <div class="upload-zone">
+                                    <i class="fas fa-cloud-upload-alt"></i>
+                                    <p>Drag & drop files here or click to browse</p>
+                                    <input type="file" multiple accept=".pdf,.jpg,.jpeg" onchange="handleFileUpload(this, 'degree-certificates')">
+                                </div>
+                                <div class="uploaded-files" id="degree-certificates-files"></div>
+                            </div>
+                            <div class="metadata-fields">
+                                <div class="form-group">
+                                    <label>Institution Name</label>
+                                    <input type="text" placeholder="Enter institution name" class="metadata-input" data-field="institution">
+                                </div>
+                                <div class="form-group">
+                                    <label>Year of Completion</label>
+                                    <input type="number" placeholder="YYYY" class="metadata-input" data-field="year">
+                                </div>
+                                <div class="form-group">
+                                    <label>Document Type</label>
+                                    <select class="metadata-input" data-field="type">
+                                        <option value="">Select Type</option>
+                                        <option value="degree">Degree Certificate</option>
+                                        <option value="diploma">Diploma</option>
+                                        <option value="certificate">Certificate</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- English Test Results -->
+                        <div class="document-upload-item">
+                            <div class="upload-item-header">
+                                <h3><i class="fas fa-language"></i> English Test Results - IELTS/PTE</h3>
+                                <span class="required-badge">Required</span>
+                            </div>
+                            <div class="upload-item-description">
+                                <p>Upload IELTS, PTE, TOEFL, or other English proficiency test results</p>
+                                <div class="file-requirements">
+                                    <span class="file-types">Accepted: PDF</span>
+                                    <span class="file-size">Max size: 10MB per file</span>
+                                </div>
+                            </div>
+                            <div class="upload-area" data-category="english-tests">
+                                <div class="upload-zone">
+                                    <i class="fas fa-cloud-upload-alt"></i>
+                                    <p>Drag & drop files here or click to browse</p>
+                                    <input type="file" multiple accept=".pdf" onchange="handleFileUpload(this, 'english-tests')">
+                                </div>
+                                <div class="uploaded-files" id="english-tests-files"></div>
+                            </div>
+                            <div class="metadata-fields">
+                                <div class="form-group">
+                                    <label>Test Type</label>
+                                    <select class="metadata-input" data-field="test-type">
+                                        <option value="">Select Test Type</option>
+                                        <option value="ielts">IELTS</option>
+                                        <option value="pte">PTE</option>
+                                        <option value="toefl">TOEFL</option>
+                                        <option value="other">Other</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label>Test Date</label>
+                                    <input type="date" class="metadata-input" data-field="test-date">
+                                </div>
+                                <div class="form-group">
+                                    <label>Overall Score</label>
+                                    <input type="text" placeholder="e.g., 7.5" class="metadata-input" data-field="score">
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Educational Evaluation Certificates -->
+                        <div class="document-upload-item">
+                            <div class="upload-item-header">
+                                <h3><i class="fas fa-check-circle"></i> Educational Evaluation Certificates</h3>
+                                <span class="required-badge">Required</span>
+                            </div>
+                            <div class="upload-item-description">
+                                <p>Upload educational evaluation certificates if applicable</p>
+                                <div class="file-requirements">
+                                    <span class="file-types">Accepted: PDF</span>
+                                    <span class="file-size">Max size: 10MB per file</span>
+                                </div>
+                            </div>
+                            <div class="upload-area" data-category="educational-evaluation">
+                                <div class="upload-zone">
+                            <i class="fas fa-cloud-upload-alt"></i>
+                                    <p>Drag & drop files here or click to browse</p>
+                                    <input type="file" multiple accept=".pdf" onchange="handleFileUpload(this, 'educational-evaluation')">
+                                </div>
+                                <div class="uploaded-files" id="educational-evaluation-files"></div>
+                            </div>
+                            <div class="metadata-fields">
+                                <div class="form-group">
+                                    <label>Evaluation Authority</label>
+                                    <input type="text" placeholder="e.g., WES, ICAS" class="metadata-input" data-field="authority">
+                                </div>
+                                <div class="form-group">
+                                    <label>Evaluation Date</label>
+                                    <input type="date" class="metadata-input" data-field="evaluation-date">
+                                </div>
+                                <div class="form-group">
+                                    <label>Document Type</label>
+                                    <select class="metadata-input" data-field="type">
+                                        <option value="">Select Type</option>
+                                        <option value="evaluation">Evaluation Report</option>
+                                        <option value="certificate">Evaluation Certificate</option>
+                                        <option value="report">Assessment Report</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="step-actions">
+                        <button class="btn btn-outline" onclick="previousStep()">
+                            <i class="fas fa-arrow-left"></i> Back to Categories
+                        </button>
+                        <button class="btn btn-primary" onclick="nextStep()" id="educational-next-btn" disabled>
+                            Continue to Employment Documents <i class="fas fa-arrow-right"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Step 4: Employment Documents Upload -->
+                <div class="upload-step" id="step-employment">
+                    <div class="step-header">
+                        <h2><i class="fas fa-briefcase"></i> Employment Documents Upload</h2>
+                        <p>Upload your employment history and work-related documents</p>
+                    </div>
+                    
+                    <div class="document-upload-section">
+                        <!-- Recent Payslips -->
+                        <div class="document-upload-item">
+                            <div class="upload-item-header">
+                                <h3><i class="fas fa-money-bill-wave"></i> Recent Payslips (Last 6 Months)</h3>
+                                <span class="required-badge">Required</span>
+                            </div>
+                            <div class="upload-item-description">
+                                <p>Upload payslips from the last 6 months of employment</p>
+                                <div class="file-requirements">
+                                    <span class="file-types">Accepted: PDF, JPG</span>
+                                    <span class="file-size">Max size: 10MB per file</span>
+                                </div>
+                            </div>
+                            <div class="upload-area" data-category="recent-payslips">
+                                <div class="upload-zone">
+                                    <i class="fas fa-cloud-upload-alt"></i>
+                                    <p>Drag & drop files here or click to browse</p>
+                                    <input type="file" multiple accept=".pdf,.jpg,.jpeg" onchange="handleFileUpload(this, 'recent-payslips')">
+                                </div>
+                                <div class="uploaded-files" id="recent-payslips-files"></div>
+                            </div>
+                            <div class="metadata-fields">
+                                <div class="form-group">
+                                    <label>Employer Name</label>
+                                    <input type="text" placeholder="Enter employer name" class="metadata-input" data-field="employer">
+                                </div>
+                                <div class="form-group">
+                                    <label>Position</label>
+                                    <input type="text" placeholder="Enter job position" class="metadata-input" data-field="position">
+                                </div>
+                                <div class="form-group">
+                                    <label>Employment Period</label>
+                                    <input type="text" placeholder="e.g., Jan 2023 - Present" class="metadata-input" data-field="period">
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Current Employment Contract -->
+                        <div class="document-upload-item">
+                            <div class="upload-item-header">
+                                <h3><i class="fas fa-file-contract"></i> Current Employment Contract</h3>
+                                <span class="required-badge">Required</span>
+                            </div>
+                            <div class="upload-item-description">
+                                <p>Upload your current employment contract or appointment letter</p>
+                                <div class="file-requirements">
+                                    <span class="file-types">Accepted: PDF</span>
+                                    <span class="file-size">Max size: 10MB per file</span>
+                                </div>
+                            </div>
+                            <div class="upload-area" data-category="employment-contract">
+                                <div class="upload-zone">
+                                    <i class="fas fa-cloud-upload-alt"></i>
+                                    <p>Drag & drop files here or click to browse</p>
+                                    <input type="file" accept=".pdf" onchange="handleFileUpload(this, 'employment-contract')">
+                                </div>
+                                <div class="uploaded-files" id="employment-contract-files"></div>
+                            </div>
+                            <div class="metadata-fields">
+                                <div class="form-group">
+                                    <label>Employer Name</label>
+                                    <input type="text" placeholder="Enter employer name" class="metadata-input" data-field="employer">
+                                </div>
+                                <div class="form-group">
+                                    <label>Position</label>
+                                    <input type="text" placeholder="Enter job position" class="metadata-input" data-field="position">
+                                </div>
+                                <div class="form-group">
+                                    <label>Employment Period</label>
+                                    <input type="text" placeholder="e.g., Jan 2023 - Present" class="metadata-input" data-field="period">
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Complete CV/Resume -->
+                        <div class="document-upload-item">
+                            <div class="upload-item-header">
+                                <h3><i class="fas fa-user-tie"></i> Complete CV/Resume</h3>
+                                <span class="required-badge">Required</span>
+                            </div>
+                            <div class="upload-item-description">
+                                <p>Upload your current CV or resume with detailed work history</p>
+                                <div class="file-requirements">
+                                    <span class="file-types">Accepted: PDF, DOCX</span>
+                                    <span class="file-size">Max size: 10MB per file</span>
+                                </div>
+                            </div>
+                            <div class="upload-area" data-category="cv-resume">
+                                <div class="upload-zone">
+                                    <i class="fas fa-cloud-upload-alt"></i>
+                                    <p>Drag & drop files here or click to browse</p>
+                                    <input type="file" accept=".pdf,.docx" onchange="handleFileUpload(this, 'cv-resume')">
+                                </div>
+                                <div class="uploaded-files" id="cv-resume-files"></div>
+                            </div>
+                            <div class="metadata-fields">
+                                <div class="form-group">
+                                    <label>Document Type</label>
+                                    <select class="metadata-input" data-field="type">
+                                        <option value="">Select Type</option>
+                                        <option value="cv">CV</option>
+                                        <option value="resume">Resume</option>
+                                        <option value="curriculum-vitae">Curriculum Vitae</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label>Last Updated</label>
+                                    <input type="date" class="metadata-input" data-field="last-updated">
+                                </div>
+                                <div class="form-group">
+                                    <label>Version</label>
+                                    <input type="text" placeholder="e.g., v2.1" class="metadata-input" data-field="version">
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Employment Reference Letters -->
+                        <div class="document-upload-item">
+                            <div class="upload-item-header">
+                                <h3><i class="fas fa-handshake"></i> Employment Reference Letters</h3>
+                                <span class="required-badge">Required</span>
+                            </div>
+                            <div class="upload-item-description">
+                                <p>Upload reference letters from supervisors or colleagues</p>
+                                <div class="file-requirements">
+                                    <span class="file-types">Accepted: PDF, JPG</span>
+                                    <span class="file-size">Max size: 10MB per file</span>
+                                </div>
+                            </div>
+                            <div class="upload-area" data-category="employment-references">
+                                <div class="upload-zone">
+                                    <i class="fas fa-cloud-upload-alt"></i>
+                                    <p>Drag & drop files here or click to browse</p>
+                                    <input type="file" multiple accept=".pdf,.jpg,.jpeg" onchange="handleFileUpload(this, 'employment-references')">
+                                </div>
+                                <div class="uploaded-files" id="employment-references-files"></div>
+                            </div>
+                            <div class="metadata-fields">
+                                <div class="form-group">
+                                    <label>Reference Name</label>
+                                    <input type="text" placeholder="Enter reference person name" class="metadata-input" data-field="reference-name">
+                                </div>
+                                <div class="form-group">
+                                    <label>Reference Position</label>
+                                    <input type="text" placeholder="Enter reference position" class="metadata-input" data-field="reference-position">
+                                </div>
+                                <div class="form-group">
+                                    <label>Reference Date</label>
+                                    <input type="date" class="metadata-input" data-field="reference-date">
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Previous Employment Records -->
+                        <div class="document-upload-item">
+                            <div class="upload-item-header">
+                                <h3><i class="fas fa-history"></i> Previous Employment Records</h3>
+                                <span class="required-badge">Required</span>
+                            </div>
+                            <div class="upload-item-description">
+                                <p>Upload documents from previous employment (payslips, reference letters, contracts)</p>
+                                <div class="file-requirements">
+                                    <span class="file-types">Accepted: PDF, JPG</span>
+                                    <span class="file-size">Max size: 10MB per file</span>
+                                </div>
+                            </div>
+                            <div class="upload-area" data-category="previous-employment">
+                                <div class="upload-zone">
+                                    <i class="fas fa-cloud-upload-alt"></i>
+                                    <p>Drag & drop files here or click to browse</p>
+                                    <input type="file" multiple accept=".pdf,.jpg,.jpeg" onchange="handleFileUpload(this, 'previous-employment')">
+                                </div>
+                                <div class="uploaded-files" id="previous-employment-files"></div>
+                            </div>
+                            <div class="metadata-fields">
+                                <div class="form-group">
+                                    <label>Employer Name</label>
+                                    <input type="text" placeholder="Enter previous employer name" class="metadata-input" data-field="employer">
+                                </div>
+                                <div class="form-group">
+                                    <label>Position</label>
+                                    <input type="text" placeholder="Enter previous position" class="metadata-input" data-field="position">
+                                </div>
+                                <div class="form-group">
+                                    <label>Employment Period</label>
+                                    <input type="text" placeholder="e.g., Jan 2020 - Dec 2022" class="metadata-input" data-field="period">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="step-actions">
+                        <button class="btn btn-outline" onclick="previousStep()">
+                            <i class="fas fa-arrow-left"></i> Back to Educational
+                        </button>
+                        <button class="btn btn-primary" onclick="nextStep()" id="employment-next-btn" disabled>
+                            Continue to Financial Documents <i class="fas fa-arrow-right"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Step 5: Financial Documents Upload -->
+                <div class="upload-step" id="step-financial">
+                    <div class="step-header">
+                        <h2><i class="fas fa-dollar-sign"></i> Financial Documents Upload</h2>
+                        <p>Upload your financial records and supporting documents</p>
+                    </div>
+                    
+                    <div class="document-upload-section">
+                        <!-- Bank Statements -->
+                        <div class="document-upload-item">
+                            <div class="upload-item-header">
+                                <h3><i class="fas fa-university"></i> Bank Statements (Last 3 Years)</h3>
+                                <span class="required-badge">Required</span>
+                            </div>
+                            <div class="upload-item-description">
+                                <p>Upload bank statements for the last 3 years</p>
+                                <div class="file-requirements">
+                                    <span class="file-types">Accepted: PDF</span>
+                                    <span class="file-size">Max size: 10MB per file</span>
+                                </div>
+                            </div>
+                            <div class="upload-area" data-category="bank-statements">
+                                <div class="upload-zone">
+                                    <i class="fas fa-cloud-upload-alt"></i>
+                                    <p>Drag & drop files here or click to browse</p>
+                                    <input type="file" multiple accept=".pdf" onchange="handleFileUpload(this, 'bank-statements')">
+                                </div>
+                                <div class="uploaded-files" id="bank-statements-files"></div>
+                            </div>
+                            <div class="metadata-fields">
+                                <div class="form-group">
+                                    <label>Bank Name</label>
+                                    <input type="text" placeholder="Enter bank name" class="metadata-input" data-field="bank-name">
+                                </div>
+                                <div class="form-group">
+                                    <label>Statement Period</label>
+                                    <input type="text" placeholder="e.g., Jan 2023 - Dec 2023" class="metadata-input" data-field="period">
+                                </div>
+                                <div class="form-group">
+                                    <label>Document Year</label>
+                                    <input type="number" placeholder="YYYY" class="metadata-input" data-field="year">
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Tax Returns/Income Records -->
+                        <div class="document-upload-item">
+                            <div class="upload-item-header">
+                                <h3><i class="fas fa-receipt"></i> Tax Returns/Income Records</h3>
+                                <span class="required-badge">Required</span>
+                            </div>
+                            <div class="upload-item-description">
+                                <p>Upload tax returns and income records for the last 3 years</p>
+                                <div class="file-requirements">
+                                    <span class="file-types">Accepted: PDF</span>
+                                    <span class="file-size">Max size: 10MB per file</span>
+                                </div>
+                            </div>
+                            <div class="upload-area" data-category="tax-returns">
+                                <div class="upload-zone">
+                                    <i class="fas fa-cloud-upload-alt"></i>
+                                    <p>Drag & drop files here or click to browse</p>
+                                    <input type="file" multiple accept=".pdf" onchange="handleFileUpload(this, 'tax-returns')">
+                                </div>
+                                <div class="uploaded-files" id="tax-returns-files"></div>
+                            </div>
+                            <div class="metadata-fields">
+                                <div class="form-group">
+                                    <label>Tax Year</label>
+                                    <input type="number" placeholder="YYYY" class="metadata-input" data-field="tax-year">
+                                </div>
+                                <div class="form-group">
+                                    <label>Income Amount</label>
+                                    <input type="text" placeholder="Enter annual income" class="metadata-input" data-field="income">
+                                </div>
+                                <div class="form-group">
+                                    <label>Document Year</label>
+                                    <input type="number" placeholder="YYYY" class="metadata-input" data-field="year">
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Investment Proofs -->
+                        <div class="document-upload-item">
+                            <div class="upload-item-header">
+                                <h3><i class="fas fa-chart-line"></i> Investment Proofs</h3>
+                                <span class="required-badge">Required</span>
+                            </div>
+                            <div class="upload-item-description">
+                                <p>Upload investment proofs and financial assets</p>
+                                <div class="file-requirements">
+                                    <span class="file-types">Accepted: PDF</span>
+                                    <span class="file-size">Max size: 10MB per file</span>
+                                </div>
+                            </div>
+                            <div class="upload-area" data-category="investment-proofs">
+                                <div class="upload-zone">
+                                    <i class="fas fa-cloud-upload-alt"></i>
+                                    <p>Drag & drop files here or click to browse</p>
+                                    <input type="file" multiple accept=".pdf" onchange="handleFileUpload(this, 'investment-proofs')">
+                                </div>
+                                <div class="uploaded-files" id="investment-proofs-files"></div>
+                            </div>
+                            <div class="metadata-fields">
+                                <div class="form-group">
+                                    <label>Investment Type</label>
+                                    <select class="metadata-input" data-field="type">
+                                        <option value="">Select Type</option>
+                                        <option value="stocks">Stocks</option>
+                                        <option value="bonds">Bonds</option>
+                                        <option value="mutual-funds">Mutual Funds</option>
+                                        <option value="real-estate">Real Estate</option>
+                                        <option value="other">Other</option>
+                        </select>
+                                </div>
+                                <div class="form-group">
+                                    <label>Investment Value</label>
+                                    <input type="text" placeholder="Enter investment value" class="metadata-input" data-field="value">
+                                </div>
+                                <div class="form-group">
+                                    <label>Document Year</label>
+                                    <input type="number" placeholder="YYYY" class="metadata-input" data-field="year">
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Business Ownership Documents -->
+                        <div class="document-upload-item">
+                            <div class="upload-item-header">
+                                <h3><i class="fas fa-building"></i> Business Ownership Documents (If Applicable)</h3>
+                                <span class="optional-badge">Optional</span>
+                            </div>
+                            <div class="upload-item-description">
+                                <p>Upload business ownership documents if applicable</p>
+                                <div class="file-requirements">
+                                    <span class="file-types">Accepted: PDF</span>
+                                    <span class="file-size">Max size: 10MB per file</span>
+                                </div>
+                            </div>
+                            <div class="upload-area" data-category="business-documents">
+                                <div class="upload-zone">
+                                    <i class="fas fa-cloud-upload-alt"></i>
+                                    <p>Drag & drop files here or click to browse</p>
+                                    <input type="file" multiple accept=".pdf" onchange="handleFileUpload(this, 'business-documents')">
+                                </div>
+                                <div class="uploaded-files" id="business-documents-files"></div>
+                            </div>
+                            <div class="metadata-fields">
+                                <div class="form-group">
+                                    <label>Business Name</label>
+                                    <input type="text" placeholder="Enter business name" class="metadata-input" data-field="business-name">
+                                </div>
+                                <div class="form-group">
+                                    <label>Ownership Percentage</label>
+                                    <input type="text" placeholder="e.g., 50%" class="metadata-input" data-field="ownership">
+                                </div>
+                                <div class="form-group">
+                                    <label>Document Year</label>
+                                    <input type="number" placeholder="YYYY" class="metadata-input" data-field="year">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="step-actions">
+                        <button class="btn btn-outline" onclick="previousStep()">
+                            <i class="fas fa-arrow-left"></i> Back to Employment
+                        </button>
+                        <button class="btn btn-primary" onclick="nextStep()" id="financial-next-btn" disabled>
+                            Continue to Medical Documents <i class="fas fa-arrow-right"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Step 6: Medical Documents Upload -->
+                <div class="upload-step" id="step-medical">
+                    <div class="step-header">
+                        <h2><i class="fas fa-user-md"></i> Medical Documents Upload</h2>
+                        <p>Upload your medical certificates and health-related documents</p>
+                    </div>
+
+                    <div class="document-upload-section">
+                        <!-- Medical Certificates -->
+                        <div class="document-upload-item">
+                            <div class="upload-item-header">
+                                <h3><i class="fas fa-certificate"></i> Medical Certificates</h3>
+                                <span class="required-badge">Required</span>
+                            </div>
+                            <div class="upload-item-description">
+                                <p>Upload medical certificates and health reports</p>
+                                <div class="file-requirements">
+                                    <span class="file-types">Accepted: PDF, JPG</span>
+                                    <span class="file-size">Max size: 10MB per file</span>
+                                </div>
+                            </div>
+                            <div class="upload-area" data-category="medical-certificates">
+                                <div class="upload-zone">
+                                    <i class="fas fa-cloud-upload-alt"></i>
+                                    <p>Drag & drop files here or click to browse</p>
+                                    <input type="file" multiple accept=".pdf,.jpg,.jpeg" onchange="handleFileUpload(this, 'medical-certificates')">
+                                </div>
+                                <div class="uploaded-files" id="medical-certificates-files"></div>
+                            </div>
+                            <div class="metadata-fields">
+                                <div class="form-group">
+                                    <label>Issuing Doctor/Hospital</label>
+                                    <input type="text" placeholder="Enter doctor or hospital name" class="metadata-input" data-field="issuer">
+                                </div>
+                                <div class="form-group">
+                                    <label>Certificate Date</label>
+                                    <input type="date" class="metadata-input" data-field="certificate-date">
+                                </div>
+                                <div class="form-group">
+                                    <label>Validity Period</label>
+                                    <input type="text" placeholder="e.g., 6 months" class="metadata-input" data-field="validity">
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Vaccination Records -->
+                        <div class="document-upload-item">
+                            <div class="upload-item-header">
+                                <h3><i class="fas fa-syringe"></i> Vaccination Records</h3>
+                                <span class="required-badge">Required</span>
+                            </div>
+                            <div class="upload-item-description">
+                                <p>Upload vaccination records and immunization certificates</p>
+                                <div class="file-requirements">
+                                    <span class="file-types">Accepted: PDF, JPG</span>
+                                    <span class="file-size">Max size: 10MB per file</span>
+                                </div>
+                            </div>
+                            <div class="upload-area" data-category="vaccination-records">
+                                <div class="upload-zone">
+                                    <i class="fas fa-cloud-upload-alt"></i>
+                                    <p>Drag & drop files here or click to browse</p>
+                                    <input type="file" multiple accept=".pdf,.jpg,.jpeg" onchange="handleFileUpload(this, 'vaccination-records')">
+                                </div>
+                                <div class="uploaded-files" id="vaccination-records-files"></div>
+                            </div>
+                            <div class="metadata-fields">
+                                <div class="form-group">
+                                    <label>Issuing Doctor/Hospital</label>
+                                    <input type="text" placeholder="Enter doctor or hospital name" class="metadata-input" data-field="issuer">
+                                </div>
+                                <div class="form-group">
+                                    <label>Certificate Date</label>
+                                    <input type="date" class="metadata-input" data-field="certificate-date">
+                                </div>
+                                <div class="form-group">
+                                    <label>Validity Period</label>
+                                    <input type="text" placeholder="e.g., 6 months" class="metadata-input" data-field="validity">
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Health Insurance Documents -->
+                        <div class="document-upload-item">
+                            <div class="upload-item-header">
+                                <h3><i class="fas fa-shield-alt"></i> Health Insurance Documents</h3>
+                                <span class="required-badge">Required</span>
+                            </div>
+                            <div class="upload-item-description">
+                                <p>Upload health insurance documents and coverage certificates</p>
+                                <div class="file-requirements">
+                                    <span class="file-types">Accepted: PDF</span>
+                                    <span class="file-size">Max size: 10MB per file</span>
+                                </div>
+                            </div>
+                            <div class="upload-area" data-category="insurance-documents">
+                                <div class="upload-zone">
+                                    <i class="fas fa-cloud-upload-alt"></i>
+                                    <p>Drag & drop files here or click to browse</p>
+                                    <input type="file" multiple accept=".pdf" onchange="handleFileUpload(this, 'insurance-documents')">
+                                </div>
+                                <div class="uploaded-files" id="insurance-documents-files"></div>
+                            </div>
+                            <div class="metadata-fields">
+                                <div class="form-group">
+                                    <label>Insurance Provider</label>
+                                    <input type="text" placeholder="Enter insurance provider name" class="metadata-input" data-field="provider">
+                                </div>
+                                <div class="form-group">
+                                    <label>Policy Number</label>
+                                    <input type="text" placeholder="Enter policy number" class="metadata-input" data-field="policy-number">
+                                </div>
+                                <div class="form-group">
+                                    <label>Validity Period</label>
+                                    <input type="text" placeholder="e.g., 1 year" class="metadata-input" data-field="validity">
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Specialist Medical Reports -->
+                        <div class="document-upload-item">
+                            <div class="upload-item-header">
+                                <h3><i class="fas fa-file-medical"></i> Specialist Medical Reports (If Required)</h3>
+                                <span class="optional-badge">Optional</span>
+                            </div>
+                            <div class="upload-item-description">
+                                <p>Upload specific health reports as required by visa regulations</p>
+                                <div class="file-requirements">
+                                    <span class="file-types">Accepted: PDF</span>
+                                    <span class="file-size">Max size: 10MB per file</span>
+                                </div>
+                            </div>
+                            <div class="upload-area" data-category="specialist-reports">
+                                <div class="upload-zone">
+                                    <i class="fas fa-cloud-upload-alt"></i>
+                                    <p>Drag & drop files here or click to browse</p>
+                                    <input type="file" multiple accept=".pdf" onchange="handleFileUpload(this, 'specialist-reports')">
+                                </div>
+                                <div class="uploaded-files" id="specialist-reports-files"></div>
+                            </div>
+                            <div class="metadata-fields">
+                                <div class="form-group">
+                                    <label>Issuing Doctor/Hospital</label>
+                                    <input type="text" placeholder="Enter specialist or hospital name" class="metadata-input" data-field="issuer">
+                                </div>
+                                <div class="form-group">
+                                    <label>Certificate Date</label>
+                                    <input type="date" class="metadata-input" data-field="certificate-date">
+                                </div>
+                                <div class="form-group">
+                                    <label>Validity Period</label>
+                                    <input type="text" placeholder="e.g., 6 months" class="metadata-input" data-field="validity">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="step-actions">
+                        <button class="btn btn-outline" onclick="previousStep()">
+                            <i class="fas fa-arrow-left"></i> Back to Financial
+                        </button>
+                        <button class="btn btn-primary" onclick="nextStep()" id="medical-next-btn" disabled>
+                            Continue to Review <i class="fas fa-arrow-right"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Step 7: Final Review and Submission -->
+                <div class="upload-step" id="step-review">
+                    <div class="step-header">
+                        <h2><i class="fas fa-check-circle"></i> Final Review and Submission</h2>
+                        <p>Review all uploaded documents before final submission</p>
+                    </div>
+
+                    <div class="review-container">
+                        <div class="review-summary">
+                            <h3>Document Upload Summary</h3>
+                            <div class="summary-stats">
+                                <div class="stat-item">
+                                    <span class="stat-label">Total Documents:</span>
+                                    <span class="stat-value" id="total-documents">0</span>
+                                </div>
+                                <div class="stat-item">
+                                    <span class="stat-label">Required Complete:</span>
+                                    <span class="stat-value" id="required-complete">0/0</span>
+                                </div>
+                                <div class="stat-item">
+                                    <span class="stat-label">Optional Complete:</span>
+                                    <span class="stat-value" id="optional-complete">0/0</span>
+                                </div>
+                                <div class="stat-item">
+                                    <span class="stat-label">Overall Progress:</span>
+                                    <span class="stat-value" id="overall-progress">0%</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="document-review-list" id="document-review-list">
+                            <!-- Dynamic content will be loaded here -->
+                        </div>
+
+                        <div class="submission-actions">
+                            <button class="btn btn-outline" onclick="saveAsDraft()">
+                                <i class="fas fa-save"></i> Save as Draft
+                            </button>
+                            <button class="btn btn-primary btn-large" onclick="submitAllDocuments()" id="submit-all-btn" disabled>
+                                <i class="fas fa-paper-plane"></i> Submit All Documents
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+            </section>
+
+
+            <!-- Progress Section -->
+            <section id="progress" class="content-section">
+                <div class="section-header">
+                    <h1>Application Progress</h1>
+                    <p>Track your migration journey</p>
+                </div>
+
+                <div class="progress-timeline">
+                    <div class="empty-state">
+                        <i class="fas fa-timeline" style="font-size: 3rem; color: #D4AF37; margin-bottom: 1rem; display: block;"></i>
+                        <h3>No Progress Timeline</h3>
+                        <p>Your application progress will be tracked here once you begin the process.</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Messages Section -->
+            <section id="messages" class="content-section">
+                <div class="section-header">
+                    <h1>Messages</h1>
+                    <p>Communicate with your legal team</p>
+                </div>
+
+                <div class="messages-container">
+                    <div class="empty-state">
+                        <i class="fas fa-envelope" style="font-size: 3rem; color: #D4AF37; margin-bottom: 1rem; display: block;"></i>
+                        <h3>No Messages Yet</h3>
+                        <p>Your communication with the legal team will appear here once you start your application process.</p>
+                    </div>
+
+                    <div class="message-compose">
+                        <form id="messageForm">
+                            <div class="form-group">
+                                <textarea placeholder="Type your message..." rows="3" required></textarea>
+                            </div>
+                            <button type="submit" class="btn btn-primary">Send Message</button>
+                        </form>
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
+
+        <!-- Enhanced Occupation List Modal -->
+        <div id="occupationListModal" class="modal" style="display: none;">
+            <div class="modal-content occupation-modal">
+                <div class="modal-header">
+                    <h2><i class="fas fa-briefcase"></i> Occupation List</h2>
+                    <span class="close" onclick="closeOccupationListModal()">&times;</span>
+                </div>
+                <div class="modal-body">
+                    <div class="occupation-controls">
+                        <div class="search-section">
+                            <div class="search-input-container">
+                                <i class="fas fa-search"></i>
+                                <input type="text" id="occupationSearchInput" placeholder="Search occupations by title, ANZSCO code, or keywords..." onkeyup="filterOccupations()" autocomplete="off">
+                                <button class="clear-search" id="clearSearchBtn" onclick="clearSearch()" style="display: none;">
+                                    <i class="fas fa-times"></i>
+                                </button>
+                            </div>
+                        </div>
+                        <div class="filter-section">
+                            <div class="filter-group">
+                                <label for="authorityFilter">Filter by Assessment Authority:</label>
+                                <select id="authorityFilter" onchange="filterOccupations()">
+                                    <option value="">All Assessment Authorities</option>
+                                    <option value="acs">ACS (Australian Computer Society)</option>
+                                    <option value="vetassess">VETASSESS</option>
+                                    <option value="engineers-australia">Engineers Australia</option>
+                                    <option value="ahpra">AHPRA</option>
+                                    <option value="osap-tra">OSAP TRA</option>
+                                    <option value="msa-tra">MSA TRA</option>
+                                </select>
+                            </div>
+                            <div class="filter-group">
+                                <label for="demandFilter">Filter by Demand Status:</label>
+                                <select id="demandFilter" onchange="filterOccupations()">
+                                    <option value="">All Demand Levels</option>
+                                    <option value="high">High Demand</option>
+                                    <option value="medium">Medium Demand</option>
+                                    <option value="low">Low Demand</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="occupation-stats">
+                        <div class="stat-item">
+                            <span class="stat-label">Total Occupations:</span>
+                            <span class="stat-value" id="totalOccupations">0</span>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-label">Filtered Results:</span>
+                            <span class="stat-value" id="filteredOccupations">0</span>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-label">Selected Authority:</span>
+                            <span class="stat-value" id="selectedAuthorityName">All</span>
+                        </div>
+                    </div>
+                    
+                    <div class="occupation-list-container">
+                        <div class="occupation-list" id="occupationList">
+                            <!-- Dynamic content will be loaded here -->
+                        </div>
+                        <div class="loading-indicator" id="occupationLoading" style="display: none;">
+                            <i class="fas fa-spinner fa-spin"></i>
+                            <span>Loading occupations...</span>
+                        </div>
+                        <div class="no-results" id="noResults" style="display: none;">
+                            <i class="fas fa-search"></i>
+                            <h3>No occupations found</h3>
+                            <p>Try adjusting your search criteria or filters</p>
+                        </div>
+                    </div>
+                    
+                    <div class="pagination-controls" id="paginationControls" style="display: none;">
+                        <button class="btn btn-outline" id="prevPageBtn" onclick="previousPage()" disabled>
+                            <i class="fas fa-chevron-left"></i> Previous
+                        </button>
+                        <span class="page-info" id="pageInfo">Page 1 of 1</span>
+                        <button class="btn btn-outline" id="nextPageBtn" onclick="nextPage()" disabled>
+                            Next <i class="fas fa-chevron-right"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+    </div>
+
+    <script src="client-dashboard.js"></script>
+</body>
+</html>
