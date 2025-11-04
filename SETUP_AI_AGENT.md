@@ -29,20 +29,19 @@
 2. Type a question like "What documents do I need for Australia GSM visa?"
 3. The AI Assistant should respond within a few seconds!
 
-## Your Current API Key
-```
-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
-```
+## Configure Your API Key
 
-**To use this key:**
+**To use your API key:**
 1. Open `ai-setup.html` in your browser
-2. Paste the key above
+2. Paste your API key (starts with "sk-" or "sk-proj-")
 3. Click "Save"
 
 OR run in browser console:
 ```javascript
-setOpenAIAPIKey('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');
+setOpenAIAPIKey('YOUR_API_KEY_HERE');
 ```
+
+**Note:** This application now uses a custom built-in chatbot and doesn't require an external API key. The AI setup page is optional for future integrations.
 
 ## Security Notes
 - ✅ API key is stored locally in browser (safe)
