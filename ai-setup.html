@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Chat Setup - Migration Portal (Free & Simple!)</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        .setup-container {
+            max-width: 600px;
+            margin: 50px auto;
+            padding: 2rem;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+        }
+        .setup-container h1 {
+            color: #4A0E4E;
+            margin-bottom: 1rem;
+        }
+        .setup-container p {
+            color: #666;
+            margin-bottom: 1.5rem;
+            line-height: 1.6;
+        }
+        .api-key-input {
+            width: 100%;
+            padding: 1rem;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            font-size: 1rem;
+            margin-bottom: 1rem;
+            font-family: 'Courier New', monospace;
+        }
+        .api-key-input:focus {
+            outline: none;
+            border-color: #D4AF37;
+            box-shadow: 0 0 0 3px rgba(212, 175, 55, 0.1);
+        }
+        .btn-save {
+            background: #D4AF37;
+            color: white;
+            border: none;
+            padding: 1rem 2rem;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            width: 100%;
+            transition: all 0.3s ease;
+        }
+        .btn-save:hover {
+            background: #b8941f;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(212, 175, 55, 0.3);
+        }
+        .info-box {
+            background: #f0f9ff;
+            border-left: 4px solid #3b82f6;
+            padding: 1rem;
+            border-radius: 4px;
+            margin-bottom: 1.5rem;
+        }
+        .info-box h3 {
+            margin-top: 0;
+            color: #1e40af;
+        }
+        .info-box a {
+            color: #3b82f6;
+            text-decoration: none;
+        }
+        .info-box a:hover {
+            text-decoration: underline;
+        }
+        .success-message {
+            background: #d1fae5;
+            color: #065f46;
+            padding: 1rem;
+            border-radius: 8px;
+            margin-top: 1rem;
+            display: none;
+        }
+        .error-message {
+            background: #fee2e2;
+            color: #991b1b;
+            padding: 1rem;
+            border-radius: 8px;
+            margin-top: 1rem;
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="setup-container">
+        <h1><i class="fas fa-robot"></i> AI Chat Setup</h1>
+        <p><strong>🎉 Great News! No API key needed!</strong> The AI chat works immediately without any setup. Just start chatting!</p>
+        
+        <div class="info-box" style="background: #d1fae5; border-left-color: #10b981;">
+            <h3><i class="fas fa-check-circle"></i> ✅ Already Working!</h3>
+            <p><strong>The AI chat is already active and ready to use!</strong> No configuration needed.</p>
+            <p>Just go to the Messages section and start chatting. It's completely free!</p>
+        </div>
+        
+        <div class="info-box">
+            <h3><i class="fas fa-info-circle"></i> Optional: Get Free API Key for Higher Limits</h3>
+            <p>If you want higher rate limits (optional), you can get a free API key:</p>
+            <ol>
+                <li>Visit <a href="https://huggingface.co/settings/tokens" target="_blank">Hugging Face - Get API Token</a></li>
+                <li>Sign up for free account (if needed)</li>
+                <li>Click "New token" → "Read" access</li>
+                <li>Copy the token (starts with "hf_")</li>
+                <li>Paste it below (optional - works without it!)</li>
+            </ol>
+            <p><strong>💡 Note:</strong> The AI chat works perfectly without any API key. This is only for higher rate limits.</p>
+        </div>
+        
+        <form id="apiKeyForm">
+            <label for="apiKeyInput" style="display: block; margin-bottom: 0.5rem; font-weight: 600; color: #333;">
+                Optional: Hugging Face API Token (for higher limits):
+            </label>
+            <input 
+                type="password" 
+                id="apiKeyInput" 
+                class="api-key-input" 
+                placeholder="hf_... (optional - leave empty to use free tier)"
+                value=""
+            >
+            <button type="submit" class="btn-save">
+                <i class="fas fa-save"></i> Save API Key
+            </button>
+        </form>
+        
+        <div class="success-message" id="successMessage">
+            <i class="fas fa-check-circle"></i> API key saved successfully! The AI Assistant is now active.
+        </div>
+        
+        <div class="error-message" id="errorMessage">
+            <i class="fas fa-exclamation-circle"></i> <span id="errorText"></span>
+        </div>
+        
+        <div style="margin-top: 2rem; padding-top: 2rem; border-top: 1px solid #eee;">
+            <p style="font-size: 0.875rem; color: #999;">
+                <i class="fas fa-shield-alt"></i> Your API key is stored locally in your browser and never sent to our servers except when making API calls to Google Gemini.
+            </p>
+            <a href="client-dashboard.html" style="display: inline-block; margin-top: 1rem; color: #D4AF37; text-decoration: none;">
+                <i class="fas fa-arrow-left"></i> Back to Dashboard
+            </a>
+        </div>
+    </div>
+    
+    <script>
+        // Check if key already exists
+        window.addEventListener('DOMContentLoaded', function() {
+            // Check for Hugging Face key
+            let existingKey = localStorage.getItem('huggingface_api_key');
+            
+            if (existingKey) {
+                document.getElementById('apiKeyInput').value = '•'.repeat(20) + ' (token already saved - optional)';
+                document.getElementById('apiKeyInput').readOnly = true;
+                document.getElementById('apiKeyInput').style.cursor = 'not-allowed';
+                document.querySelector('.btn-save').textContent = 'Update Token';
+                document.querySelector('.btn-save').onclick = function(e) {
+                    e.preventDefault();
+                    document.getElementById('apiKeyInput').value = '';
+                    document.getElementById('apiKeyInput').readOnly = false;
+                    document.getElementById('apiKeyInput').style.cursor = 'text';
+                    document.getElementById('apiKeyInput').focus();
+                    document.querySelector('.btn-save').textContent = 'Save Token';
+                };
+            }
+        });
+        
+        document.getElementById('apiKeyForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const apiKey = document.getElementById('apiKeyInput').value.trim();
+            const successMsg = document.getElementById('successMessage');
+            const errorMsg = document.getElementById('errorMessage');
+            
+            // Hide previous messages
+            successMsg.style.display = 'none';
+            errorMsg.style.display = 'none';
+            
+            // Empty key is fine - works without it
+            if (!apiKey) {
+                // Clear any existing key
+                localStorage.removeItem('huggingface_api_key');
+                successMsg.style.display = 'block';
+                document.getElementById('successMessage').innerHTML = '<i class="fas fa-check-circle"></i> Using free tier (no API key needed). The AI chat will work perfectly!';
+                
+                setTimeout(() => {
+                    window.location.href = 'client-dashboard.html#messages';
+                }, 2000);
+                return;
+            }
+            
+            // Validate API key format (Hugging Face tokens start with "hf_")
+            if (apiKey.length < 10) {
+                errorMsg.style.display = 'block';
+                document.getElementById('errorText').textContent = 'API token seems too short. Please check and try again.';
+                return;
+            }
+            
+            // Save to localStorage
+            try {
+                localStorage.setItem('huggingface_api_key', apiKey);
+                
+                // Also update if client-dashboard.js is loaded
+                if (typeof setHuggingFaceAPIKey === 'function') {
+                    setHuggingFaceAPIKey(apiKey);
+                } else if (typeof setGeminiAPIKey === 'function') {
+                    // Fallback for backward compatibility
+                    setGeminiAPIKey(apiKey);
+                }
+                
+                successMsg.style.display = 'block';
+                document.getElementById('apiKeyInput').value = '';
+                
+                // Redirect after 2 seconds
+                setTimeout(() => {
+                    window.location.href = 'client-dashboard.html#messages';
+                }, 2000);
+            } catch (error) {
+                errorMsg.style.display = 'block';
+                document.getElementById('errorText').textContent = 'Error saving API token: ' + error.message;
+            }
+        });
+    </script>
+</body>
+</html>

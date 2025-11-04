@@ -1,0 +1,70 @@
+# Operating System Files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+desktop.ini
+NTUSER.DAT*
+ntuser.dat*
+*.log
+
+# IDE and Editor Files
+.vscode/
+.cursor/
+.codeium/
+.windsurf/
+.idlerc/
+*.swp
+*.swo
+*~
+.idea/
+*.iml
+
+# Test and Debug Files
+test-*.html
+debug-*.html
+*-test.html
+*-debug.html
+test-*.js
+debug-*.js
+simple-test.html
+minimal-dashboard.html
+
+# Backup Files
+*-backup.js
+*-backup.html
+*-clean.js
+*-clean.html
+*.bak
+*.backup
+
+# Temporary Files
+*.tmp
+*.temp
+*.cache
+
+# Personal Documents (outside project)
+*.docx
+*.pdf
+!manifest.json
+
+# Project-specific ignores
+configure-ai-key.js
+
+# Node modules (if you add any)
+node_modules/
+package-lock.json
+yarn.lock
+
+# Environment files
+.env
+.env.local
+.env.production
+
+# Build outputs (if any)
+dist/
+build/
+*.map

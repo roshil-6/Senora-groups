@@ -1,0 +1,1356 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Client portal for Tonio & Senora Migration Law Firm. Manage your visa application documents and track your progress.">
+    <title>Client Portal - Tonio & Senora Migration Law Firm</title>
+    
+    <!-- PWA Meta Tags -->
+    <meta name="application-name" content="TonioSenora">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="TonioSenora">
+    <meta name="format-detection" content="telephone=no">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="msapplication-config" content="/browserconfig.xml">
+    <meta name="msapplication-TileColor" content="#4A0E4E">
+    <meta name="msapplication-tap-highlight" content="no">
+    <meta name="theme-color" content="#4A0E4E">
+    
+    <!-- PWA Manifest -->
+    <link rel="manifest" href="./manifest.json">
+    <meta name="theme-color" content="#4A0E4E">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <meta name="apple-mobile-web-app-title" content="Tonio & Senora">
+    
+    <!-- Icons -->
+    <link rel="icon" type="image/png" sizes="192x192" href="icons/icon-192x192.png">
+    <link rel="icon" type="image/png" sizes="512x512" href="icons/icon-512x512.png">
+    <link rel="apple-touch-icon" href="icons/icon-192x192.png">
+    <link rel="shortcut icon" href="icons/icon-192x192.png">
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <style>
+        /* Document Summary Screen Styles */
+        .document-summary-screen {
+            background: #f8f9fa;
+            border-radius: 12px;
+            padding: 30px;
+            margin: 20px 0;
+        }
+        
+        .summary-header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        
+        .summary-header h2 {
+            color: #007bff;
+            margin-bottom: 10px;
+        }
+        
+        .summary-header p {
+            color: #6c757d;
+            font-size: 16px;
+        }
+        
+        .selected-path-info {
+            background: white;
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 30px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        
+        .path-item {
+            margin-bottom: 10px;
+            font-size: 16px;
+        }
+        
+        .path-item:last-child {
+            margin-bottom: 0;
+        }
+        
+        .summary-card {
+            background: white;
+            border-radius: 8px;
+            padding: 25px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+        }
+        
+        .summary-card h3 {
+            color: #007bff;
+            margin-bottom: 15px;
+        }
+        
+        .summary-description {
+            color: #6c757d;
+            margin-bottom: 20px;
+            font-size: 16px;
+        }
+        
+        .document-requirements h4 {
+            color: #333;
+            margin-bottom: 15px;
+        }
+        
+        .requirements-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 15px;
+        }
+        
+        .requirement-item {
+            display: flex;
+            align-items: flex-start;
+            padding: 15px;
+            background: #f8f9fa;
+            border-radius: 6px;
+            border-left: 4px solid #007bff;
+        }
+        
+        .requirement-icon {
+            margin-right: 15px;
+            color: #007bff;
+            font-size: 18px;
+            margin-top: 2px;
+        }
+        
+        .requirement-content h5 {
+            margin: 0 0 5px 0;
+            color: #333;
+            font-size: 16px;
+        }
+        
+        .requirement-content p {
+            margin: 0;
+            color: #6c757d;
+            font-size: 14px;
+            line-height: 1.4;
+        }
+        
+        .summary-note {
+            background: #e3f2fd;
+            border: 1px solid #bbdefb;
+            border-radius: 6px;
+            padding: 15px;
+            margin-top: 20px;
+        }
+        
+        .summary-note i {
+            color: #1976d2;
+            margin-right: 8px;
+        }
+        
+        .summary-note p {
+            margin: 0;
+            color: #424242;
+            font-size: 14px;
+        }
+        
+        .summary-actions {
+            text-align: center;
+            margin-top: 30px;
+        }
+        
+        .summary-actions .btn {
+            margin: 0 10px;
+        }
+        
+        /* Document Upload Screen Styles */
+        .document-upload-screen {
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+            border-radius: 16px;
+            padding: 40px;
+            margin: 20px 0;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        
+        .upload-header {
+            text-align: center;
+            margin-bottom: 40px;
+            padding: 30px;
+            background: linear-gradient(135deg, #007bff 0%, #0056b3 100%);
+            border-radius: 12px;
+            color: white;
+            box-shadow: 0 4px 20px rgba(0, 123, 255, 0.3);
+        }
+        
+        .upload-header h2 {
+            color: white;
+            margin-bottom: 15px;
+            font-size: 2.2rem;
+            font-weight: 600;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+        
+        .upload-header p {
+            color: rgba(255, 255, 255, 0.9);
+            font-size: 18px;
+            margin: 0;
+        }
+        
+        .upload-actions {
+            text-align: center;
+            margin-top: 40px;
+            padding: 20px;
+            background: rgba(255, 255, 255, 0.7);
+            border-radius: 12px;
+            backdrop-filter: blur(10px);
+        }
+        
+        .upload-actions .btn {
+            margin: 0 15px;
+            padding: 12px 30px;
+            font-size: 16px;
+            font-weight: 600;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        }
+        
+        .upload-actions .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+        }
+        
+        /* Enhanced Document Cards */
+        .document-card {
+            background: white;
+            border-radius: 12px;
+            padding: 25px;
+            margin-bottom: 25px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+            border: 1px solid rgba(0, 123, 255, 0.1);
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+            min-height: 280px;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .document-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, #007bff, #0056b3);
+        }
+        
+        .document-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 8px 30px rgba(0, 123, 255, 0.15);
+        }
+        
+        .document-card-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+        
+        .document-card-icon {
+            width: 50px;
+            height: 50px;
+            background: linear-gradient(135deg, #007bff, #0056b3);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 15px;
+            color: white;
+            font-size: 20px;
+            box-shadow: 0 4px 15px rgba(0, 123, 255, 0.3);
+        }
+        
+        .document-card-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: #2c3e50;
+            margin: 0;
+        }
+        
+        .document-card-description {
+            color: #6c757d;
+            font-size: 14px;
+            line-height: 1.5;
+            margin-bottom: 20px;
+            flex: 1;
+        }
+        
+        .upload-zone {
+            border: 3px dashed #007bff;
+            border-radius: 16px;
+            padding: 40px 30px;
+            text-align: center;
+            background: linear-gradient(135deg, #ffffff 0%, #f8f9ff 50%, #e3f2fd 100%);
+            cursor: pointer;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 4px 20px rgba(0, 123, 255, 0.08);
+        }
+        
+        .upload-zone::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: conic-gradient(from 0deg, transparent, rgba(0, 123, 255, 0.1), transparent);
+            animation: rotate 3s linear infinite;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+        
+        @keyframes rotate {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        .upload-zone:hover::before {
+            opacity: 1;
+        }
+        
+        .upload-zone:hover {
+            border-color: #0056b3;
+            background: linear-gradient(135deg, #e3f2fd 0%, #bbdefb 50%, #90caf9 100%);
+            transform: translateY(-4px) scale(1.02);
+            box-shadow: 0 12px 40px rgba(0, 123, 255, 0.25);
+        }
+        
+        .upload-zone.dragover {
+            border-color: #28a745;
+            background: linear-gradient(135deg, #e8f5e8 0%, #c8e6c9 50%, #a5d6a7 100%);
+            transform: scale(1.05);
+            box-shadow: 0 15px 50px rgba(40, 167, 69, 0.3);
+        }
+        
+        .upload-zone i {
+            font-size: 56px;
+            color: #007bff;
+            margin-bottom: 20px;
+            display: block;
+            transition: all 0.3s ease;
+            text-shadow: 0 2px 4px rgba(0, 123, 255, 0.2);
+        }
+        
+        .upload-zone:hover i {
+            transform: scale(1.1);
+            color: #0056b3;
+        }
+        
+        .upload-zone-text {
+            font-size: 18px;
+            font-weight: 700;
+            color: #007bff;
+            margin-bottom: 10px;
+            letter-spacing: 0.5px;
+        }
+        
+        .upload-zone-subtext {
+            font-size: 14px;
+            color: #6c757d;
+            line-height: 1.5;
+            max-width: 300px;
+            margin: 0 auto;
+        }
+        
+        .uploaded-files {
+            margin-top: 20px;
+        }
+        
+        .file-item {
+            background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%);
+            border: 2px solid #e9ecef;
+            border-radius: 12px;
+            padding: 20px;
+            margin: 12px 0;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .file-item::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 4px;
+            height: 100%;
+            background: linear-gradient(135deg, #28a745, #20c997);
+            transition: width 0.3s ease;
+        }
+        
+        .file-item:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+            border-color: #007bff;
+        }
+        
+        .file-item:hover::before {
+            width: 6px;
+        }
+        
+        .file-info {
+            display: flex;
+            align-items: center;
+            flex: 1;
+        }
+        
+        .file-icon {
+            color: #007bff;
+            margin-right: 15px;
+            font-size: 20px;
+            width: 24px;
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+        
+        .file-item:hover .file-icon {
+            transform: scale(1.1);
+            color: #0056b3;
+        }
+        
+        .file-name {
+            font-weight: 600;
+            color: #2c3e50;
+            font-size: 15px;
+            margin-bottom: 4px;
+        }
+        
+        .file-size {
+            font-size: 13px;
+            color: #6c757d;
+            background: rgba(108, 117, 125, 0.1);
+            padding: 2px 8px;
+            border-radius: 12px;
+            font-weight: 500;
+        }
+        
+        .file-remove {
+            background: linear-gradient(135deg, #dc3545, #c82333);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            padding: 8px 12px;
+            cursor: pointer;
+            font-size: 13px;
+            font-weight: 600;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 0 2px 8px rgba(220, 53, 69, 0.3);
+        }
+        
+        .file-remove:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 15px rgba(220, 53, 69, 0.4);
+            background: linear-gradient(135deg, #c82333, #bd2130);
+        }
+        
+        /* Enhanced Progress Indicators */
+        .upload-progress {
+            background: linear-gradient(135deg, #e9ecef 0%, #f8f9fa 100%);
+            border-radius: 12px;
+            height: 12px;
+            margin: 20px 0;
+            overflow: hidden;
+            box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.1);
+            position: relative;
+        }
+        
+        .upload-progress::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+            animation: shimmer 2s infinite;
+        }
+        
+        @keyframes shimmer {
+            0% { transform: translateX(-100%); }
+            100% { transform: translateX(100%); }
+        }
+        
+        .upload-progress-bar {
+            background: linear-gradient(90deg, #007bff 0%, #0056b3 50%, #28a745 100%);
+            height: 100%;
+            border-radius: 12px;
+            transition: width 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .upload-progress-bar::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.4), transparent);
+            animation: progress-shine 1.5s infinite;
+        }
+        
+        @keyframes progress-shine {
+            0% { transform: translateX(-100%); }
+            100% { transform: translateX(100%); }
+        }
+        
+        .upload-status {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-top: 15px;
+            padding: 12px 16px;
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+            border-radius: 8px;
+            border: 1px solid rgba(0, 123, 255, 0.1);
+        }
+        
+        .status-text {
+            font-size: 14px;
+            font-weight: 600;
+            color: #495057;
+            display: flex;
+            align-items: center;
+        }
+        
+        .status-icon {
+            color: #28a745;
+            font-size: 18px;
+            margin-right: 8px;
+            animation: pulse 2s infinite;
+        }
+        
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+        
+        /* Read-only Checklist Styles */
+        .document-requirements {
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+            border-radius: 8px;
+            padding: 20px;
+            margin-top: 15px;
+            border: 1px solid rgba(0, 123, 255, 0.1);
+            min-height: 120px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+        
+        .requirement-item {
+            display: flex;
+            align-items: flex-start;
+            margin-bottom: 12px;
+            padding: 10px 0;
+            min-height: 40px;
+        }
+        
+        .requirement-item:last-child {
+            margin-bottom: 0;
+        }
+        
+        .requirement-icon {
+            color: #007bff;
+            margin-right: 12px;
+            font-size: 16px;
+            width: 20px;
+            text-align: center;
+            flex-shrink: 0;
+            margin-top: 2px;
+        }
+        
+        .requirement-text {
+            color: #495057;
+            font-size: 14px;
+            font-weight: 500;
+            line-height: 1.4;
+            flex: 1;
+            word-wrap: break-word;
+            overflow-wrap: break-word;
+        }
+        
+        .checklist-actions {
+            text-align: center;
+            margin-top: 30px;
+            padding: 20px;
+            background: rgba(0, 123, 255, 0.05);
+            border-radius: 12px;
+            border: 1px solid rgba(0, 123, 255, 0.1);
+        }
+        
+        .checklist-info {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #007bff;
+            font-size: 16px;
+            font-weight: 500;
+        }
+        
+        .checklist-info i {
+            margin-right: 10px;
+            font-size: 18px;
+        }
+    </style>
+</head>
+<body class="dashboard-body">
+    <!-- Navigation -->
+    <nav class="dashboard-nav dashboard-text">
+        <div class="nav-container">
+            <div class="nav-logo">
+                <img src="tonio-senora logo/tonio-senora logo.png" alt="Tonio & Senora" class="logo-image">
+            </div>
+            <div class="nav-user">
+                <button class="theme-toggle" id="themeToggle" onclick="toggleTheme()" title="Toggle Dark Mode">
+                    <i class="fas fa-moon" id="themeIcon"></i>
+                </button>
+                <span id="userName">Welcome, Client</span>
+                <button class="btn btn-outline btn-small" onclick="logout()">Logout</button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Sidebar -->
+    <div class="dashboard-layout">
+        <aside class="sidebar dashboard-text">
+            <ul class="sidebar-menu">
+                <li><a href="#dashboard" class="sidebar-link active" onclick="showSection('dashboard')">
+                    <i class="fas fa-tachometer-alt"></i> Dashboard
+                </a></li>
+                <li><a href="#documents" class="sidebar-link" onclick="showSection('documents')">
+                    <i class="fas fa-file-upload"></i> Documents
+                </a></li>
+                <li><a href="#progress" class="sidebar-link" onclick="showSection('progress')">
+                    <i class="fas fa-chart-line"></i> Progress
+                </a></li>
+                <li><a href="#messages" class="sidebar-link" onclick="showSection('messages')">
+                    <i class="fas fa-envelope"></i> Messages
+                </a></li>
+            </ul>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content dashboard-text">
+            <!-- Dashboard Section -->
+            <section id="dashboard" class="content-section active">
+                <div class="section-header">
+                    <h1>Dashboard</h1>
+                    <p>Welcome to your migration journey dashboard</p>
+                </div>
+                
+                <div class="dashboard-cards">
+                    <div class="card glass-card">
+                        <div class="card-header">
+                            <h3>Application Status</h3>
+                            <span class="status-badge-animated status-in-progress">In Progress</span>
+                        </div>
+                        <div class="card-content">
+                            <p>Your application is currently being reviewed by our legal team.</p>
+                            <div class="progress-bar-container">
+                                <div class="progress-bar-animated" style="width: 0%"></div>
+                            </div>
+                            <span class="progress-text">0% Complete</span>
+                        </div>
+                    </div>
+
+                    <div class="card glass-card">
+                        <div class="card-header">
+                            <h3>Next Steps</h3>
+                        </div>
+                        <div class="card-content">
+                            <div class="empty-state">
+                                <i class="fas fa-list-check" style="font-size: 2rem; color: #D4AF37; margin-bottom: 1rem; display: block;"></i>
+                                <h4>No Next Steps Available</h4>
+                                <p>Next steps will appear here once you begin your application process.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="card glass-card">
+                        <div class="card-header">
+                            <h3>Recent Activity</h3>
+                        </div>
+                        <div class="card-content">
+                            <div class="empty-state">
+                                <i class="fas fa-history" style="font-size: 2rem; color: #D4AF37; margin-bottom: 1rem; display: block;"></i>
+                                <h4>No Recent Activity</h4>
+                                <p>Your recent activity will appear here as you interact with the system.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="card glass-card">
+                        <div class="card-header">
+                            <h3>Occupation List</h3>
+                        </div>
+                        <div class="card-content">
+                            <p>Browse available occupations and their requirements for your chosen assessment authority.</p>
+                            <button class="btn btn-primary" onclick="showOccupationListModal()">
+                                <i class="fas fa-briefcase"></i> Check Occupation List
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Occupation List Section -->
+            <section id="occupation-list" class="content-section">
+                <div class="section-header">
+                    <h1>Occupation List</h1>
+                    <p>Browse available occupations and their requirements</p>
+                </div>
+
+                <div class="occupation-list-container">
+                    <div class="occupation-filters">
+                        <div class="filter-group">
+                            <select id="occupationAuthorityFilter" onchange="filterOccupations()">
+                                <option value="">All Assessment Authorities</option>
+                                <option value="acs">ACS (Australian Computer Society)</option>
+                                <option value="vetassess">VETASSESS</option>
+                                <option value="engineers-australia">Engineers Australia</option>
+                                <option value="ahpra">AHPRA</option>
+                                <option value="osap-tra">OSAP TRA</option>
+                                <option value="msa-tra">MSA TRA</option>
+                            </select>
+                            <input type="text" id="occupationSearch" placeholder="Search occupations..." onkeyup="filterOccupations()">
+                        </div>
+                    </div>
+
+                    <div class="occupation-grid" id="occupationGrid">
+                        <!-- Dynamic content will be loaded here -->
+                    </div>
+                </div>
+            </section>
+
+            <!-- Documents Section -->
+            <section id="documents" class="content-section">
+                <div class="section-header">
+                    <h1>Document Upload</h1>
+                    <p>Upload your required documents based on your visa pathway</p>
+                </div>
+
+                <!-- Conditional Document Access -->
+                <div id="documentAccessContainer">
+                    <!-- Three Compulsory Selection Fields -->
+                    <div class="compulsory-selection-container">
+                   <div class="selection-header">
+                       <h2>Application Details</h2>
+                       <p>Please complete all three selections to proceed with document upload</p>
+                   </div>
+            
+            <div class="selection-fields">
+                <!-- Step 1: Country Selection -->
+                <div class="selection-step active" id="country-selection">
+                    <div class="step-header">
+                        <div class="step-number">1</div>
+                        <h3>Select Your Target Country</h3>
+                        <p>Choose the country you wish to migrate to</p>
+                    </div>
+                    <div class="selection-field">
+                        <select id="countrySelect" onchange="handleCountrySelection()" required>
+                            <option value="">Select Country</option>
+                                <option value="australia">Australia</option>
+                                <option value="canada">Canada</option>
+                            <option value="new-zealand">New Zealand</option>
+                            <option value="united-kingdom">United Kingdom</option>
+                            <option value="united-states">United States</option>
+                        </select>
+                        <div class="field-status" id="country-status"></div>
+                        
+                    </div>
+                </div>
+
+                <!-- Step 2: Visa Type Selection -->
+                <div class="selection-step" id="visa-selection">
+                    <div class="step-header">
+                        <div class="step-number">2</div>
+                        <h3>Select Visa Type</h3>
+                        <p>Choose the type of visa you're applying for</p>
+                    </div>
+                    <div class="selection-field">
+                        <select id="visaTypeSelect" onchange="handleVisaTypeSelection()" required>
+                            <option value="">Select Visa Type</option>
+                        </select>
+                        <div class="field-status" id="visa-status"></div>
+                    </div>
+                </div>
+
+                <!-- Step 3: Skill Assessment Authority Selection -->
+                <div class="selection-step" id="authority-selection" style="display: none;">
+                    <div class="step-header">
+                        <div class="step-number">3</div>
+                        <h3>Select Skill Assessment Authority</h3>
+                        <p>Choose the authority that will assess your skills</p>
+                    </div>
+                    <div class="selection-field">
+                        <select id="authoritySelect" onchange="handleAuthoritySelection()" disabled required>
+                            <option value="">Select Assessment Authority</option>
+                            <option value="acs">ACS (Australian Computer Society)</option>
+                            <option value="vetassess">VETASSESS</option>
+                            <option value="engineers-australia">Engineers Australia</option>
+                            <option value="anmac">ANMAC (Australian Nursing & Midwifery Accreditation Council)</option>
+                            <option value="ahpra">AHPRA (Australian Health Practitioner Regulation Agency)</option>
+                            <option value="trades-recognition">Trades Recognition Australia</option>
+                            <option value="skills-australia">Skills Australia</option>
+                        </select>
+                        <div class="field-status" id="authority-status"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Document Checklist Container (Shown when authority is selected) -->
+            <div id="documentChecklistContainer" style="display: none; margin: 20px 0; padding: 20px; background: #f8f9fa; border: 1px solid #dee2e6; border-radius: 8px;">
+                <!-- Authority-specific document checklist will be displayed here -->
+            </div>
+
+        </div>
+
+
+
+                </div>
+            </section>
+
+    
+
+    <!-- Progress Section -->
+    <section id="progress" class="content-section">
+        <div class="section-header">
+            <h1>Application Progress</h1>
+            <p>Track your migration application progress</p>
+        </div>
+        
+        <div class="progress-container glass-panel" style="padding: 30px; margin: 20px 0;">
+            <div class="progress-overview" style="margin-bottom: 40px;">
+                <h3 style="margin-bottom: 20px;">Overall Progress</h3>
+                <div class="progress-bar-container">
+                    <div class="progress-bar-animated" style="width: 0%" id="overallProgressBar"></div>
+                </div>
+                <span class="progress-text" style="display: block; margin-top: 10px; font-weight: 600;">0% Complete</span>
+            </div>
+            
+            <div class="progress-timeline">
+                <div class="progress-timeline-fill" id="timelineFill" style="width: 0%"></div>
+                
+                <div class="progress-step completed">
+                    <div class="progress-step-chip">
+                        <i class="fas fa-check"></i>
+                    </div>
+                    <div class="progress-step-label">Registration</div>
+                </div>
+                
+                <div class="progress-step" id="uploadStep">
+                    <div class="progress-step-chip">
+                        <i class="fas fa-file-upload"></i>
+                    </div>
+                    <div class="progress-step-label">Document Upload</div>
+                </div>
+                
+                <div class="progress-step" id="reviewStep">
+                    <div class="progress-step-chip">
+                        <i class="fas fa-clipboard-check"></i>
+                    </div>
+                    <div class="progress-step-label">Review</div>
+                </div>
+
+                <div class="progress-step" id="submitStep">
+                    <div class="progress-step-chip">
+                        <i class="fas fa-paper-plane"></i>
+                    </div>
+                    <div class="progress-step-label">Submission</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Messages Section -->
+    <section id="messages" class="content-section">
+        <div class="section-header">
+            <h1>Messages</h1>
+            <p>Communicate with your migration consultant</p>
+        </div>
+        
+        <div class="messages-container">
+            <div class="messages-list glass-panel">
+                <div class="messages-list-header">
+                    <div class="consultant-info">
+                        <div class="consultant-avatar">
+                            <i class="fas fa-user-tie"></i>
+                        </div>
+                        <div class="consultant-details">
+                            <h3>Migration Consultant</h3>
+                            <span class="consultant-status online">Online</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="messages-thread">
+                    <div class="message-item received">
+                        <div class="message-avatar">
+                            <span>MC</span>
+                        </div>
+                        <div class="message-content-wrapper">
+                            <div class="message-content">
+                                <div class="message-header">
+                                    <span class="sender-name">Migration Consultant</span>
+                                    <span class="message-time">2 hours ago</span>
+                                </div>
+                                <div class="message-text">
+                                    <p>Welcome to your migration portal! Please upload your documents to get started.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="message-compose glass-panel">
+                <div class="compose-header">
+                    <h3><i class="fas fa-paper-plane"></i> Send Message</h3>
+                    <p class="compose-subtitle">Type your message below and we'll get back to you soon</p>
+                </div>
+                <div class="compose-form">
+                    <div class="textarea-wrapper">
+                        <textarea id="messageInput" placeholder="Type your message here..." rows="5"></textarea>
+                        <div class="char-counter">
+                            <span id="charCount">0</span> / 1000
+                        </div>
+                    </div>
+                    <div class="compose-actions">
+                        <button type="button" class="btn btn-outline">
+                            <i class="fas fa-paperclip"></i> Attach File
+                        </button>
+                        <button type="button" class="btn btn-primary" id="sendMessageBtn">
+                            <i class="fas fa-paper-plane"></i> Send Message
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Occupation List Modal -->
+    <div id="occupationListModal" class="modal" style="display: none;">
+        <div class="modal-content occupation-modal">
+            <div class="modal-header">
+                <h2><i class="fas fa-briefcase"></i> Occupation List</h2>
+                <span class="close" onclick="closeOccupationListModal()">&times;</span>
+            </div>
+            <div class="modal-body">
+                <div class="occupation-controls">
+                    <div class="search-section">
+                        <div class="search-input-container">
+                            <i class="fas fa-search"></i>
+                            <input type="text" id="occupationSearchInput" placeholder="Search occupations by title, ANZSCO code, or keywords..." onkeyup="filterOccupations()" autocomplete="off">
+                            <button class="clear-search" id="clearSearchBtn" onclick="clearSearch()" style="display: none;">
+                                <i class="fas fa-times"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="filter-section">
+                        <div class="filter-group">
+                            <label for="authorityFilter">Filter by Assessment Authority:</label>
+                            <select id="authorityFilter" onchange="filterOccupations()">
+                                <option value="">All Assessment Authorities</option>
+                                <option value="acs">ACS (Australian Computer Society)</option>
+                                <option value="vetassess">VETASSESS</option>
+                                <option value="engineers-australia">Engineers Australia</option>
+                                <option value="ahpra">AHPRA</option>
+                                <option value="osap-tra">OSAP TRA</option>
+                                <option value="msa-tra">MSA TRA</option>
+                            </select>
+                        </div>
+                        <div class="filter-group">
+                            <label for="demandFilter">Filter by Demand Status:</label>
+                            <select id="demandFilter" onchange="filterOccupations()">
+                                <option value="">All Demand Levels</option>
+                                <option value="high">High Demand</option>
+                                <option value="medium">Medium Demand</option>
+                                <option value="low">Low Demand</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="occupation-stats">
+                    <div class="stat-item">
+                        <span class="stat-label">Total Occupations:</span>
+                        <span class="stat-value" id="totalOccupations">0</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-label">Filtered Results:</span>
+                        <span class="stat-value" id="filteredOccupations">0</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-label">Selected Authority:</span>
+                        <span class="stat-value" id="selectedAuthorityName">All</span>
+                    </div>
+                </div>
+                
+                <div class="occupation-list-container">
+                    <div class="occupation-list" id="occupationList">
+                    <!-- Dynamic content will be loaded here -->
+                    </div>
+                    <div class="loading-indicator" id="occupationLoading" style="display: none;">
+                        <i class="fas fa-spinner fa-spin"></i>
+                        <span>Loading occupations...</span>
+                    </div>
+                    <div class="no-results" id="noResults" style="display: none;">
+                        <i class="fas fa-search"></i>
+                        <h3>No occupations found</h3>
+                        <p>Try adjusting your search criteria or filters</p>
+                    </div>
+                </div>
+
+                <div class="pagination-controls" id="paginationControls" style="display: none;">
+                    <button class="btn btn-outline" id="prevPageBtn" onclick="previousPage()" disabled>
+                        <i class="fas fa-chevron-left"></i> Previous
+                    </button>
+                    <span class="page-info" id="pageInfo">Page 1 of 1</span>
+                    <button class="btn btn-outline" id="nextPageBtn" onclick="nextPage()" disabled>
+                        Next <i class="fas fa-chevron-right"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+    <script src="client-dashboard.js?v=2025010101"></script>
+    <script>
+    (function(){
+        // Fallback: ensure sidebar navigation always works
+        function safeShowSection(id){
+            try { if (window.showSection) return window.showSection(id); } catch(_){}
+            var sections = document.querySelectorAll('.content-section');
+            for (var i=0;i<sections.length;i++){ sections[i].classList.remove('active'); sections[i].style.display='none'; }
+            var target = document.getElementById(id);
+            if (target){ target.classList.add('active'); target.style.display='block'; }
+            try { history.replaceState(null, '', '#'+id); } catch(_) { location.hash = '#'+id; }
+            window.scrollTo(0,0);
+            try { document.querySelectorAll('.modal,.update-notification,.pwa-splash,.pwa-install-prompt,.offline-indicator').forEach(function(el){ el.style.display='none'; el.parentNode && el.parentNode.removeChild(el); }); } catch(_){}
+        }
+        var sidebar = document.querySelector('.sidebar-menu');
+        if (sidebar){
+            sidebar.addEventListener('click', function(e){
+                var a = e.target.closest && e.target.closest('.sidebar-link');
+                if (a){
+                    e.preventDefault();
+                    var href = a.getAttribute('href')||'';
+                    if (href.indexOf('#')===0){ safeShowSection(href.slice(1)); }
+                }
+            }, true);
+        }
+        // Normalize visibility on load
+        document.querySelectorAll('.content-section').forEach(function(sec){
+            sec.style.display = sec.classList.contains('active') ? 'block' : 'none';
+        });
+        // Open hash if present
+        if (location.hash && location.hash.length>1){ var id = location.hash.substring(1); if (document.getElementById(id)) safeShowSection(id); }
+    })();
+    </script>
+    
+    
+    
+    <!-- VISA-SPECIFIC UPLOAD INTERFACE STYLES -->
+    <style>
+        .visa-upload-container {
+            background: #ffffff;
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+            padding: 30px;
+            margin: 20px 0;
+        }
+        
+        .upload-header {
+            text-align: center;
+            margin-bottom: 40px;
+            padding-bottom: 20px;
+            border-bottom: 2px solid #f0f0f0;
+        }
+        
+        .upload-header h2 {
+            color: #2c3e50;
+            font-size: 28px;
+            margin-bottom: 10px;
+            font-weight: 600;
+        }
+        
+        .upload-header p {
+            color: #7f8c8d;
+            font-size: 16px;
+            margin-bottom: 20px;
+        }
+        
+        .progress-indicator {
+            background: #f8f9fa;
+            border-radius: 25px;
+            padding: 8px 20px;
+            display: inline-block;
+            margin-top: 15px;
+        }
+        
+        .progress-bar {
+            background: linear-gradient(90deg, #007bff, #0056b3);
+            height: 8px;
+            border-radius: 4px;
+            width: 0%;
+            transition: width 0.3s ease;
+            margin-bottom: 8px;
+        }
+        
+        .progress-text {
+            font-weight: 600;
+            color: #007bff;
+            font-size: 14px;
+        }
+        
+        .document-categories {
+            display: grid;
+            gap: 30px;
+        }
+        
+        .document-category {
+            background: #f8f9fa;
+            border-radius: 12px;
+            padding: 25px;
+            border: 1px solid #e9ecef;
+            transition: all 0.3s ease;
+        }
+        
+        .document-category:hover {
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            transform: translateY(-2px);
+        }
+        
+        .category-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 25px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid #dee2e6;
+        }
+        
+        .category-header i {
+            font-size: 24px;
+            color: #007bff;
+            margin-right: 15px;
+            width: 30px;
+            text-align: center;
+        }
+        
+        .category-header h3 {
+            color: #2c3e50;
+            font-size: 20px;
+            font-weight: 600;
+            margin: 0;
+            flex: 1;
+        }
+        
+        .category-status {
+            background: #007bff;
+            color: white;
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+        
+        .upload-fields {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+        }
+        
+        .upload-field {
+            background: white;
+            border-radius: 8px;
+            padding: 20px;
+            border: 2px solid #e9ecef;
+            transition: all 0.3s ease;
+        }
+        
+        .upload-field:hover {
+            border-color: #007bff;
+            box-shadow: 0 2px 10px rgba(0, 123, 255, 0.1);
+        }
+        
+        .upload-field label {
+            display: block;
+            font-weight: 600;
+            color: #2c3e50;
+            margin-bottom: 15px;
+            font-size: 14px;
+        }
+        
+        .file-upload-zone {
+            border: 2px dashed #007bff;
+            border-radius: 8px;
+            padding: 30px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            background: linear-gradient(135deg, #f8f9ff 0%, #e3f2fd 100%);
+        }
+        
+        .file-upload-zone:hover {
+            border-color: #0056b3;
+            background: linear-gradient(135deg, #e3f2fd 0%, #bbdefb 100%);
+            transform: translateY(-2px);
+        }
+        
+        .file-upload-zone i {
+            font-size: 32px;
+            color: #007bff;
+            margin-bottom: 10px;
+            display: block;
+        }
+        
+        .file-upload-zone p {
+            color: #6c757d;
+            font-size: 14px;
+            margin: 0;
+        }
+        
+        .uploaded-files {
+            margin-top: 15px;
+            min-height: 20px;
+        }
+        
+        .file-item {
+            background: #f8f9fa;
+            border: 1px solid #dee2e6;
+            border-radius: 6px;
+            padding: 10px 15px;
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            transition: all 0.3s ease;
+        }
+        
+        .file-item:hover {
+            background: #e9ecef;
+            transform: translateX(5px);
+        }
+        
+        .file-info {
+            display: flex;
+            align-items: center;
+            flex: 1;
+        }
+        
+        .file-icon {
+            color: #007bff;
+            margin-right: 10px;
+            font-size: 16px;
+        }
+        
+        .file-name {
+            font-weight: 500;
+            color: #2c3e50;
+            font-size: 14px;
+        }
+        
+        .file-size {
+            color: #6c757d;
+            font-size: 12px;
+            margin-left: 10px;
+        }
+        
+        .file-remove {
+            background: #dc3545;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            padding: 4px 8px;
+            font-size: 12px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .file-remove:hover {
+            background: #c82333;
+            transform: scale(1.1);
+        }
+        
+        .upload-actions {
+            text-align: center;
+            margin-top: 40px;
+            padding-top: 30px;
+            border-top: 2px solid #f0f0f0;
+        }
+        
+        .upload-actions .btn {
+            margin: 0 10px;
+            padding: 12px 30px;
+            font-size: 16px;
+            font-weight: 600;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+        }
+        
+        .upload-actions .btn-primary {
+            background: linear-gradient(135deg, #007bff, #0056b3);
+            border: none;
+            box-shadow: 0 4px 15px rgba(0, 123, 255, 0.3);
+        }
+        
+        .upload-actions .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(0, 123, 255, 0.4);
+        }
+        
+        .upload-actions .btn-secondary {
+            background: #6c757d;
+            border: none;
+            color: white;
+        }
+        
+        .upload-actions .btn-secondary:hover {
+            background: #5a6268;
+            transform: translateY(-2px);
+        }
+        
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .visa-upload-container {
+                padding: 20px;
+                margin: 10px 0;
+            }
+            
+            .upload-fields {
+                grid-template-columns: 1fr;
+            }
+            
+            .category-header {
+                flex-direction: column;
+                text-align: center;
+            }
+            
+            .category-header i {
+                margin-bottom: 10px;
+            }
+        }
+    </style>
+</body>
+</html>
