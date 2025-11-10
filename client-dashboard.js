@@ -728,14 +728,8 @@ function initializeClientDashboard() {
         console.log('✅ Visa types population check completed');
     }, 100);
     
-    // Verify AI Agent is ready
-    const apiKey = localStorage.getItem('gemini_api_key') || localStorage.getItem('openai_api_key');
-    if (apiKey) {
-        AI_AGENT_CONFIG.apiKey = apiKey;
-        console.log('✅ AI Agent: Ready with API key');
-    } else {
-        console.warn('⚠️ AI Agent: No API key configured. Clients will see admin response indicator.');
-    }
+    // Verify AI Agent is ready (Built-in AI - no API key needed)
+    console.log('✅ AI Agent: Built-in chatbot ready - no API key required');
     
     console.log('✅ Client dashboard initialized');
 }
