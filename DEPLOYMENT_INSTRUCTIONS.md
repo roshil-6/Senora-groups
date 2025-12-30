@@ -121,3 +121,9 @@ For issues:
 2. Check browser console
 3. Verify all files are committed to GitHub
 
+
+
+
+
+
+

@@ -1,4 +1,4 @@
-// Main JavaScript file for Tonio & Senora Migration Law Firm Application
+// Main JavaScript file for Gubicoo Migration Navigator Application
 
 // Theme Management
 let currentTheme = localStorage.getItem('theme') || 'light';
@@ -705,7 +705,7 @@ function loadFromStorage(key) {
 }
 
 // Export functions for use in other files
-window.TonioSenora = {
+window.Gubicoo = {
     showNotification,
     validateForm,
     isValidEmail,

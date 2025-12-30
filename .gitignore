@@ -53,6 +53,7 @@ minimal-dashboard.html
 
 # Project-specific ignores
 configure-ai-key.js
+SETUP_AI_AGENT.md
 
 # Node modules (if you add any)
 node_modules/

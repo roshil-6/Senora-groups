@@ -1,10 +1,10 @@
-// Tonio & Senora Migration Law Firm - Service Worker
-// Version: 1.0.0
+// Gubicoo Migration Navigator - Service Worker
+// Version: 1.0.2
 // Purpose: Enable offline functionality and caching
 
-const CACHE_NAME = 'tonio-senora-v1.0.0';
-const STATIC_CACHE_NAME = 'tonio-senora-static-v1.0.0';
-const DYNAMIC_CACHE_NAME = 'tonio-senora-dynamic-v1.0.0';
+const CACHE_NAME = 'gubicoo-migration-navigator-v1.0.8';
+const STATIC_CACHE_NAME = 'gubicoo-migration-navigator-static-v1.0.8';
+const DYNAMIC_CACHE_NAME = 'gubicoo-migration-navigator-dynamic-v1.0.8';
 
 // Files to cache for offline functionality
 const STATIC_FILES = [
@@ -205,7 +205,7 @@ self.addEventListener('push', (event) => {
   console.log('[SW] Push notification received');
   
   const options = {
-    body: event.data ? event.data.text() : 'New notification from Tonio & Senora',
+    body: event.data ? event.data.text() : 'New notification from Gubicoo Migration Navigator',
     icon: './icons/icon-192x192.png',
     badge: './icons/icon-192x192.png',
     vibrate: [200, 100, 200],
@@ -228,7 +228,7 @@ self.addEventListener('push', (event) => {
   };
   
   event.waitUntil(
-    self.registration.showNotification('Tonio & Senora Migration', options)
+    self.registration.showNotification('Gubicoo Migration Navigator', options)
   );
 });
 

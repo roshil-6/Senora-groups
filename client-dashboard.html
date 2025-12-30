@@ -3,20 +3,20 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes">
-    <meta name="description" content="Client portal for Tonio & Senora Migration Law Firm. Manage your visa application documents and track your progress.">
-    <title>Client Portal - Tonio & Senora Migration Law Firm</title>
+    <meta name="description" content="Client portal for Gubicoo Migration Navigator. Manage your visa application documents and track your progress.">
+    <title>Client Portal - Gubicoo Migration Navigator</title>
     
     <!-- PWA Meta Tags -->
-    <meta name="application-name" content="TonioSenora">
+    <meta name="application-name" content="Gubicoo Migration Navigator">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <meta name="apple-mobile-web-app-title" content="TonioSenora">
+    <meta name="apple-mobile-web-app-title" content="Gubicoo Migration Navigator">
     <meta name="format-detection" content="telephone=no">
     <meta name="mobile-web-app-capable" content="yes">
     <meta name="msapplication-config" content="/browserconfig.xml">
-    <meta name="msapplication-TileColor" content="#4A0E4E">
+    <meta name="msapplication-TileColor" content="#3B82F6">
     <meta name="msapplication-tap-highlight" content="no">
-    <meta name="theme-color" content="#4A0E4E">
+    <meta name="theme-color" content="#3B82F6">
     
     <!-- PWA Manifest -->
     <link rel="manifest" href="./manifest.json">
@@ -613,14 +613,19 @@
     <nav class="dashboard-nav dashboard-text">
         <div class="nav-container">
             <div class="nav-logo">
-                <img src="tonio-senora logo/tonio-senora logo.png" alt="Tonio & Senora" class="logo-image">
+                <img src="logo-owl.png" alt="Gubicoo Logo" class="logo-image header-owl-logo" onerror="this.src='logo-owl.png'; this.onerror=null;">
+                <div class="nav-logo-text">
+                    <h1 class="app-title">Gubicoo Migration Navigator</h1>
+                    <p class="app-subtitle">Your Trusted Immigration Guidance Platform</p>
+                </div>
             </div>
             <div class="nav-user">
                 <button class="theme-toggle" id="themeToggle" onclick="toggleTheme()" title="Toggle Dark Mode">
                     <i class="fas fa-moon" id="themeIcon"></i>
                 </button>
-                <span id="userName">Welcome, Client</span>
-                <button class="btn btn-outline btn-small" onclick="logout()">Logout</button>
+                <button class="btn btn-outline btn-small" onclick="goBack()">
+                    <i class="fas fa-arrow-left"></i> Back
+                </button>
             </div>
         </div>
     </nav>
@@ -629,81 +634,1870 @@
     <div class="dashboard-layout">
         <aside class="sidebar dashboard-text">
             <ul class="sidebar-menu">
-                <li><a href="#dashboard" class="sidebar-link active" onclick="showSection('dashboard')">
-                    <i class="fas fa-tachometer-alt"></i> Dashboard
+                <li><a href="#home" class="sidebar-link" onclick="showSection('home')">
+                    <i class="fas fa-home"></i> Home
                 </a></li>
-                <li><a href="#documents" class="sidebar-link" onclick="showSection('documents')">
-                    <i class="fas fa-file-upload"></i> Documents
+                <li><a href="#eligibility" class="sidebar-link" onclick="showSection('eligibility')">
+                    <i class="fas fa-check-circle"></i> Eligibility
                 </a></li>
-                <li><a href="#progress" class="sidebar-link" onclick="showSection('progress')">
-                    <i class="fas fa-chart-line"></i> Progress
+                <li><a href="#countries" class="sidebar-link" onclick="showSection('countries')">
+                    <i class="fas fa-globe"></i> Countries
                 </a></li>
-                <li><a href="#messages" class="sidebar-link" onclick="showSection('messages')">
-                    <i class="fas fa-envelope"></i> Messages
+                <li><a href="#visa-pathways" class="sidebar-link" onclick="showSection('visa-pathways')">
+                    <i class="fas fa-route"></i> Visa Pathways
+                </a></li>
+                <li><a href="#study-abroad" class="sidebar-link" onclick="showSection('study-abroad')">
+                    <i class="fas fa-graduation-cap"></i> Study Abroad
+                </a></li>
+                <li><a href="#work-settle" class="sidebar-link" onclick="showSection('work-settle')">
+                    <i class="fas fa-briefcase"></i> Work & Settle
+                </a></li>
+                <li><a href="#healthcare" class="sidebar-link" onclick="showSection('healthcare')">
+                    <i class="fas fa-user-nurse"></i> Healthcare & Nurses
+                </a></li>
+                <li><a href="#calculators" class="sidebar-link" onclick="showSection('calculators')">
+                    <i class="fas fa-calculator"></i> Points & Calculators
+                </a></li>
+                <li><a href="#visitor-visas" class="sidebar-link" onclick="showSection('visitor-visas')">
+                    <i class="fas fa-plane"></i> Visitor Visas
+                </a></li>
+                <li><a href="#news" class="sidebar-link" onclick="showSection('news')">
+                    <i class="fas fa-newspaper"></i> News & Updates
+                </a></li>
+                <li><a href="#documents" class="sidebar-link active" onclick="showSection('documents')">
+                    <i class="fas fa-clipboard-list"></i> Documents & Preparation
+                </a></li>
+                <li><a href="#mistakes" class="sidebar-link" onclick="showSection('mistakes')">
+                    <i class="fas fa-exclamation-triangle"></i> Mistakes & Rejections
+                </a></li>
+                <li><a href="#faqs" class="sidebar-link" onclick="showSection('faqs')">
+                    <i class="fas fa-question-circle"></i> FAQs
+                </a></li>
+                <li><a href="#laws" class="sidebar-link" onclick="showSection('laws')">
+                    <i class="fas fa-balance-scale"></i> About Migration Laws
                 </a></li>
             </ul>
         </aside>
 
         <!-- Main Content -->
         <main class="main-content dashboard-text">
-            <!-- Dashboard Section -->
-            <section id="dashboard" class="content-section active">
-                <div class="section-header">
-                    <h1>Dashboard</h1>
-                    <p>Welcome to your migration journey dashboard</p>
+            <!-- Home Section -->
+            <section id="home" class="content-section">
+                <div class="home-hero">
+                    <div class="home-hero-content">
+                        <div class="home-logo-section">
+                            <img src="logo-owl.png" alt="Gubicoo Logo" class="home-logo" onerror="this.style.display='none';">
+                            <h1 class="home-main-headline"><i class="fas fa-home"></i> Welcome to Gubicoo Migration Navigator</h1>
+                        </div>
+                        <p class="home-tagline">Clear, step-by-step guidance for people planning to migrate abroad.</p>
+                        <p class="home-subtitle">Your comprehensive resource for immigration information, eligibility checks, visa pathways, and migration opportunities worldwide.</p>
+                    </div>
                 </div>
-                
-                <div class="dashboard-cards">
-                    <div class="card glass-card">
-                        <div class="card-header">
-                            <h3>Application Status</h3>
-                            <span class="status-badge-animated status-in-progress">In Progress</span>
-                        </div>
-                        <div class="card-content">
-                            <p>Your application is currently being reviewed by our legal team.</p>
-                            <div class="progress-bar-container">
-                                <div class="progress-bar-animated" style="width: 0%"></div>
+
+                <div class="home-quick-nav">
+                    <h2><i class="fas fa-compass"></i> Quick Navigation</h2>
+                    <div class="quick-nav-grid">
+                        <div class="quick-nav-card" onclick="showSection('eligibility')">
+                            <div class="quick-nav-icon eligibility">
+                                <i class="fas fa-check-circle"></i>
                             </div>
-                            <span class="progress-text">0% Complete</span>
+                            <h3>Eligibility Checker</h3>
+                            <p>Find out which countries and visa pathways you're eligible for</p>
+                            <span class="quick-nav-arrow"><i class="fas fa-arrow-right"></i></span>
+                        </div>
+                        <div class="quick-nav-card" onclick="showSection('countries')">
+                            <div class="quick-nav-icon countries">
+                                <i class="fas fa-globe"></i>
+                            </div>
+                            <h3>Explore Countries</h3>
+                            <p>Discover migration opportunities in 27+ countries worldwide</p>
+                            <span class="quick-nav-arrow"><i class="fas fa-arrow-right"></i></span>
+                        </div>
+                        <div class="quick-nav-card" onclick="showSection('visa-pathways')">
+                            <div class="quick-nav-icon pathways">
+                                <i class="fas fa-route"></i>
+                            </div>
+                            <h3>Visa Pathways</h3>
+                            <p>Learn about program-based migration pathways</p>
+                            <span class="quick-nav-arrow"><i class="fas fa-arrow-right"></i></span>
+                        </div>
+                        <div class="quick-nav-card" onclick="showSection('calculators')">
+                            <div class="quick-nav-icon calculators">
+                                <i class="fas fa-calculator"></i>
+                            </div>
+                            <h3>Points Calculators</h3>
+                            <p>Calculate your immigration scores for Canada, Australia, and more</p>
+                            <span class="quick-nav-arrow"><i class="fas fa-arrow-right"></i></span>
+                        </div>
+                        <div class="quick-nav-card" onclick="showSection('study-abroad')">
+                            <div class="quick-nav-icon study">
+                                <i class="fas fa-graduation-cap"></i>
+                            </div>
+                            <h3>Study Abroad</h3>
+                            <p>Explore study opportunities and visa requirements</p>
+                            <span class="quick-nav-arrow"><i class="fas fa-arrow-right"></i></span>
+                        </div>
+                        <div class="quick-nav-card" onclick="showSection('healthcare')">
+                            <div class="quick-nav-icon healthcare">
+                                <i class="fas fa-user-nurse"></i>
+                            </div>
+                            <h3>Healthcare & Nurses</h3>
+                            <p>Nurse migration and healthcare opportunities</p>
+                            <span class="quick-nav-arrow"><i class="fas fa-arrow-right"></i></span>
+                        </div>
+                        <div class="quick-nav-card" onclick="showSection('work-settle')">
+                            <div class="quick-nav-icon work">
+                                <i class="fas fa-briefcase"></i>
+                            </div>
+                            <h3>Work & Settle</h3>
+                            <p>Job-focused migration opportunities</p>
+                            <span class="quick-nav-arrow"><i class="fas fa-arrow-right"></i></span>
+                        </div>
+                        <div class="quick-nav-card" onclick="showSection('documents')">
+                            <div class="quick-nav-icon documents">
+                                <i class="fas fa-clipboard-list"></i>
+                            </div>
+                            <h3>Documents & Preparation</h3>
+                            <p>View required documents checklist for your visa pathway</p>
+                            <span class="quick-nav-arrow"><i class="fas fa-arrow-right"></i></span>
                         </div>
                     </div>
+                </div>
 
-                    <div class="card glass-card">
-                        <div class="card-header">
-                            <h3>Next Steps</h3>
+                <div class="home-features">
+                    <h2><i class="fas fa-star"></i> Why Choose Gubicoo?</h2>
+                    <div class="features-grid">
+                        <div class="feature-card">
+                            <i class="fas fa-check-double"></i>
+                            <h3>Comprehensive Information</h3>
+                            <p>Detailed information about 27+ countries, visa pathways, and migration programs</p>
                         </div>
-                        <div class="card-content">
-                            <div class="empty-state">
-                                <i class="fas fa-list-check" style="font-size: 2rem; color: #D4AF37; margin-bottom: 1rem; display: block;"></i>
-                                <h4>No Next Steps Available</h4>
-                                <p>Next steps will appear here once you begin your application process.</p>
-                            </div>
+                        <div class="feature-card">
+                            <i class="fas fa-calculator"></i>
+                            <h3>Interactive Calculators</h3>
+                            <p>Calculate your points for Canada FSW, CRS, Australia, and Germany programs</p>
+                        </div>
+                        <div class="feature-card">
+                            <i class="fas fa-user-check"></i>
+                            <h3>Eligibility Checker</h3>
+                            <p>Find out which countries and programs you're eligible for right now</p>
+                        </div>
+                        <div class="feature-card">
+                            <i class="fas fa-newspaper"></i>
+                            <h3>Latest News & Updates</h3>
+                            <p>Stay updated with the latest immigration news and policy changes</p>
+                        </div>
+                        <div class="feature-card">
+                            <i class="fas fa-file-alt"></i>
+                            <h3>Document Checklists</h3>
+                            <p>Get detailed document requirements for your specific visa pathway</p>
+                        </div>
+                        <div class="feature-card">
+                            <i class="fas fa-globe-americas"></i>
+                            <h3>Global Coverage</h3>
+                            <p>Information about migration opportunities across multiple continents</p>
                         </div>
                     </div>
+                </div>
 
-                    <div class="card glass-card">
-                        <div class="card-header">
-                            <h3>Recent Activity</h3>
+                <div class="home-stats">
+                    <h2><i class="fas fa-chart-bar"></i> Platform Statistics</h2>
+                    <div class="stats-grid">
+                        <div class="stat-card">
+                            <div class="stat-number">27+</div>
+                            <div class="stat-label">Countries Covered</div>
                         </div>
-                        <div class="card-content">
-                            <div class="empty-state">
-                                <i class="fas fa-history" style="font-size: 2rem; color: #D4AF37; margin-bottom: 1rem; display: block;"></i>
-                                <h4>No Recent Activity</h4>
-                                <p>Your recent activity will appear here as you interact with the system.</p>
-                            </div>
+                        <div class="stat-card">
+                            <div class="stat-number">50+</div>
+                            <div class="stat-label">Visa Pathways</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-number">4</div>
+                            <div class="stat-label">Points Calculators</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-number">100%</div>
+                            <div class="stat-label">Free Access</div>
                         </div>
                     </div>
+                </div>
 
-                    <div class="card glass-card">
-                        <div class="card-header">
-                            <h3>Occupation List</h3>
-                        </div>
-                        <div class="card-content">
-                            <p>Browse available occupations and their requirements for your chosen assessment authority.</p>
-                            <button class="btn btn-primary" onclick="showOccupationListModal()">
-                                <i class="fas fa-briefcase"></i> Check Occupation List
+                <div class="home-cta">
+                    <div class="cta-content">
+                        <h2>Ready to Start Your Migration Journey?</h2>
+                        <p>Use our tools to check your eligibility, explore countries, and find the best pathway for you.</p>
+                        <div class="cta-buttons">
+                            <button class="btn btn-primary btn-large" onclick="showSection('eligibility')">
+                                <i class="fas fa-check-circle"></i> Check My Eligibility
+                            </button>
+                            <button class="btn btn-outline btn-large" onclick="showSection('countries')">
+                                <i class="fas fa-globe"></i> Explore Countries
                             </button>
                         </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Eligibility Section -->
+            <section id="eligibility" class="content-section">
+                <div class="section-header">
+                    <div class="section-logo-wrapper">
+                        <img src="logo-owl.png" alt="Gubicoo Logo" class="section-owl-logo" onerror="this.style.display='none';">
+                    </div>
+                    <h1><i class="fas fa-check-circle"></i> Eligibility Assessment</h1>
+                    <p>Comprehensive evaluation of your migration eligibility across multiple countries and visa pathways</p>
+                </div>
+                
+                <!-- Eligibility Form -->
+                <div class="eligibility-checker-container">
+                    <div class="eligibility-form-wrapper">
+                        <form id="eligibilityForm" class="eligibility-form">
+                            <!-- Section A: Basic Profile -->
+                            <div class="form-section">
+                                <h3><i class="fas fa-user"></i> Basic Profile</h3>
+                                <div class="form-row">
+                                    <div class="form-group">
+                                        <label for="age">Age *</label>
+                                        <input type="number" id="age" name="age" min="18" max="70" required>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="maritalStatus">Marital Status *</label>
+                                        <select id="maritalStatus" name="maritalStatus" required>
+                                            <option value="">Select</option>
+                                            <option value="single">Single</option>
+                                            <option value="married">Married</option>
+                                            <option value="divorced">Divorced</option>
+                                            <option value="widowed">Widowed</option>
+                                        </select>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="dependents">Number of Dependents</label>
+                                        <input type="number" id="dependents" name="dependents" min="0" max="10" value="0">
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Section B: Education -->
+                            <div class="form-section">
+                                <h3><i class="fas fa-graduation-cap"></i> Education</h3>
+                                <div class="form-row">
+                                    <div class="form-group">
+                                        <label for="highestQualification">Highest Qualification *</label>
+                                        <select id="highestQualification" name="highestQualification" required>
+                                            <option value="">Select</option>
+                                            <option value="phd">PhD / Doctorate</option>
+                                            <option value="masters">Master's Degree</option>
+                                            <option value="bachelors">Bachelor's Degree</option>
+                                            <option value="diploma">Diploma / Certificate</option>
+                                            <option value="high-school">High School</option>
+                                        </select>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="fieldOfStudy">Field of Study</label>
+                                        <input type="text" id="fieldOfStudy" name="fieldOfStudy" placeholder="e.g., Computer Science, Engineering">
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="yearOfCompletion">Year of Completion</label>
+                                        <input type="number" id="yearOfCompletion" name="yearOfCompletion" min="1950" max="2025">
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Section C: Work Experience -->
+                            <div class="form-section">
+                                <h3><i class="fas fa-briefcase"></i> Work Experience</h3>
+                                <div class="form-row">
+                                    <div class="form-group">
+                                        <label for="totalExperience">Total Years of Experience *</label>
+                                        <input type="number" id="totalExperience" name="totalExperience" min="0" max="30" required>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="currentOccupation">Current Occupation</label>
+                                        <input type="text" id="currentOccupation" name="currentOccupation" placeholder="e.g., Software Developer">
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="nocCode">NOC / ANZSCO Code (Optional)</label>
+                                        <input type="text" id="nocCode" name="nocCode" placeholder="e.g., 2173">
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Section D: Language -->
+                            <div class="form-section">
+                                <h3><i class="fas fa-language"></i> Language Proficiency</h3>
+                                <div class="form-row">
+                                    <div class="form-group">
+                                        <label for="englishTest">English Test Taken? *</label>
+                                        <select id="englishTest" name="englishTest" required>
+                                            <option value="">Select</option>
+                                            <option value="yes">Yes</option>
+                                            <option value="no">No</option>
+                                        </select>
+                                    </div>
+                                    <div class="form-group" id="ieltsGroup" style="display: none;">
+                                        <label for="ieltsOverall">IELTS Overall Score</label>
+                                        <select id="ieltsOverall" name="ieltsOverall">
+                                            <option value="">Select</option>
+                                            <option value="9">9.0</option>
+                                            <option value="8.5">8.5</option>
+                                            <option value="8">8.0</option>
+                                            <option value="7.5">7.5</option>
+                                            <option value="7">7.0</option>
+                                            <option value="6.5">6.5</option>
+                                            <option value="6">6.0</option>
+                                            <option value="5.5">5.5</option>
+                                            <option value="5">5.0</option>
+                                        </select>
+                                    </div>
+                                    <div class="form-group" id="ieltsBandsGroup" style="display: none;">
+                                        <label>IELTS Individual Bands</label>
+                                        <div class="bands-row">
+                                            <input type="number" id="ieltsListening" name="ieltsListening" min="0" max="9" step="0.5" placeholder="L">
+                                            <input type="number" id="ieltsReading" name="ieltsReading" min="0" max="9" step="0.5" placeholder="R">
+                                            <input type="number" id="ieltsWriting" name="ieltsWriting" min="0" max="9" step="0.5" placeholder="W">
+                                            <input type="number" id="ieltsSpeaking" name="ieltsSpeaking" min="0" max="9" step="0.5" placeholder="S">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Section E: Finance -->
+                            <div class="form-section">
+                                <h3><i class="fas fa-dollar-sign"></i> Financial Capacity</h3>
+                                <div class="form-row">
+                                    <div class="form-group">
+                                        <label for="settlementFunds">Available Settlement Funds (CAD/USD/AUD)</label>
+                                        <input type="number" id="settlementFunds" name="settlementFunds" min="0" placeholder="e.g., 25000">
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="proofOfFunds">Can Show Proof of Funds? *</label>
+                                        <select id="proofOfFunds" name="proofOfFunds" required>
+                                            <option value="">Select</option>
+                                            <option value="yes">Yes</option>
+                                            <option value="no">No</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Section F: Family & Extras -->
+                            <div class="form-section">
+                                <h3><i class="fas fa-users"></i> Family & Additional Factors</h3>
+                                <div class="form-row">
+                                    <div class="form-group">
+                                        <label for="spouseEducation">Spouse Education Level</label>
+                                        <select id="spouseEducation" name="spouseEducation">
+                                            <option value="">Select</option>
+                                            <option value="phd">PhD / Doctorate</option>
+                                            <option value="masters">Master's Degree</option>
+                                            <option value="bachelors">Bachelor's Degree</option>
+                                            <option value="diploma">Diploma / Certificate</option>
+                                            <option value="none">No Education</option>
+                                        </select>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="spouseLanguage">Spouse Language Test (IELTS)</label>
+                                        <select id="spouseLanguage" name="spouseLanguage">
+                                            <option value="">Select</option>
+                                            <option value="9">9.0</option>
+                                            <option value="8.5">8.5</option>
+                                            <option value="8">8.0</option>
+                                            <option value="7.5">7.5</option>
+                                            <option value="7">7.0</option>
+                                            <option value="6.5">6.5</option>
+                                            <option value="6">6.0</option>
+                                            <option value="5.5">5.5</option>
+                                        </select>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="relativeInCountry">Relative in Canada/Australia?</label>
+                                        <select id="relativeInCountry" name="relativeInCountry">
+                                            <option value="no">No</option>
+                                            <option value="canada">Yes, in Canada</option>
+                                            <option value="australia">Yes, in Australia</option>
+                                        </select>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="jobOffer">Do You Have a Job Offer?</label>
+                                        <select id="jobOffer" name="jobOffer">
+                                            <option value="no">No</option>
+                                            <option value="yes">Yes</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="form-actions">
+                                <button type="submit" class="btn btn-primary btn-large">
+                                    <i class="fas fa-check-circle"></i> Check My Eligibility
+                                </button>
+                                <button type="reset" class="btn btn-outline">
+                                    <i class="fas fa-redo"></i> Reset Form
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+
+                    <!-- Results Display -->
+                    <div id="eligibilityResults" class="eligibility-results" style="display: none;">
+                        <div class="results-header">
+                            <h2><i class="fas fa-chart-line"></i> Your Eligibility Results</h2>
+                            <button class="btn btn-outline btn-small" onclick="document.getElementById('eligibilityResults').style.display='none'; document.getElementById('eligibilityForm').style.display='block';">
+                                <i class="fas fa-arrow-left"></i> Back to Form
+                            </button>
+                        </div>
+                        <div id="resultsContent" class="results-content">
+                            <!-- Results will be dynamically inserted here -->
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Countries Section -->
+            <section id="countries" class="content-section">
+                <div class="section-header">
+                    <div class="section-logo-wrapper">
+                        <img src="logo-owl.png" alt="Gubicoo Logo" class="section-owl-logo" onerror="this.style.display='none';">
+                    </div>
+                    <h1><i class="fas fa-globe-americas"></i> Global Migration Destinations</h1>
+                    <p>Explore comprehensive migration opportunities across 27+ countries with detailed visa information and requirements</p>
+                </div>
+                <div class="countries-grid">
+                    <div class="country-card" onclick="showCountryDetails('canada')">
+                        <div class="country-flag">🇨🇦</div>
+                        <div class="country-name">Canada</div>
+                    </div>
+                    <div class="country-card" onclick="showCountryDetails('australia')">
+                        <div class="country-flag">🇦🇺</div>
+                        <div class="country-name">Australia</div>
+                    </div>
+                    <div class="country-card" onclick="showCountryDetails('germany')">
+                        <div class="country-flag">🇩🇪</div>
+                        <div class="country-name">Germany</div>
+                    </div>
+                    <div class="country-card" onclick="showCountryDetails('united-kingdom')">
+                        <div class="country-flag">🇬🇧</div>
+                        <div class="country-name">United Kingdom</div>
+                    </div>
+                    <div class="country-card" onclick="showCountryDetails('united-states')">
+                        <div class="country-flag">🇺🇸</div>
+                        <div class="country-name">United States</div>
+                    </div>
+                    <div class="country-card" onclick="showCountryDetails('ireland')">
+                        <div class="country-flag">🇮🇪</div>
+                        <div class="country-name">Ireland</div>
+                    </div>
+                    <div class="country-card" onclick="showCountryDetails('new-zealand')">
+                        <div class="country-flag">🇳🇿</div>
+                        <div class="country-name">New Zealand</div>
+                    </div>
+                    <div class="country-card" onclick="showCountryDetails('netherlands')">
+                        <div class="country-flag">🇳🇱</div>
+                        <div class="country-name">Netherlands</div>
+                    </div>
+                    <div class="country-card" onclick="showCountryDetails('poland')">
+                        <div class="country-flag">🇵🇱</div>
+                        <div class="country-name">Poland</div>
+                    </div>
+                    <div class="country-card" onclick="showCountryDetails('slovakia')">
+                        <div class="country-flag">🇸🇰</div>
+                        <div class="country-name">Slovakia</div>
+                    </div>
+                    <div class="country-card" onclick="showCountryDetails('romania')">
+                        <div class="country-flag">🇷🇴</div>
+                        <div class="country-name">Romania</div>
+                    </div>
+                    <div class="country-card" onclick="showCountryDetails('croatia')">
+                        <div class="country-flag">🇭🇷</div>
+                        <div class="country-name">Croatia</div>
+                    </div>
+                    <div class="country-card" onclick="showCountryDetails('malta')">
+                        <div class="country-flag">🇲🇹</div>
+                        <div class="country-name">Malta</div>
+                    </div>
+                    <div class="country-card" onclick="showCountryDetails('latvia')">
+                        <div class="country-flag">🇱🇻</div>
+                        <div class="country-name">Latvia</div>
+                    </div>
+                    <div class="country-card" onclick="showCountryDetails('sweden')">
+                        <div class="country-flag">🇸🇪</div>
+                        <div class="country-name">Sweden</div>
+                    </div>
+                    <div class="country-card" onclick="showCountryDetails('switzerland')">
+                        <div class="country-flag">🇨🇭</div>
+                        <div class="country-name">Switzerland</div>
+                    </div>
+                    <div class="country-card" onclick="showCountryDetails('denmark')">
+                        <div class="country-flag">🇩🇰</div>
+                        <div class="country-name">Denmark</div>
+                    </div>
+                    <div class="country-card" onclick="showCountryDetails('italy')">
+                        <div class="country-flag">🇮🇹</div>
+                        <div class="country-name">Italy</div>
+                    </div>
+                    <div class="country-card" onclick="showCountryDetails('france')">
+                        <div class="country-flag">🇫🇷</div>
+                        <div class="country-name">France</div>
+                    </div>
+                    <div class="country-card" onclick="showCountryDetails('south-korea')">
+                        <div class="country-flag">🇰🇷</div>
+                        <div class="country-name">South Korea</div>
+                    </div>
+                    <div class="country-card" onclick="showCountryDetails('singapore')">
+                        <div class="country-flag">🇸🇬</div>
+                        <div class="country-name">Singapore</div>
+                    </div>
+                    <div class="country-card" onclick="showCountryDetails('uae')">
+                        <div class="country-flag">🇦🇪</div>
+                        <div class="country-name">UAE</div>
+                    </div>
+                    <div class="country-card" onclick="showCountryDetails('philippines')">
+                        <div class="country-flag">🇵🇭</div>
+                        <div class="country-name">Philippines</div>
+                    </div>
+                    <div class="country-card" onclick="showCountryDetails('malaysia')">
+                        <div class="country-flag">🇲🇾</div>
+                        <div class="country-name">Malaysia</div>
+                    </div>
+                    <div class="country-card" onclick="showCountryDetails('russia')">
+                        <div class="country-flag">🇷🇺</div>
+                        <div class="country-name">Russia</div>
+                    </div>
+                    <div class="country-card" onclick="showCountryDetails('bulgaria')">
+                        <div class="country-flag">🇧🇬</div>
+                        <div class="country-name">Bulgaria</div>
+                    </div>
+                    <div class="country-card" onclick="showCountryDetails('albania')">
+                        <div class="country-flag">🇦🇱</div>
+                        <div class="country-name">Albania</div>
+                    </div>
+                </div>
+
+                <!-- Country Details Modal -->
+                <div id="countryModal" class="country-modal" style="display: none;">
+                    <div class="country-modal-content">
+                        <div class="country-modal-header">
+                            <h2 id="countryModalTitle"></h2>
+                            <span class="country-modal-close" onclick="closeCountryModal()">&times;</span>
+                        </div>
+                        <div class="country-modal-body" id="countryModalBody">
+                            <!-- Content will be dynamically inserted here -->
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Visa Pathways Section -->
+            <section id="visa-pathways" class="content-section">
+                <div class="section-header">
+                    <div class="section-logo-wrapper">
+                        <img src="logo-owl.png" alt="Gubicoo Logo" class="section-owl-logo" onerror="this.style.display='none';">
+                    </div>
+                    <h1><i class="fas fa-route"></i> Immigration Pathways & Programs</h1>
+                    <p>Discover structured migration programs and pathways designed for skilled professionals, students, and families</p>
+                </div>
+                
+                <div class="pathways-container">
+                    <div class="pathway-category">
+                        <h2><i class="fas fa-map-marker-alt"></i> Canada Pathways</h2>
+                        <div class="pathways-grid">
+                            <div class="pathway-card" onclick="showPathwayDetails('express-entry')">
+                                <i class="fas fa-rocket"></i>
+                                <h3>Express Entry</h3>
+                                <p>Points-based system for skilled workers</p>
+                            </div>
+                            <div class="pathway-card" onclick="showPathwayDetails('fsw')">
+                                <i class="fas fa-user-tie"></i>
+                                <h3>Federal Skilled Worker</h3>
+                                <p>67-point system for skilled professionals</p>
+                            </div>
+                            <div class="pathway-card" onclick="showPathwayDetails('cec')">
+                                <i class="fas fa-briefcase"></i>
+                                <h3>Canadian Experience Class</h3>
+                                <p>For those with Canadian work experience</p>
+                            </div>
+                            <div class="pathway-card" onclick="showPathwayDetails('pnp')">
+                                <i class="fas fa-map"></i>
+                                <h3>Provincial Nominee Program</h3>
+                                <p>Provincial nomination pathways</p>
+                            </div>
+                            <div class="pathway-card" onclick="showPathwayDetails('rnip')">
+                                <i class="fas fa-city"></i>
+                                <h3>RNIPP</h3>
+                                <p>Rural and Northern Immigration Pilot</p>
+                            </div>
+                            <div class="pathway-card" onclick="showPathwayDetails('aipp')">
+                                <i class="fas fa-water"></i>
+                                <h3>AIPP / AAIP</h3>
+                                <p>Atlantic Immigration Program</p>
+                            </div>
+                            <div class="pathway-card" onclick="showPathwayDetails('quebec')">
+                                <i class="fas fa-flag"></i>
+                                <h3>Quebec Skilled Worker</h3>
+                                <p>Quebec-specific immigration program</p>
+                            </div>
+                            <div class="pathway-card" onclick="showPathwayDetails('lmia')">
+                                <i class="fas fa-file-contract"></i>
+                                <h3>LMIA Work Permits</h3>
+                                <p>Labour Market Impact Assessment</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="pathway-category">
+                        <h2><i class="fas fa-map-marker-alt"></i> Australia Pathways</h2>
+                        <div class="pathways-grid">
+                            <div class="pathway-card" onclick="showPathwayDetails('subclass-189')">
+                                <i class="fas fa-star"></i>
+                                <h3>Subclass 189</h3>
+                                <p>Skilled Independent Visa (PR)</p>
+                            </div>
+                            <div class="pathway-card" onclick="showPathwayDetails('subclass-190')">
+                                <i class="fas fa-map-pin"></i>
+                                <h3>Subclass 190</h3>
+                                <p>Skilled Nominated Visa (PR)</p>
+                            </div>
+                            <div class="pathway-card" onclick="showPathwayDetails('subclass-491')">
+                                <i class="fas fa-tree"></i>
+                                <h3>Subclass 491</h3>
+                                <p>Skilled Work Regional Visa</p>
+                            </div>
+                            <div class="pathway-card" onclick="showPathwayDetails('subclass-407')">
+                                <i class="fas fa-graduation-cap"></i>
+                                <h3>Subclass 407</h3>
+                                <p>Training Visa</p>
+                            </div>
+                            <div class="pathway-card" onclick="showPathwayDetails('subclass-482')">
+                                <i class="fas fa-building"></i>
+                                <h3>Subclass 482</h3>
+                                <p>Temporary Skill Shortage Visa</p>
+                            </div>
+                            <div class="pathway-card" onclick="showPathwayDetails('subclass-186')">
+                                <i class="fas fa-handshake"></i>
+                                <h3>Subclass 186</h3>
+                                <p>Employer Nomination Scheme</p>
+                            </div>
+                            <div class="pathway-card" onclick="showPathwayDetails('subclass-494')">
+                                <i class="fas fa-industry"></i>
+                                <h3>Subclass 494</h3>
+                                <p>Employer Sponsored Regional</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="pathway-category">
+                        <h2><i class="fas fa-map-marker-alt"></i> Europe Pathways</h2>
+                        <div class="pathways-grid">
+                            <div class="pathway-card" onclick="showPathwayDetails('eu-blue-card')">
+                                <i class="fas fa-id-card"></i>
+                                <h3>EU Blue Card</h3>
+                                <p>Highly qualified professionals</p>
+                            </div>
+                            <div class="pathway-card" onclick="showPathwayDetails('germany-opportunity')">
+                                <i class="fas fa-gift"></i>
+                                <h3>Germany Opportunity Card</h3>
+                                <p>Points-based job seeker visa</p>
+                            </div>
+                            <div class="pathway-card" onclick="showPathwayDetails('national-work-permit')">
+                                <i class="fas fa-globe-europe"></i>
+                                <h3>National Work Permits</h3>
+                                <p>Country-specific work permits</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Pathway Details Modal -->
+                <div id="pathwayModal" class="country-modal" style="display: none;">
+                    <div class="country-modal-content">
+                        <div class="country-modal-header">
+                            <h2 id="pathwayModalTitle"></h2>
+                            <span class="country-modal-close" onclick="closePathwayModal()">&times;</span>
+                        </div>
+                        <div class="country-modal-body" id="pathwayModalBody"></div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Study Abroad Section -->
+            <section id="study-abroad" class="content-section">
+                <div class="section-header">
+                    <div class="section-logo-wrapper">
+                        <img src="logo-owl.png" alt="Gubicoo Logo" class="section-owl-logo" onerror="this.style.display='none';">
+                    </div>
+                    <h1><i class="fas fa-graduation-cap"></i> International Education & Study Visas</h1>
+                    <p>Comprehensive guide to studying abroad with detailed information on admission requirements, work rights, and post-study opportunities</p>
+                </div>
+                
+                <div class="study-container">
+                    <div class="study-category">
+                        <h2><i class="fas fa-graduation-cap"></i> Popular Study Destinations</h2>
+                        <div class="study-countries-grid">
+                            <div class="study-country-card" onclick="showStudyDetails('canada')">
+                                <div class="study-flag">🇨🇦</div>
+                                <h3>Canada</h3>
+                                <p>Post-graduation work permit available</p>
+                            </div>
+                            <div class="study-country-card" onclick="showStudyDetails('australia')">
+                                <div class="study-flag">🇦🇺</div>
+                                <h3>Australia</h3>
+                                <p>High-quality education system</p>
+                            </div>
+                            <div class="study-country-card" onclick="showStudyDetails('germany')">
+                                <div class="study-flag">🇩🇪</div>
+                                <h3>Germany</h3>
+                                <p>Many free/low-cost programs</p>
+                            </div>
+                            <div class="study-country-card" onclick="showStudyDetails('united-kingdom')">
+                                <div class="study-flag">🇬🇧</div>
+                                <h3>United Kingdom</h3>
+                                <p>World-class universities</p>
+                            </div>
+                            <div class="study-country-card" onclick="showStudyDetails('united-states')">
+                                <div class="study-flag">🇺🇸</div>
+                                <h3>United States</h3>
+                                <p>Top-ranked institutions</p>
+                            </div>
+                            <div class="study-country-card" onclick="showStudyDetails('ireland')">
+                                <div class="study-flag">🇮🇪</div>
+                                <h3>Ireland</h3>
+                                <p>English-speaking, EU access</p>
+                            </div>
+                            <div class="study-country-card" onclick="showStudyDetails('new-zealand')">
+                                <div class="study-flag">🇳🇿</div>
+                                <h3>New Zealand</h3>
+                                <p>Beautiful country, quality education</p>
+                            </div>
+                            <div class="study-country-card" onclick="showStudyDetails('netherlands')">
+                                <div class="study-flag">🇳🇱</div>
+                                <h3>Netherlands</h3>
+                                <p>English-taught programs</p>
+                            </div>
+                            <div class="study-country-card" onclick="showStudyDetails('sweden')">
+                                <div class="study-flag">🇸🇪</div>
+                                <h3>Sweden</h3>
+                                <p>Innovation-focused education</p>
+                            </div>
+                            <div class="study-country-card" onclick="showStudyDetails('singapore')">
+                                <div class="study-flag">🇸🇬</div>
+                                <h3>Singapore</h3>
+                                <p>Asian education hub</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="study-category">
+                        <h2><i class="fas fa-book"></i> Popular Courses</h2>
+                        <div class="courses-grid">
+                            <div class="course-card" onclick="showCourseDetails('engineering')">
+                                <i class="fas fa-cogs"></i>
+                                <h3>Engineering</h3>
+                                <p>Mechanical, Civil, Electrical, Software</p>
+                            </div>
+                            <div class="course-card" onclick="showCourseDetails('it-ai')">
+                                <i class="fas fa-laptop-code"></i>
+                                <h3>IT & AI</h3>
+                                <p>Computer Science, Data Science, AI/ML</p>
+                            </div>
+                            <div class="course-card" onclick="showCourseDetails('healthcare')">
+                                <i class="fas fa-heartbeat"></i>
+                                <h3>Healthcare</h3>
+                                <p>Medicine, Nursing, Pharmacy, Public Health</p>
+                            </div>
+                            <div class="course-card" onclick="showCourseDetails('business')">
+                                <i class="fas fa-briefcase"></i>
+                                <h3>Business</h3>
+                                <p>MBA, Finance, Marketing, Management</p>
+                            </div>
+                            <div class="course-card" onclick="showCourseDetails('hospitality')">
+                                <i class="fas fa-hotel"></i>
+                                <h3>Hospitality</h3>
+                                <p>Hotel Management, Tourism, Culinary Arts</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Study Details Modal -->
+                <div id="studyModal" class="country-modal" style="display: none;">
+                    <div class="country-modal-content">
+                        <div class="country-modal-header">
+                            <h2 id="studyModalTitle"></h2>
+                            <span class="country-modal-close" onclick="closeStudyModal()">&times;</span>
+                        </div>
+                        <div class="country-modal-body" id="studyModalBody"></div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Work & Settle Section -->
+            <section id="work-settle" class="content-section">
+                <div class="section-header">
+                    <div class="section-logo-wrapper">
+                        <img src="logo-owl.png" alt="Gubicoo Logo" class="section-owl-logo" onerror="this.style.display='none';">
+                    </div>
+                    <h1><i class="fas fa-briefcase"></i> Employment & Settlement Opportunities</h1>
+                    <p>Explore job-focused migration pathways with detailed information on work permits, salary ranges, and permanent settlement options</p>
+                </div>
+                
+                <div class="work-settle-container">
+                    <div class="work-settle-category">
+                        <h2><i class="fas fa-briefcase"></i> Job Categories</h2>
+                        <div class="work-categories-grid">
+                            <div class="work-category-card" onclick="showWorkSettleDetails('skilled-jobs')">
+                                <i class="fas fa-user-tie"></i>
+                                <h3>Skilled Jobs</h3>
+                                <p>Professional and technical positions</p>
+                            </div>
+                            <div class="work-category-card" onclick="showWorkSettleDetails('unskilled-jobs')">
+                                <i class="fas fa-hard-hat"></i>
+                                <h3>Unskilled / Semi-Skilled Jobs</h3>
+                                <p>Entry-level and manual labor positions</p>
+                            </div>
+                            <div class="work-category-card" onclick="showWorkSettleDetails('blue-collar')">
+                                <i class="fas fa-tools"></i>
+                                <h3>Blue-Collar Roles</h3>
+                                <p>Trades, construction, manufacturing</p>
+                            </div>
+                            <div class="work-category-card" onclick="showWorkSettleDetails('shortage-occupations')">
+                                <i class="fas fa-exclamation-circle"></i>
+                                <h3>Shortage Occupations</h3>
+                                <p>High-demand jobs with fast-track options</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="work-settle-category">
+                        <h2><i class="fas fa-map-marker-alt"></i> Country-Specific Work Opportunities</h2>
+                        <div class="work-countries-grid">
+                            <div class="work-country-card" onclick="showWorkSettleDetails('poland')">
+                                <div class="work-flag">🇵🇱</div>
+                                <h3>Work & Settle in Poland</h3>
+                                <p>EU work permits and settlement</p>
+                            </div>
+                            <div class="work-country-card" onclick="showWorkSettleDetails('slovakia')">
+                                <div class="work-flag">🇸🇰</div>
+                                <h3>Slovakia Warehouse Jobs</h3>
+                                <p>Logistics and warehouse opportunities</p>
+                            </div>
+                            <div class="work-country-card" onclick="showWorkSettleDetails('albania')">
+                                <div class="work-flag">🇦🇱</div>
+                                <h3>Albania Work Permit</h3>
+                                <p>Work authorization and residency</p>
+                            </div>
+                            <div class="work-country-card" onclick="showWorkSettleDetails('romania')">
+                                <div class="work-flag">🇷🇴</div>
+                                <h3>Romania Work Permit</h3>
+                                <p>EU work opportunities</p>
+                            </div>
+                            <div class="work-country-card" onclick="showWorkSettleDetails('croatia')">
+                                <div class="work-flag">🇭🇷</div>
+                                <h3>Croatia Work Permit</h3>
+                                <p>EU member work authorization</p>
+                            </div>
+                            <div class="work-country-card" onclick="showWorkSettleDetails('malta')">
+                                <div class="work-flag">🇲🇹</div>
+                                <h3>Malta Work Permits</h3>
+                                <p>EU work and settlement</p>
+                            </div>
+                            <div class="work-country-card" onclick="showWorkSettleDetails('latvia')">
+                                <div class="work-flag">🇱🇻</div>
+                                <h3>Latvia 5-Year Unskilled Permit</h3>
+                                <p>Long-term work authorization</p>
+                            </div>
+                            <div class="work-country-card" onclick="showWorkSettleDetails('netherlands')">
+                                <div class="work-flag">🇳🇱</div>
+                                <h3>Amsterdam Internship</h3>
+                                <p>Netherlands work opportunities</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Work & Settle Details Modal -->
+                <div id="workSettleModal" class="country-modal" style="display: none;">
+                    <div class="country-modal-content">
+                        <div class="country-modal-header">
+                            <h2 id="workSettleModalTitle"></h2>
+                            <span class="country-modal-close" onclick="closeWorkSettleModal()">&times;</span>
+                        </div>
+                        <div class="country-modal-body" id="workSettleModalBody"></div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Healthcare & Nurses Section -->
+            <section id="healthcare" class="content-section">
+                <div class="section-header">
+                    <div class="section-logo-wrapper">
+                        <img src="logo-owl.png" alt="Gubicoo Logo" class="section-owl-logo" onerror="this.style.display='none';">
+                    </div>
+                    <h1><i class="fas fa-user-nurse"></i> Healthcare Professionals Migration</h1>
+                    <p>Specialized migration pathways for nurses and healthcare workers with licensing requirements, salary information, and PR opportunities</p>
+                </div>
+                
+                <div class="healthcare-container">
+                    <div class="healthcare-category">
+                        <h2><i class="fas fa-user-nurse"></i> Nurse Migration by Country</h2>
+                        <div class="healthcare-grid">
+                            <div class="healthcare-card" onclick="showHealthcareDetails('nurses-canada')">
+                                <i class="fas fa-user-nurse"></i>
+                                <h3>Nurses to Canada</h3>
+                                <p>RN, LPN, RPN pathways</p>
+                            </div>
+                            <div class="healthcare-card" onclick="showHealthcareDetails('nurses-australia')">
+                                <i class="fas fa-user-nurse"></i>
+                                <h3>Nurses to Australia</h3>
+                                <p>AHPRA registration process</p>
+                            </div>
+                            <div class="healthcare-card" onclick="showHealthcareDetails('nurses-germany')">
+                                <i class="fas fa-user-nurse"></i>
+                                <h3>Nurses to Germany</h3>
+                                <p>Recognition and licensing</p>
+                            </div>
+                            <div class="healthcare-card" onclick="showHealthcareDetails('nurses-new-zealand')">
+                                <i class="fas fa-user-nurse"></i>
+                                <h3>Nurses to New Zealand</h3>
+                                <p>NCNZ registration</p>
+                            </div>
+                            <div class="healthcare-card" onclick="showHealthcareDetails('nurses-denmark')">
+                                <i class="fas fa-user-nurse"></i>
+                                <h3>Nurses to Denmark</h3>
+                                <p>Danish authorization</p>
+                            </div>
+                            <div class="healthcare-card" onclick="showHealthcareDetails('nurses-malta')">
+                                <i class="fas fa-user-nurse"></i>
+                                <h3>Nurses to Malta</h3>
+                                <p>Maltese registration</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="healthcare-category">
+                        <h2><i class="fas fa-stethoscope"></i> Additional Healthcare Opportunities</h2>
+                        <div class="healthcare-grid">
+                            <div class="healthcare-card" onclick="showHealthcareDetails('canadian-healthcare-license')">
+                                <i class="fas fa-certificate"></i>
+                                <h3>Canadian Healthcare License</h3>
+                                <p>Medical licensing process</p>
+                            </div>
+                            <div class="healthcare-card" onclick="showHealthcareDetails('pharmacist-canada')">
+                                <i class="fas fa-pills"></i>
+                                <h3>Pharmacist License (Canada)</h3>
+                                <p>PEBC exam and registration</p>
+                            </div>
+                            <div class="healthcare-card" onclick="showHealthcareDetails('caregiver-programs')">
+                                <i class="fas fa-hands-helping"></i>
+                                <h3>Caregiver Programs</h3>
+                                <p>Home support worker pathways</p>
+                            </div>
+                            <div class="healthcare-card" onclick="showHealthcareDetails('health-assistant')">
+                                <i class="fas fa-user-md"></i>
+                                <h3>Health Assistant Jobs</h3>
+                                <p>Healthcare support roles</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Healthcare Details Modal -->
+                <div id="healthcareModal" class="country-modal" style="display: none;">
+                    <div class="country-modal-content">
+                        <div class="country-modal-header">
+                            <h2 id="healthcareModalTitle"></h2>
+                            <span class="country-modal-close" onclick="closeHealthcareModal()">&times;</span>
+                        </div>
+                        <div class="country-modal-body" id="healthcareModalBody"></div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Points & Calculators Section -->
+            <section id="calculators" class="content-section">
+                <div class="section-header">
+                    <div class="section-logo-wrapper">
+                        <img src="logo-owl.png" alt="Gubicoo Logo" class="section-owl-logo" onerror="this.style.display='none';">
+                    </div>
+                    <h1><i class="fas fa-calculator"></i> Points Assessment & Score Calculators</h1>
+                    <p>Interactive tools to calculate your eligibility scores for Canada, Australia, Germany, and other points-based immigration systems</p>
+                </div>
+                
+                <div class="calculators-container">
+                    <!-- Calculator Tabs -->
+                    <div class="calculator-tabs">
+                        <button class="calc-tab active" onclick="showCalculator('fsw')">
+                            <i class="fas fa-calculator"></i> Canada FSW (67 Points)
+                        </button>
+                        <button class="calc-tab" onclick="showCalculator('crs')">
+                            <i class="fas fa-chart-line"></i> CRS Score Estimator
+                        </button>
+                        <button class="calc-tab" onclick="showCalculator('australia')">
+                            <i class="fas fa-calculator"></i> Australia Points
+                        </button>
+                        <button class="calc-tab" onclick="showCalculator('germany')">
+                            <i class="fas fa-calculator"></i> Germany Opportunity Card
+                        </button>
+                        <button class="calc-tab" onclick="showCalculator('tables')">
+                            <i class="fas fa-table"></i> Points Tables
+                        </button>
+                    </div>
+
+                    <!-- Canada FSW Calculator -->
+                    <div id="calc-fsw" class="calculator-panel active">
+                        <div class="calc-header">
+                            <h2><i class="fas fa-map-marker-alt"></i> Canada Federal Skilled Worker (FSW) - 67 Point Calculator</h2>
+                            <p>Minimum score required: 67 / 100 points</p>
+                        </div>
+                        <form id="fswForm" class="calculator-form">
+                            <div class="calc-section">
+                                <h3>A. Age Points (Max 12)</h3>
+                                <div class="form-group">
+                                    <label for="fsw-age">Your Age</label>
+                                    <input type="number" id="fsw-age" min="18" max="70" required>
+                                    <div class="points-display" id="fsw-age-points">0 points</div>
+                                </div>
+                            </div>
+
+                            <div class="calc-section">
+                                <h3>B. Education Points (Max 25)</h3>
+                                <div class="form-group">
+                                    <label for="fsw-education">Highest Education</label>
+                                    <select id="fsw-education" required>
+                                        <option value="">Select</option>
+                                        <option value="phd">PhD / Doctorate</option>
+                                        <option value="masters">Master's Degree</option>
+                                        <option value="two-degrees">Two or more degrees</option>
+                                        <option value="bachelors">Bachelor's (3+ years)</option>
+                                        <option value="diploma-2">Diploma (2 years)</option>
+                                        <option value="diploma-1">Diploma (1 year)</option>
+                                        <option value="secondary">Secondary only</option>
+                                    </select>
+                                    <div class="points-display" id="fsw-education-points">0 points</div>
+                                </div>
+                            </div>
+
+                            <div class="calc-section">
+                                <h3>C. Work Experience Points (Max 15)</h3>
+                                <div class="form-group">
+                                    <label for="fsw-experience">Years of Experience</label>
+                                    <input type="number" id="fsw-experience" min="0" max="20" required>
+                                    <div class="points-display" id="fsw-experience-points">0 points</div>
+                                </div>
+                            </div>
+
+                            <div class="calc-section">
+                                <h3>D. Language - IELTS (Max 28)</h3>
+                                <div class="form-row">
+                                    <div class="form-group">
+                                        <label for="fsw-ielts-listening">Listening</label>
+                                        <input type="number" id="fsw-ielts-listening" min="0" max="9" step="0.5" required>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="fsw-ielts-reading">Reading</label>
+                                        <input type="number" id="fsw-ielts-reading" min="0" max="9" step="0.5" required>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="fsw-ielts-writing">Writing</label>
+                                        <input type="number" id="fsw-ielts-writing" min="0" max="9" step="0.5" required>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="fsw-ielts-speaking">Speaking</label>
+                                        <input type="number" id="fsw-ielts-speaking" min="0" max="9" step="0.5" required>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label for="fsw-second-language">Second Language (French) - Optional</label>
+                                    <select id="fsw-second-language">
+                                        <option value="no">No</option>
+                                        <option value="yes">Yes (CLB 4+)</option>
+                                    </select>
+                                </div>
+                                <div class="points-display" id="fsw-language-points">0 points</div>
+                            </div>
+
+                            <div class="calc-section">
+                                <h3>E. Adaptability Points (Max 10)</h3>
+                                <div class="form-row">
+                                    <div class="form-group">
+                                        <label for="fsw-spouse-ielts">Spouse IELTS CLB 4+?</label>
+                                        <select id="fsw-spouse-ielts">
+                                            <option value="no">No</option>
+                                            <option value="yes">Yes</option>
+                                        </select>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="fsw-canada-experience">Previous Study/Work in Canada?</label>
+                                        <select id="fsw-canada-experience">
+                                            <option value="no">No</option>
+                                            <option value="yes">Yes</option>
+                                        </select>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="fsw-relative">Relative in Canada?</label>
+                                        <select id="fsw-relative">
+                                            <option value="no">No</option>
+                                            <option value="yes">Yes</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="points-display" id="fsw-adaptability-points">0 points</div>
+                            </div>
+
+                            <div class="calc-actions">
+                                <button type="button" class="btn btn-primary" onclick="calculateFSW()">
+                                    <i class="fas fa-calculator"></i> Calculate FSW Score
+                                </button>
+                                <button type="reset" class="btn btn-outline">Reset</button>
+                            </div>
+                        </form>
+
+                        <div id="fsw-result" class="calc-result" style="display: none;"></div>
+                    </div>
+
+                    <!-- CRS Calculator -->
+                    <div id="calc-crs" class="calculator-panel">
+                        <div class="calc-header">
+                            <h2><i class="fas fa-chart-line"></i> CRS Score Estimator (Express Entry)</h2>
+                            <p>Maximum score: 1200 points</p>
+                        </div>
+                        <form id="crsForm" class="calculator-form">
+                            <div class="calc-section">
+                                <h3>Core Human Capital (Max 500)</h3>
+                                <div class="form-row">
+                                    <div class="form-group">
+                                        <label for="crs-age">Age</label>
+                                        <input type="number" id="crs-age" min="18" max="70" required>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="crs-education">Education</label>
+                                        <select id="crs-education" required>
+                                            <option value="">Select</option>
+                                            <option value="phd">PhD</option>
+                                            <option value="masters">Master's</option>
+                                            <option value="two-degrees">Two or more degrees</option>
+                                            <option value="bachelors">Bachelor's</option>
+                                            <option value="diploma">Diploma</option>
+                                        </select>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="crs-canadian-exp">Canadian Experience (Years)</label>
+                                        <input type="number" id="crs-canadian-exp" min="0" max="5">
+                                    </div>
+                                </div>
+                                <div class="calc-section">
+                                    <h4>Language - IELTS</h4>
+                                    <div class="form-row">
+                                        <div class="form-group">
+                                            <label>Listening</label>
+                                            <input type="number" id="crs-ielts-l" min="0" max="9" step="0.5">
+                                        </div>
+                                        <div class="form-group">
+                                            <label>Reading</label>
+                                            <input type="number" id="crs-ielts-r" min="0" max="9" step="0.5">
+                                        </div>
+                                        <div class="form-group">
+                                            <label>Writing</label>
+                                            <input type="number" id="crs-ielts-w" min="0" max="9" step="0.5">
+                                        </div>
+                                        <div class="form-group">
+                                            <label>Speaking</label>
+                                            <input type="number" id="crs-ielts-s" min="0" max="9" step="0.5">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="points-display" id="crs-core-points">0 points</div>
+                            </div>
+
+                            <div class="calc-section">
+                                <h3>Additional Factors</h3>
+                                <div class="form-row">
+                                    <div class="form-group">
+                                        <label for="crs-provincial">Provincial Nomination?</label>
+                                        <select id="crs-provincial">
+                                            <option value="no">No</option>
+                                            <option value="yes">Yes (+600)</option>
+                                        </select>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="crs-job-offer">Job Offer (LMIA)?</label>
+                                        <select id="crs-job-offer">
+                                            <option value="no">No</option>
+                                            <option value="50">Yes (+50)</option>
+                                            <option value="200">Yes - Senior Manager (+200)</option>
+                                        </select>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="crs-canadian-edu">Canadian Education?</label>
+                                        <select id="crs-canadian-edu">
+                                            <option value="no">No</option>
+                                            <option value="yes">Yes (+30)</option>
+                                        </select>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="crs-french">French Language?</label>
+                                        <select id="crs-french">
+                                            <option value="no">No</option>
+                                            <option value="yes">Yes (+50)</option>
+                                        </select>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="crs-sibling">Sibling in Canada?</label>
+                                        <select id="crs-sibling">
+                                            <option value="no">No</option>
+                                            <option value="yes">Yes (+15)</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="points-display" id="crs-additional-points">0 points</div>
+                            </div>
+
+                            <div class="calc-actions">
+                                <button type="button" class="btn btn-primary" onclick="calculateCRS()">
+                                    <i class="fas fa-chart-line"></i> Calculate CRS Score
+                                </button>
+                                <button type="reset" class="btn btn-outline">Reset</button>
+                            </div>
+                        </form>
+
+                        <div id="crs-result" class="calc-result" style="display: none;"></div>
+                    </div>
+
+                    <!-- Australia Calculator -->
+                    <div id="calc-australia" class="calculator-panel">
+                        <div class="calc-header">
+                            <h2><i class="fas fa-map-marker-alt"></i> Australia Points Calculator (189/190/491)</h2>
+                            <p>Minimum required: 65 points</p>
+                        </div>
+                        <form id="australiaForm" class="calculator-form">
+                            <div class="calc-section">
+                                <h3>A. Age Points (Max 30)</h3>
+                                <div class="form-group">
+                                    <label for="aus-age">Your Age</label>
+                                    <input type="number" id="aus-age" min="18" max="50" required>
+                                    <div class="points-display" id="aus-age-points">0 points</div>
+                                </div>
+                            </div>
+
+                            <div class="calc-section">
+                                <h3>B. English Points (Max 20)</h3>
+                                <div class="form-group">
+                                    <label for="aus-ielts">IELTS Overall Score</label>
+                                    <select id="aus-ielts" required>
+                                        <option value="">Select</option>
+                                        <option value="6">6.0 (Competent - 0 points)</option>
+                                        <option value="7">7.0 (Proficient - 10 points)</option>
+                                        <option value="8">8.0+ (Superior - 20 points)</option>
+                                    </select>
+                                    <div class="points-display" id="aus-english-points">0 points</div>
+                                </div>
+                            </div>
+
+                            <div class="calc-section">
+                                <h3>C. Work Experience</h3>
+                                <div class="form-row">
+                                    <div class="form-group">
+                                        <label for="aus-overseas-exp">Overseas Experience (Years)</label>
+                                        <input type="number" id="aus-overseas-exp" min="0" max="20">
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="aus-australian-exp">Australian Experience (Years)</label>
+                                        <input type="number" id="aus-australian-exp" min="0" max="20">
+                                    </div>
+                                </div>
+                                <div class="points-display" id="aus-experience-points">0 points</div>
+                            </div>
+
+                            <div class="calc-section">
+                                <h3>D. Education Points (Max 20)</h3>
+                                <div class="form-group">
+                                    <label for="aus-education">Highest Qualification</label>
+                                    <select id="aus-education" required>
+                                        <option value="">Select</option>
+                                        <option value="phd">PhD (20 points)</option>
+                                        <option value="masters">Master's / Bachelor's (15 points)</option>
+                                        <option value="diploma">Diploma (10 points)</option>
+                                    </select>
+                                    <div class="points-display" id="aus-education-points">0 points</div>
+                                </div>
+                            </div>
+
+                            <div class="calc-section">
+                                <h3>E. Bonus Points</h3>
+                                <div class="form-row">
+                                    <div class="form-group">
+                                        <label for="aus-state-nom">State Nomination (190)?</label>
+                                        <select id="aus-state-nom">
+                                            <option value="no">No</option>
+                                            <option value="yes">Yes (+5)</option>
+                                        </select>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="aus-regional">Regional Nomination (491)?</label>
+                                        <select id="aus-regional">
+                                            <option value="no">No</option>
+                                            <option value="yes">Yes (+15)</option>
+                                        </select>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="aus-partner-skills">Partner Skills?</label>
+                                        <select id="aus-partner-skills">
+                                            <option value="no">No</option>
+                                            <option value="yes">Yes (+10)</option>
+                                        </select>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="aus-professional-year">Professional Year?</label>
+                                        <select id="aus-professional-year">
+                                            <option value="no">No</option>
+                                            <option value="yes">Yes (+5)</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="points-display" id="aus-bonus-points">0 points</div>
+                            </div>
+
+                            <div class="calc-actions">
+                                <button type="button" class="btn btn-primary" onclick="calculateAustralia()">
+                                    <i class="fas fa-calculator"></i> Calculate Australia Score
+                                </button>
+                                <button type="reset" class="btn btn-outline">Reset</button>
+                            </div>
+                        </form>
+
+                        <div id="australia-result" class="calc-result" style="display: none;"></div>
+                    </div>
+
+                    <!-- Germany Calculator -->
+                    <div id="calc-germany" class="calculator-panel">
+                        <div class="calc-header">
+                            <h2><i class="fas fa-map-marker-alt"></i> Germany Opportunity Card (Chancenkarte)</h2>
+                            <p>Minimum required: 6 / 14 points</p>
+                        </div>
+                        <form id="germanyForm" class="calculator-form">
+                            <div class="calc-section">
+                                <h3>Points Breakdown</h3>
+                                <div class="form-group">
+                                    <label for="ger-degree">Recognized Degree?</label>
+                                    <select id="ger-degree" required>
+                                        <option value="no">No</option>
+                                        <option value="yes">Yes (+4)</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label for="ger-experience">2+ Years Experience?</label>
+                                    <select id="ger-experience" required>
+                                        <option value="no">No</option>
+                                        <option value="yes">Yes (+3)</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label for="ger-german">German Language Level</label>
+                                    <select id="ger-german" required>
+                                        <option value="none">None</option>
+                                        <option value="a2">A2 (+1)</option>
+                                        <option value="b1">B1 (+2)</option>
+                                        <option value="b2">B2 (+3)</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label for="ger-age">Age under 35?</label>
+                                    <select id="ger-age" required>
+                                        <option value="no">No</option>
+                                        <option value="yes">Yes (+2)</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label for="ger-previous-stay">Previous Stay in Germany?</label>
+                                    <select id="ger-previous-stay">
+                                        <option value="no">No</option>
+                                        <option value="yes">Yes (+1)</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label for="ger-shortage">Occupation in Shortage List?</label>
+                                    <select id="ger-shortage">
+                                        <option value="no">No</option>
+                                        <option value="yes">Yes (+1)</option>
+                                    </select>
+                                </div>
+                                <div class="points-display" id="ger-total-points">0 points</div>
+                            </div>
+
+                            <div class="calc-actions">
+                                <button type="button" class="btn btn-primary" onclick="calculateGermany()">
+                                    <i class="fas fa-calculator"></i> Calculate Germany Score
+                                </button>
+                                <button type="reset" class="btn btn-outline">Reset</button>
+                            </div>
+                        </form>
+
+                        <div id="germany-result" class="calc-result" style="display: none;"></div>
+                    </div>
+
+                    <!-- Points Tables -->
+                    <div id="calc-tables" class="calculator-panel">
+                        <div class="calc-header">
+                            <h2><i class="fas fa-table"></i> Points Tables Reference</h2>
+                        </div>
+                        <div class="points-tables-container">
+                            <div class="points-table-card">
+                                <h3>🇨🇦 Canada - CRS Points Summary</h3>
+                                <table class="points-table">
+                                    <thead>
+                                        <tr>
+                                            <th>Category</th>
+                                            <th>Max Points</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr><td>Core Human Capital</td><td>500</td></tr>
+                                        <tr><td>Spouse Factors</td><td>40</td></tr>
+                                        <tr><td>Skill Transferability</td><td>100</td></tr>
+                                        <tr><td>Additional Factors</td><td>600</td></tr>
+                                        <tr class="total-row"><td><strong>Total</strong></td><td><strong>1200</strong></td></tr>
+                                    </tbody>
+                                </table>
+                            </div>
+
+                            <div class="points-table-card">
+                                <h3>🇦🇺 Australia - Points Summary</h3>
+                                <table class="points-table">
+                                    <thead>
+                                        <tr>
+                                            <th>Category</th>
+                                            <th>Max Points</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr><td>Age</td><td>30</td></tr>
+                                        <tr><td>English</td><td>20</td></tr>
+                                        <tr><td>Experience</td><td>20</td></tr>
+                                        <tr><td>Education</td><td>20</td></tr>
+                                        <tr><td>Bonus</td><td>25</td></tr>
+                                        <tr class="total-row"><td><strong>Total</strong></td><td><strong>130+</strong></td></tr>
+                                    </tbody>
+                                </table>
+                            </div>
+
+                            <div class="points-table-card">
+                                <h3>🇨🇦 Canada FSW - Points Breakdown</h3>
+                                <table class="points-table">
+                                    <thead>
+                                        <tr>
+                                            <th>Factor</th>
+                                            <th>Max Points</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr><td>Age</td><td>12</td></tr>
+                                        <tr><td>Education</td><td>25</td></tr>
+                                        <tr><td>Work Experience</td><td>15</td></tr>
+                                        <tr><td>Language (IELTS)</td><td>28</td></tr>
+                                        <tr><td>Adaptability</td><td>10</td></tr>
+                                        <tr class="total-row"><td><strong>Total</strong></td><td><strong>100</strong></td></tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Visitor Visas Section -->
+            <section id="visitor-visas" class="content-section">
+                <div class="section-header">
+                    <div class="section-logo-wrapper">
+                        <img src="logo-owl.png" alt="Gubicoo Logo" class="section-owl-logo" onerror="this.style.display='none';">
+                    </div>
+                    <h1><i class="fas fa-plane"></i> Tourist & Visitor Visa Information</h1>
+                    <p>Complete guide to short-term visit visas including eligibility criteria, required documents, processing times, and application tips</p>
+                </div>
+                
+                <div class="visitor-visas-container">
+                    <div class="visitor-countries-grid">
+                        <div class="visitor-country-card" onclick="showVisitorDetails('canada')">
+                            <div class="visitor-flag">🇨🇦</div>
+                            <h3>Canada Visitor Visa</h3>
+                            <p>Tourist, Business, Family Visit</p>
+                            <div class="visitor-badge">6 months validity</div>
+                        </div>
+                        <div class="visitor-country-card" onclick="showVisitorDetails('australia')">
+                            <div class="visitor-flag">🇦🇺</div>
+                            <h3>Australia Visitor Visa</h3>
+                            <p>Tourism, Business, Family Visit</p>
+                            <div class="visitor-badge">3-12 months</div>
+                        </div>
+                        <div class="visitor-country-card" onclick="showVisitorDetails('united-kingdom')">
+                            <div class="visitor-flag">🇬🇧</div>
+                            <h3>UK Visitor Visa</h3>
+                            <p>Tourism, Business, Family Visit</p>
+                            <div class="visitor-badge">6 months validity</div>
+                        </div>
+                        <div class="visitor-country-card" onclick="showVisitorDetails('new-zealand')">
+                            <div class="visitor-flag">🇳🇿</div>
+                            <h3>New Zealand Visitor Visa</h3>
+                            <p>Tourism, Business, Family Visit</p>
+                            <div class="visitor-badge">9 months validity</div>
+                        </div>
+                        <div class="visitor-country-card" onclick="showVisitorDetails('united-states')">
+                            <div class="visitor-flag">🇺🇸</div>
+                            <h3>USA Visitor Visa (B1/B2)</h3>
+                            <p>Tourism, Business, Medical</p>
+                            <div class="visitor-badge">10 years validity</div>
+                        </div>
+                        <div class="visitor-country-card" onclick="showVisitorDetails('schengen')">
+                            <div class="visitor-flag">🇪🇺</div>
+                            <h3>Schengen Visa</h3>
+                            <p>26 European countries</p>
+                            <div class="visitor-badge">90 days validity</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Visitor Visa Details Modal -->
+                <div id="visitorModal" class="country-modal" style="display: none;">
+                    <div class="country-modal-content">
+                        <div class="country-modal-header">
+                            <h2 id="visitorModalTitle"></h2>
+                            <span class="country-modal-close" onclick="closeVisitorModal()">&times;</span>
+                        </div>
+                        <div class="country-modal-body" id="visitorModalBody"></div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- News & Updates Section -->
+            <section id="news" class="content-section">
+                <div class="section-header">
+                    <div class="section-logo-wrapper">
+                        <img src="logo-owl.png" alt="Gubicoo Logo" class="section-owl-logo" onerror="this.style.display='none';">
+                    </div>
+                    <h1><i class="fas fa-newspaper"></i> Immigration News & Policy Updates</h1>
+                    <p>Stay informed with the latest immigration news, policy changes, draw results, and updates from official government sources</p>
+                </div>
+                
+                <div class="news-container">
+                    <!-- News Filters -->
+                    <div class="news-filters">
+                        <div class="filter-group">
+                            <label for="newsCountryFilter"><i class="fas fa-globe"></i> Filter by Country</label>
+                            <select id="newsCountryFilter" onchange="filterNews()">
+                                <option value="all">All Countries</option>
+                                <option value="Canada">Canada</option>
+                                <option value="Australia">Australia</option>
+                                <option value="UK">United Kingdom</option>
+                                <option value="Germany">Germany</option>
+                                <option value="Europe">Europe</option>
+                                <option value="Global">Global</option>
+                            </select>
+                        </div>
+                        <div class="filter-group">
+                            <label for="newsCategoryFilter"><i class="fas fa-tags"></i> Filter by Category</label>
+                            <select id="newsCategoryFilter" onchange="filterNews()">
+                                <option value="all">All Categories</option>
+                                <option value="Draw">Draw / Invitation Round</option>
+                                <option value="Policy Change">Policy Change</option>
+                                <option value="New Program">New Program</option>
+                                <option value="Processing Update">Processing Update</option>
+                                <option value="Study Visa">Study Visa</option>
+                                <option value="Work Visa">Work Visa</option>
+                            </select>
+                        </div>
+                        <div class="filter-group">
+                            <label for="newsSearch"><i class="fas fa-search"></i> Search News</label>
+                            <input type="text" id="newsSearch" placeholder="Search news..." onkeyup="filterNews()">
+                        </div>
+                        <button class="btn btn-outline" onclick="refreshNews()">
+                            <i class="fas fa-sync-alt"></i> Refresh News
+                        </button>
+                    </div>
+
+                    <!-- News Stats -->
+                    <div class="news-stats">
+                        <div class="stat-item">
+                            <span class="stat-label">Total News:</span>
+                            <span class="stat-value" id="totalNewsCount">0</span>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-label">Filtered:</span>
+                            <span class="stat-value" id="filteredNewsCount">0</span>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-label">Last Updated:</span>
+                            <span class="stat-value" id="lastUpdated">-</span>
+                        </div>
+                    </div>
+
+                    <!-- News Feed -->
+                    <div class="news-feed" id="newsFeed">
+                        <!-- News items will be dynamically inserted here -->
+                    </div>
+
+                    <!-- Loading Indicator -->
+                    <div id="newsLoading" class="news-loading" style="display: none;">
+                        <i class="fas fa-spinner fa-spin"></i>
+                        <span>Loading latest news...</span>
+                    </div>
+
+                    <!-- No Results Message -->
+                    <div id="noNewsResults" class="no-news-results" style="display: none;">
+                        <i class="fas fa-newspaper"></i>
+                        <h3>No news found</h3>
+                        <p>Try adjusting your filters or search terms</p>
+                    </div>
+                </div>
+
+                <!-- News Detail Modal -->
+                <div id="newsModal" class="country-modal" style="display: none;">
+                    <div class="country-modal-content">
+                        <div class="country-modal-header">
+                            <h2 id="newsModalTitle"></h2>
+                            <span class="country-modal-close" onclick="closeNewsModal()">&times;</span>
+                        </div>
+                        <div class="country-modal-body" id="newsModalBody"></div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Mistakes & Rejections Section -->
+            <section id="mistakes" class="content-section">
+                <div class="section-header">
+                    <div class="section-logo-wrapper">
+                        <img src="logo-owl.png" alt="Gubicoo Logo" class="section-owl-logo" onerror="this.style.display='none';">
+                    </div>
+                    <h1><i class="fas fa-exclamation-triangle"></i> Common Mistakes & Visa Rejections</h1>
+                    <p>Learn from common visa rejection reasons, document errors, and application mistakes to improve your chances of approval</p>
+                </div>
+                
+                <div class="mistakes-container">
+                    <div class="mistakes-category">
+                        <h2><i class="fas fa-exclamation-triangle"></i> Common Rejection Topics</h2>
+                        <div class="mistakes-grid">
+                            <div class="mistake-card" onclick="showMistakeDetails('common-rejections')">
+                                <div class="mistake-icon rejection">
+                                    <i class="fas fa-times-circle"></i>
+                                </div>
+                                <h3>Common Visa Rejection Reasons</h3>
+                                <p>Top reasons why visa applications get rejected</p>
+                            </div>
+                            <div class="mistake-card" onclick="showMistakeDetails('country-mistakes')">
+                                <div class="mistake-icon country">
+                                    <i class="fas fa-globe"></i>
+                                </div>
+                                <h3>Country-Wise Rejection Mistakes</h3>
+                                <p>Specific mistakes for each destination country</p>
+                            </div>
+                            <div class="mistake-card" onclick="showMistakeDetails('ielts-mistakes')">
+                                <div class="mistake-icon ielts">
+                                    <i class="fas fa-language"></i>
+                                </div>
+                                <h3>IELTS Mistakes</h3>
+                                <p>Common IELTS-related errors that lead to rejection</p>
+                            </div>
+                            <div class="mistake-card" onclick="showMistakeDetails('document-errors')">
+                                <div class="mistake-icon document">
+                                    <i class="fas fa-file-exclamation"></i>
+                                </div>
+                                <h3>Document Errors</h3>
+                                <p>Documentation mistakes that cause rejections</p>
+                            </div>
+                            <div class="mistake-card" onclick="showMistakeDetails('fake-consultants')">
+                                <div class="mistake-icon warning">
+                                    <i class="fas fa-shield-alt"></i>
+                                </div>
+                                <h3>Fake Consultant Warnings</h3>
+                                <p>How to identify and avoid fraudulent consultants</p>
+                            </div>
+                            <div class="mistake-card" onclick="showMistakeDetails('when-reapply')">
+                                <div class="mistake-icon reapply">
+                                    <i class="fas fa-redo"></i>
+                                </div>
+                                <h3>When to Reapply</h3>
+                                <p>Guidelines for reapplying after rejection</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="mistakes-warning-box">
+                        <div class="warning-icon">
+                            <i class="fas fa-exclamation-triangle"></i>
+                        </div>
+                        <div class="warning-content">
+                            <h3>Important Notice</h3>
+                            <p>Understanding common rejection reasons helps you avoid mistakes and improve your chances of approval. Always ensure your application is complete, accurate, and truthful.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Mistakes Details Modal -->
+                <div id="mistakeModal" class="country-modal" style="display: none;">
+                    <div class="country-modal-content">
+                        <div class="country-modal-header">
+                            <h2 id="mistakeModalTitle"></h2>
+                            <span class="country-modal-close" onclick="closeMistakeModal()">&times;</span>
+                        </div>
+                        <div class="country-modal-body" id="mistakeModalBody"></div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- FAQs Section -->
+            <section id="faqs" class="content-section">
+                <div class="section-header">
+                    <div class="section-logo-wrapper">
+                        <img src="logo-owl.png" alt="Gubicoo Logo" class="section-owl-logo" onerror="this.style.display='none';">
+                    </div>
+                    <h1><i class="fas fa-question-circle"></i> Frequently Asked Questions</h1>
+                    <p>Find answers to the most common questions about immigration, visa applications, eligibility, and migration processes</p>
+                </div>
+                
+                <div class="faqs-content">
+                    <!-- Search Bar -->
+                    <div class="faq-search-container">
+                        <div class="faq-search-wrapper">
+                            <i class="fas fa-search faq-search-icon"></i>
+                            <input type="text" id="faqSearch" class="faq-search-input" placeholder="Search for questions or topics...">
+                            <button class="faq-clear-search" id="faqClearSearch" style="display: none;">
+                                <i class="fas fa-times"></i>
+                            </button>
+                        </div>
+                        <div class="faq-results-count" id="faqResultsCount"></div>
+                    </div>
+
+                    <!-- Category Filter -->
+                    <div class="faq-categories">
+                        <button class="faq-category-btn active" data-category="all">
+                            <i class="fas fa-th"></i> All Questions
+                        </button>
+                        <button class="faq-category-btn" data-category="eligibility">
+                            <i class="fas fa-check-circle"></i> Eligibility
+                        </button>
+                        <button class="faq-category-btn" data-category="visa">
+                            <i class="fas fa-passport"></i> Visa Types
+                        </button>
+                        <button class="faq-category-btn" data-category="language">
+                            <i class="fas fa-language"></i> Language Tests
+                        </button>
+                        <button class="faq-category-btn" data-category="age">
+                            <i class="fas fa-birthday-cake"></i> Age & Family
+                        </button>
+                        <button class="faq-category-btn" data-category="pr">
+                            <i class="fas fa-id-card"></i> Permanent Residence
+                        </button>
+                        <button class="faq-category-btn" data-category="work">
+                            <i class="fas fa-briefcase"></i> Work & Employment
+                        </button>
+                        <button class="faq-category-btn" data-category="process">
+                            <i class="fas fa-cogs"></i> Application Process
+                        </button>
+                    </div>
+
+                    <!-- FAQ Accordion -->
+                    <div class="faq-accordion" id="faqAccordion">
+                        <!-- FAQ items will be dynamically generated -->
+                    </div>
+
+                    <!-- No Results Message -->
+                    <div class="faq-no-results" id="faqNoResults" style="display: none;">
+                        <i class="fas fa-search"></i>
+                        <h3>No questions found</h3>
+                        <p>Try adjusting your search terms or browse by category</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- About Migration Laws Section -->
+            <section id="laws" class="content-section">
+                <div class="section-header">
+                    <div class="section-logo-wrapper">
+                        <img src="logo-owl.png" alt="Gubicoo Logo" class="section-owl-logo" onerror="this.style.display='none';">
+                    </div>
+                    <h1><i class="fas fa-balance-scale"></i> Immigration Law & Legal Information</h1>
+                    <p>Comprehensive guide to immigration law fundamentals, visa validity rules, rights, obligations, and legal requirements</p>
+                </div>
+                
+                <div class="laws-container">
+                    <div class="laws-category">
+                        <h2><i class="fas fa-balance-scale"></i> Immigration Law Topics</h2>
+                        <div class="laws-grid">
+                            <div class="law-card" onclick="showLawDetails('immigration-basics')">
+                                <div class="law-icon basics">
+                                    <i class="fas fa-book"></i>
+                                </div>
+                                <h3>Immigration Law Basics</h3>
+                                <p>Fundamental concepts and principles</p>
+                            </div>
+                            <div class="law-card" onclick="showLawDetails('pr-vs-citizenship')">
+                                <div class="law-icon pr">
+                                    <i class="fas fa-id-card"></i>
+                                </div>
+                                <h3>PR vs Citizenship</h3>
+                                <p>Understanding the key differences</p>
+                            </div>
+                            <div class="law-card" onclick="showLawDetails('visa-validity')">
+                                <div class="law-icon validity">
+                                    <i class="fas fa-calendar-check"></i>
+                                </div>
+                                <h3>Visa Validity Rules</h3>
+                                <p>Understanding visa duration and conditions</p>
+                            </div>
+                            <div class="law-card" onclick="showLawDetails('overstay-consequences')">
+                                <div class="law-icon overstay">
+                                    <i class="fas fa-exclamation-triangle"></i>
+                                </div>
+                                <h3>Overstay Consequences</h3>
+                                <p>Serious penalties for visa violations</p>
+                            </div>
+                            <div class="law-card" onclick="showLawDetails('visa-conditions')">
+                                <div class="law-icon conditions">
+                                    <i class="fas fa-list-check"></i>
+                                </div>
+                                <h3>Visa Conditions & Restrictions</h3>
+                                <p>What you can and cannot do on your visa</p>
+                            </div>
+                            <div class="law-card" onclick="showLawDetails('rights-obligations')">
+                                <div class="law-icon rights">
+                                    <i class="fas fa-handshake"></i>
+                                </div>
+                                <h3>Rights & Obligations</h3>
+                                <p>Your rights and responsibilities as an immigrant</p>
+                            </div>
+                            <div class="law-card" onclick="showLawDetails('family-members')">
+                                <div class="law-icon family">
+                                    <i class="fas fa-users"></i>
+                                </div>
+                                <h3>Family Member Rights</h3>
+                                <p>Spouse, children, and dependent rights</p>
+                            </div>
+                            <div class="law-card" onclick="showLawDetails('legal-disclaimers')">
+                                <div class="law-icon disclaimer">
+                                    <i class="fas fa-gavel"></i>
+                                </div>
+                                <h3>Legal Disclaimers</h3>
+                                <p>Important legal information and limitations</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="laws-important-notice">
+                        <div class="notice-icon">
+                            <i class="fas fa-info-circle"></i>
+                        </div>
+                        <div class="notice-content">
+                            <h3>Important Legal Notice</h3>
+                            <p>This information is for educational purposes only and does not constitute legal advice. Immigration laws are complex and change frequently. Always consult with a qualified immigration lawyer or registered consultant for advice specific to your situation.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Law Details Modal -->
+                <div id="lawModal" class="country-modal" style="display: none;">
+                    <div class="country-modal-content">
+                        <div class="country-modal-header">
+                            <h2 id="lawModalTitle"></h2>
+                            <span class="country-modal-close" onclick="closeLawModal()">&times;</span>
+                        </div>
+                        <div class="country-modal-body" id="lawModalBody"></div>
                     </div>
                 </div>
             </section>
@@ -711,8 +2505,11 @@
             <!-- Occupation List Section -->
             <section id="occupation-list" class="content-section">
                 <div class="section-header">
-                    <h1>Occupation List</h1>
-                    <p>Browse available occupations and their requirements</p>
+                    <div class="section-logo-wrapper">
+                        <img src="logo-owl.png" alt="Gubicoo Logo" class="section-owl-logo" onerror="this.style.display='none';">
+                    </div>
+                    <h1><i class="fas fa-list-alt"></i> Skilled Occupation Database</h1>
+                    <p>Comprehensive database of in-demand occupations with skill assessment requirements and eligibility criteria</p>
                 </div>
 
                 <div class="occupation-list-container">
@@ -738,10 +2535,10 @@
             </section>
 
             <!-- Documents Section -->
-            <section id="documents" class="content-section">
+            <section id="documents" class="content-section active">
                 <div class="section-header">
-                    <h1>Document Upload</h1>
-                    <p>Upload your required documents based on your visa pathway</p>
+                    <h1>Document Checklist</h1>
+                    <p>View required documents based on your visa pathway</p>
                 </div>
 
                 <!-- Conditional Document Access -->
@@ -750,7 +2547,7 @@
                     <div class="compulsory-selection-container">
                    <div class="selection-header">
                        <h2>Application Details</h2>
-                       <p>Please complete all three selections to proceed with document upload</p>
+                       <p>Please complete all three selections to view the document checklist</p>
                    </div>
             
             <div class="selection-fields">
@@ -764,11 +2561,33 @@
                     <div class="selection-field">
                         <select id="countrySelect" onchange="handleCountrySelection()" required>
                             <option value="">Select Country</option>
-                                <option value="australia">Australia</option>
-                                <option value="canada">Canada</option>
-                            <option value="new-zealand">New Zealand</option>
+                            <option value="australia">Australia</option>
+                            <option value="canada">Canada</option>
+                            <option value="germany">Germany</option>
                             <option value="united-kingdom">United Kingdom</option>
                             <option value="united-states">United States</option>
+                            <option value="ireland">Ireland</option>
+                            <option value="new-zealand">New Zealand</option>
+                            <option value="netherlands">Netherlands</option>
+                            <option value="poland">Poland</option>
+                            <option value="slovakia">Slovakia</option>
+                            <option value="romania">Romania</option>
+                            <option value="croatia">Croatia</option>
+                            <option value="malta">Malta</option>
+                            <option value="latvia">Latvia</option>
+                            <option value="sweden">Sweden</option>
+                            <option value="switzerland">Switzerland</option>
+                            <option value="denmark">Denmark</option>
+                            <option value="italy">Italy</option>
+                            <option value="france">France</option>
+                            <option value="south-korea">South Korea</option>
+                            <option value="singapore">Singapore</option>
+                            <option value="uae">UAE</option>
+                            <option value="philippines">Philippines</option>
+                            <option value="malaysia">Malaysia</option>
+                            <option value="russia">Russia</option>
+                            <option value="bulgaria">Bulgaria</option>
+                            <option value="albania">Albania</option>
                         </select>
                         <div class="field-status" id="country-status"></div>
                         
@@ -824,123 +2643,6 @@
 
                 </div>
             </section>
-
-    
-
-    <!-- Progress Section -->
-    <section id="progress" class="content-section">
-        <div class="section-header">
-            <h1>Application Progress</h1>
-            <p>Track your migration application progress</p>
-        </div>
-        
-        <div class="progress-container glass-panel" style="padding: 30px; margin: 20px 0;">
-            <div class="progress-overview" style="margin-bottom: 40px;">
-                <h3 style="margin-bottom: 20px;">Overall Progress</h3>
-                <div class="progress-bar-container">
-                    <div class="progress-bar-animated" style="width: 0%" id="overallProgressBar"></div>
-                </div>
-                <span class="progress-text" style="display: block; margin-top: 10px; font-weight: 600;">0% Complete</span>
-            </div>
-            
-            <div class="progress-timeline">
-                <div class="progress-timeline-fill" id="timelineFill" style="width: 0%"></div>
-                
-                <div class="progress-step completed">
-                    <div class="progress-step-chip">
-                        <i class="fas fa-check"></i>
-                    </div>
-                    <div class="progress-step-label">Registration</div>
-                </div>
-                
-                <div class="progress-step" id="uploadStep">
-                    <div class="progress-step-chip">
-                        <i class="fas fa-file-upload"></i>
-                    </div>
-                    <div class="progress-step-label">Document Upload</div>
-                </div>
-                
-                <div class="progress-step" id="reviewStep">
-                    <div class="progress-step-chip">
-                        <i class="fas fa-clipboard-check"></i>
-                    </div>
-                    <div class="progress-step-label">Review</div>
-                </div>
-
-                <div class="progress-step" id="submitStep">
-                    <div class="progress-step-chip">
-                        <i class="fas fa-paper-plane"></i>
-                    </div>
-                    <div class="progress-step-label">Submission</div>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- Messages Section -->
-    <section id="messages" class="content-section">
-        <div class="section-header">
-            <h1>Messages</h1>
-            <p>Communicate with your migration consultant</p>
-        </div>
-        
-        <div class="messages-container">
-            <div class="messages-list glass-panel">
-                <div class="messages-list-header">
-                    <div class="consultant-info">
-                        <div class="consultant-avatar">
-                            <i class="fas fa-user-tie"></i>
-                        </div>
-                        <div class="consultant-details">
-                            <h3>Migration Consultant</h3>
-                            <span class="consultant-status online">Online</span>
-                        </div>
-                    </div>
-                </div>
-                <div class="messages-thread">
-                    <div class="message-item received">
-                        <div class="message-avatar">
-                            <span>MC</span>
-                        </div>
-                        <div class="message-content-wrapper">
-                            <div class="message-content">
-                                <div class="message-header">
-                                    <span class="sender-name">Migration Consultant</span>
-                                    <span class="message-time">2 hours ago</span>
-                                </div>
-                                <div class="message-text">
-                                    <p>Welcome to your migration portal! Please upload your documents to get started.</p>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            
-            <div class="message-compose glass-panel">
-                <div class="compose-header">
-                    <h3><i class="fas fa-paper-plane"></i> Send Message</h3>
-                    <p class="compose-subtitle">Type your message below and we'll get back to you soon</p>
-                </div>
-                <div class="compose-form">
-                    <div class="textarea-wrapper">
-                        <textarea id="messageInput" placeholder="Type your message here..." rows="5"></textarea>
-                        <div class="char-counter">
-                            <span id="charCount">0</span> / 1000
-                        </div>
-                    </div>
-                    <div class="compose-actions">
-                        <button type="button" class="btn btn-outline">
-                            <i class="fas fa-paperclip"></i> Attach File
-                        </button>
-                        <button type="button" class="btn btn-primary" id="sendMessageBtn">
-                            <i class="fas fa-paper-plane"></i> Send Message
-                        </button>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
 
     <!-- Occupation List Modal -->
     <div id="occupationListModal" class="modal" style="display: none;">

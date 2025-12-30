@@ -1,4 +1,4 @@
-// Client Dashboard JavaScript for Tonio & Senora
+// Client Dashboard JavaScript for Gubicoo Migration Navigator
 // FIXED: Removed duplicate currentUser declaration - script.js declares it already
 // Cache Buster: 2025-01-01
 
@@ -49,6 +49,48 @@ function clearClientChecklistState() {
 // Data structures - Visa Types with metadata
 const VISA_TYPES_DATA = {
     australia: {
+        'subclass-189': {
+            id: 'subclass-189',
+            name: 'Skilled Independent Visa (Subclass 189)',
+            requiresAuthority: true,
+            description: 'Points-tested permanent residency visa, no state or employer sponsorship required'
+        },
+        'subclass-190': {
+            id: 'subclass-190',
+            name: 'Skilled Nominated Visa (Subclass 190)',
+            requiresAuthority: true,
+            description: 'Points-tested permanent residency visa requiring state/territory nomination'
+        },
+        'subclass-491': {
+            id: 'subclass-491',
+            name: 'Skilled Work Regional Visa (Subclass 491)',
+            requiresAuthority: true,
+            description: 'Points-tested provisional visa for regional Australia, pathway to PR (Subclass 191)'
+        },
+        'subclass-482': {
+            id: 'subclass-482',
+            name: 'Temporary Skill Shortage Visa (Subclass 482)',
+            requiresAuthority: false,
+            description: 'Employer-sponsored temporary visa (2-4 years), can lead to PR'
+        },
+        'subclass-186': {
+            id: 'subclass-186',
+            name: 'Employer Nomination Scheme Visa (Subclass 186)',
+            requiresAuthority: false,
+            description: 'Permanent residency visa requiring employer nomination'
+        },
+        'subclass-494': {
+            id: 'subclass-494',
+            name: 'Skilled Employer Sponsored Regional Visa (Subclass 494)',
+            requiresAuthority: false,
+            description: 'Regional employer-sponsored provisional visa, pathway to PR'
+        },
+        'subclass-407': {
+            id: 'subclass-407',
+            name: 'Training Visa (Subclass 407)',
+            requiresAuthority: false,
+            description: 'Temporary visa for occupational training or professional development, valid up to 2 years'
+        },
         'general-skilled-migration': {
             id: 'general-skilled-migration',
             name: 'Skilled Migration (GSM)',
@@ -57,7 +99,7 @@ const VISA_TYPES_DATA = {
         },
         'student-visa': {
             id: 'student-visa',
-            name: 'Student Visa',
+            name: 'Student Visa (Subclass 500)',
             requiresAuthority: false,
             description: 'Study in Australia with work rights'
         },
@@ -1672,7 +1714,7 @@ function hideDocumentChecklist() {
     }
 }
 
-// Generate upload interface from DOCUMENT_REQUIREMENTS
+// Generate checklist from DOCUMENT_REQUIREMENTS (no upload functionality)
 function generateUploadInterfaceFromRequirements(country, visaType, authority = null) {
     const countryRequirements = DOCUMENT_REQUIREMENTS[country];
     if (!countryRequirements) {
@@ -1691,54 +1733,28 @@ function generateUploadInterfaceFromRequirements(country, visaType, authority = 
     const visaName = visaData ? visaData.name : visaType.replace(/-/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
     
     let html = `
-        <div class="visa-upload-container glass-panel">
-            <div class="upload-header">
-                <h2>${visaName} - Document Upload</h2>
-                <p>Please upload the required documents for your ${visaName} application</p>
+        <div class="document-checklist-container" style="background: white; border-radius: 12px; padding: 2rem; box-shadow: 0 2px 10px rgba(0,0,0,0.1);">
+            <div class="checklist-header">
+                <h2><i class="fas fa-clipboard-list"></i> Required Documents Checklist</h2>
+                <p>Documents required for ${visaName} application</p>
             </div>
             
-            <div class="document-categories">
-                <div class="document-category glass-panel">
-                    <div class="category-header">
-                        <i class="fas fa-file-alt"></i>
-                        <h3>Required Documents</h3>
-                        <span class="category-status">Required</span>
-                    </div>
-                    <div class="upload-fields">
+            <div class="document-checklist-list" style="margin-top: 2rem;">
+                <ul style="list-style: none; padding: 0;">
     `;
     
-    // Generate upload field for each required document
+    // Generate checklist item for each required document
     visaRequirements.forEach((docName, index) => {
-        const fieldId = `doc_${visaType}_${index}`;
         html += `
-            <div class="upload-field">
-                <label for="${fieldId}">
-                    <i class="fas fa-file-pdf"></i> ${docName}
-                </label>
-                <div class="file-upload-zone glass" onclick="document.getElementById('${fieldId}').click()">
-                    <i class="fas fa-cloud-upload-alt"></i>
-                    <p class="upload-zone-text">Click to Upload</p>
-                    <p class="upload-zone-subtext">PDF, JPG, PNG up to 10MB</p>
-                </div>
-                <input type="file" id="${fieldId}" accept=".pdf,.jpg,.jpeg,.png" style="display: none;" 
-                       onchange="handleFileSelection(event, '${fieldId}')">
-                <div class="uploaded-files" id="${fieldId}_files"></div>
-            </div>
+            <li style="padding: 1rem; margin-bottom: 0.75rem; background: #f8f9fa; border-left: 4px solid #3B82F6; border-radius: 4px; display: flex; align-items: center; gap: 1rem;">
+                <i class="fas fa-file-alt" style="color: #3B82F6; font-size: 1.2rem;"></i>
+                <span style="font-size: 1rem; color: #333; font-weight: 500;">${docName}</span>
+            </li>
         `;
     });
     
     html += `
-                    </div>
-                </div>
-            </div>
-            
-            <div class="upload-actions">
-                <button class="btn btn-primary" onclick="submitAllDocuments()">
-                    <i class="fas fa-check"></i> Submit All Documents
-                </button>
-                <button class="btn btn-secondary" onclick="saveProgress()">
-                    <i class="fas fa-save"></i> Save Progress
-                </button>
+                </ul>
             </div>
         </div>
     `;
@@ -1997,12 +2013,25 @@ function showVisaSpecificUploadInterface(visaType, authority = null) {
         console.error('❌ DOCUMENT_REQUIREMENTS check:', DOCUMENT_REQUIREMENTS[country] ? 'country exists' : 'country missing', DOCUMENT_REQUIREMENTS[country] && DOCUMENT_REQUIREMENTS[country][visaType] ? '- visa type found' : '- visa type missing');
     }
     
-    container.innerHTML = uploadHTML;
+    // Convert upload HTML to checklist-only (remove upload functionality)
+    let checklistHTML = uploadHTML;
     
-    // Add event listeners for file upload zones
-    setupFileUploadListeners();
+    // Remove upload zones and buttons, keep only document names
+    checklistHTML = checklistHTML.replace(/<div class="file-upload-zone[^"]*"[^>]*>[\s\S]*?<\/div>/gi, '');
+    checklistHTML = checklistHTML.replace(/<input[^>]*type="file"[^>]*>/gi, '');
+    checklistHTML = checklistHTML.replace(/<div class="uploaded-files"[^>]*>[\s\S]*?<\/div>/gi, '');
+    checklistHTML = checklistHTML.replace(/<div class="upload-actions"[^>]*>[\s\S]*?<\/div>/gi, '');
+    checklistHTML = checklistHTML.replace(/onclick="[^"]*"/gi, '');
+    checklistHTML = checklistHTML.replace(/<button[^>]*>[\s\S]*?<\/button>/gi, '');
     
-    console.log('✅ Visa-specific upload interface displayed');
+    // Update headers to say "Checklist" instead of "Upload"
+    checklistHTML = checklistHTML.replace(/Document Upload/g, 'Document Checklist');
+    checklistHTML = checklistHTML.replace(/upload/gi, 'checklist');
+    checklistHTML = checklistHTML.replace(/Upload/gi, 'Checklist');
+    
+    container.innerHTML = checklistHTML;
+    
+    console.log('✅ Document checklist displayed');
 }
 
 // Generate GSM authority-specific detailed upload interface
@@ -8163,23 +8192,83 @@ function saveProgress() {
 function submitAllDocuments() {
     console.log('📤 Submitting all documents...');
     
-    // Collect all uploaded files
+    // Get current user with email validation
+    let currentUser = JSON.parse(localStorage.getItem('currentUser') || '{}');
+    
+    // Ensure email is available - try to get from users array if missing
+    if (!currentUser.email || currentUser.email === '') {
+        const users = JSON.parse(localStorage.getItem('users') || '[]');
+        const userFromStorage = users.find(u => u.id === currentUser.id || u.email === (currentUser.email || ''));
+        if (userFromStorage && userFromStorage.email) {
+            currentUser.email = userFromStorage.email;
+            currentUser.name = currentUser.name || userFromStorage.name;
+            currentUser.id = currentUser.id || userFromStorage.id;
+            // Update currentUser in localStorage
+            localStorage.setItem('currentUser', JSON.stringify(currentUser));
+        } else {
+            // Email is required - prompt user
+            const email = prompt('Please enter your email address to submit documents:');
+            if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+                alert('Valid email is required to submit documents. Please try again.');
+                return;
+            }
+            currentUser.email = email;
+            if (!currentUser.name) currentUser.name = 'Client';
+            if (!currentUser.id) currentUser.id = Date.now().toString();
+            localStorage.setItem('currentUser', JSON.stringify(currentUser));
+        }
+    }
+    
+    // Validate email format
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(currentUser.email)) {
+        alert('Invalid email address. Please update your profile with a valid email.');
+        return;
+    }
+    
+    // Collect all uploaded files - support both data-field and id-based fields
     const uploadedFiles = {};
-    const allUploadZones = document.querySelectorAll('.file-upload-zone');
     let totalFiles = 0;
     
+    // Method 1: Check upload zones with data-field attribute
+    const allUploadZones = document.querySelectorAll('.file-upload-zone');
     allUploadZones.forEach(zone => {
         const fieldName = zone.getAttribute('data-field');
-        const filesContainer = document.getElementById(`${fieldName}-files`);
-        
-        if (filesContainer && filesContainer.children.length > 0) {
-            const files = Array.from(filesContainer.querySelectorAll('.file-item')).map(item => {
-                const fileName = item.querySelector('.file-name')?.textContent || '';
-                const fileSize = item.querySelector('.file-size')?.textContent || '';
-                return { name: fileName, size: fileSize };
-            });
-            uploadedFiles[fieldName] = files;
-            totalFiles += files.length;
+        if (fieldName) {
+            const filesContainer = document.getElementById(`${fieldName}-files`);
+            if (filesContainer && filesContainer.children.length > 0) {
+                const files = Array.from(filesContainer.querySelectorAll('.file-item')).map(item => {
+                    const fileName = item.querySelector('.file-name')?.textContent || '';
+                    const fileSize = item.querySelector('.file-size')?.textContent || '';
+                    return { name: fileName, size: fileSize };
+                });
+                if (files.length > 0) {
+                    uploadedFiles[fieldName] = files;
+                    totalFiles += files.length;
+                }
+            }
+        }
+    });
+    
+    // Method 2: Check file inputs directly (for fields like doc_visaType_index)
+    const allFileInputs = document.querySelectorAll('input[type="file"]');
+    allFileInputs.forEach(input => {
+        const inputId = input.id;
+        if (inputId && inputId.startsWith('doc_')) {
+            const filesContainer = document.getElementById(`${inputId}_files`);
+            if (filesContainer && filesContainer.children.length > 0) {
+                const files = Array.from(filesContainer.querySelectorAll('.file-item')).map(item => {
+                    const fileName = item.querySelector('.file-name')?.textContent || '';
+                    const fileSize = item.querySelector('.file-size')?.textContent || '';
+                    return { name: fileName, size: fileSize };
+                });
+                if (files.length > 0) {
+                    // Use a readable field name
+                    const fieldLabel = input.closest('.upload-field')?.querySelector('label')?.textContent?.trim() || inputId;
+                    uploadedFiles[fieldLabel] = files;
+                    totalFiles += files.length;
+                }
+            }
         }
     });
     
@@ -8189,9 +8278,8 @@ function submitAllDocuments() {
     }
     
     // Save submission
-    const country = documentSelectionState.country;
-    const visaType = documentSelectionState.visaType;
-    const currentUser = JSON.parse(localStorage.getItem('currentUser') || '{}');
+    const country = documentSelectionState.country || 'Unknown';
+    const visaType = documentSelectionState.visaType || 'Unknown';
     
     // Save to document submissions
     const submissionKey = `documentSubmission_${country}_${visaType}_${Date.now()}`;
@@ -8202,7 +8290,7 @@ function submitAllDocuments() {
         submittedAt: new Date().toISOString(),
         totalFiles,
         clientId: currentUser.id,
-        clientName: currentUser.name,
+        clientName: currentUser.name || 'Unknown Client',
         clientEmail: currentUser.email
     }));
     
@@ -8214,13 +8302,15 @@ function submitAllDocuments() {
                 id: Date.now().toString() + Math.random().toString(36).substr(2, 9),
                 title: `${fieldName}: ${file.name}`,
                 type: fieldName,
-                client: currentUser.name || 'Unknown',
-                clientEmail: currentUser.email || '',
+                client: currentUser.name || 'Unknown Client',
+                clientEmail: currentUser.email,
                 clientId: currentUser.id || '',
                 uploadedAt: new Date().toISOString(),
                 status: 'pending',
                 country: country,
-                visaType: visaType
+                visaType: visaType,
+                fileName: file.name,
+                fileSize: file.size
             });
         });
     });
@@ -8230,7 +8320,8 @@ function submitAllDocuments() {
     addActivity(`Documents Submitted`, `Submitted ${totalFiles} file(s) for ${visaType}`, 'fas fa-check-circle', 'success');
     
     console.log('✅ Documents submitted:', uploadedFiles);
-    alert(`Successfully submitted ${totalFiles} document(s)!`);
+    console.log('✅ Client email:', currentUser.email);
+    alert(`Successfully submitted ${totalFiles} document(s)! Your email (${currentUser.email}) has been recorded.`);
 }
 
 // Calculate progress percentage
@@ -8306,26 +8397,56 @@ function setupFileUploadListeners() {
 }
 
 // Handle file selection
-function handleFileSelection(event, fieldName) {
+function handleFileSelection(event, fieldNameOrId) {
     // Support both event object and direct fieldName
-    let files, containerId;
+    let files, containerId, actualFieldName;
     
-    if (event && event.target) {
-        // Called from onchange handler
+    if (event && event.target && event.target.files) {
+        // Called from onchange handler - event.target is the input
         files = event.target.files;
-        containerId = `${fieldName}-files`;
-    } else if (event && event.target && event.target.files) {
-        // Direct event with files
-        files = event.target.files;
-        containerId = `${fieldName}-files`;
-    } else {
-        // Fallback: fieldName might be the actual field name
-        const input = typeof fieldName === 'string' ? document.getElementById(fieldName) : null;
-        if (input) {
-            files = input.files;
-            containerId = `${fieldName}-files`;
+        const inputId = event.target.id;
+        
+        // Determine container ID based on input ID
+        if (inputId && inputId.startsWith('doc_')) {
+            // Format: doc_visaType_index
+            containerId = `${inputId}_files`;
+            actualFieldName = inputId;
+        } else if (fieldNameOrId) {
+            // Use provided fieldName
+            containerId = `${fieldNameOrId}-files`;
+            actualFieldName = fieldNameOrId;
         } else {
-            console.error('❌ Invalid parameters for handleFileSelection');
+            // Fallback: try to find associated container
+            const input = event.target;
+            const uploadField = input.closest('.upload-field');
+            if (uploadField) {
+                const label = uploadField.querySelector('label');
+                actualFieldName = label ? label.textContent.trim() : inputId;
+                containerId = `${inputId}_files`;
+            } else {
+                containerId = `${inputId}_files`;
+                actualFieldName = inputId;
+            }
+        }
+    } else if (event && event.target && event.target.files) {
+        // Direct event with files (drag and drop)
+        files = event.target.files;
+        if (fieldNameOrId) {
+            containerId = `${fieldNameOrId}-files`;
+            actualFieldName = fieldNameOrId;
+        } else {
+            console.error('❌ Field name required for file selection');
+            return;
+        }
+    } else {
+        // Fallback: fieldNameOrId might be the actual field ID
+        const input = typeof fieldNameOrId === 'string' ? document.getElementById(fieldNameOrId) : null;
+        if (input && input.files) {
+            files = input.files;
+            containerId = `${fieldNameOrId}_files`;
+            actualFieldName = fieldNameOrId;
+        } else {
+            console.error('❌ Invalid parameters for handleFileSelection:', { event, fieldNameOrId });
             return;
         }
     }
@@ -8334,10 +8455,42 @@ function handleFileSelection(event, fieldName) {
         return;
     }
     
+    // Validate file sizes (10MB limit)
+    const maxSize = 10 * 1024 * 1024; // 10MB
+    const oversizedFiles = Array.from(files).filter(file => file.size > maxSize);
+    if (oversizedFiles.length > 0) {
+        alert(`Some files exceed the 10MB limit:\n${oversizedFiles.map(f => f.name).join('\n')}\n\nPlease upload smaller files.`);
+        return;
+    }
+    
+    // Validate file types
+    const allowedTypes = ['.pdf', '.jpg', '.jpeg', '.png', '.doc', '.docx'];
+    const invalidFiles = Array.from(files).filter(file => {
+        const ext = '.' + file.name.split('.').pop().toLowerCase();
+        return !allowedTypes.includes(ext);
+    });
+    if (invalidFiles.length > 0) {
+        alert(`Some files have invalid types. Allowed: PDF, JPG, PNG, DOC, DOCX\n\nInvalid files:\n${invalidFiles.map(f => f.name).join('\n')}`);
+        return;
+    }
+    
     const filesContainer = document.getElementById(containerId);
     
     if (!filesContainer) {
         console.error('❌ Files container not found for field:', containerId);
+        // Try to create container if it doesn't exist
+        const input = document.getElementById(actualFieldName);
+        if (input) {
+            const uploadField = input.closest('.upload-field');
+            if (uploadField) {
+                const newContainer = document.createElement('div');
+                newContainer.id = containerId;
+                newContainer.className = 'uploaded-files';
+                input.parentNode.insertBefore(newContainer, input.nextSibling);
+                // Retry with new container
+                return handleFileSelection(event, fieldNameOrId);
+            }
+        }
         return;
     }
     
@@ -8351,10 +8504,10 @@ function handleFileSelection(event, fieldName) {
         fileItem.innerHTML = `
             <div class="file-info">
                 <i class="fas fa-file file-icon"></i>
-                <span class="file-name">${file.name}</span>
+                <span class="file-name">${escapeHtml(file.name)}</span>
                 <span class="file-size">${formatFileSize(file.size)}</span>
             </div>
-            <button class="file-remove" onclick="removeFile(this, '${fieldName}')">
+            <button class="file-remove" onclick="removeFile(this, '${actualFieldName}')">
                 <i class="fas fa-times"></i>
             </button>
         `;
@@ -8363,6 +8516,8 @@ function handleFileSelection(event, fieldName) {
     
     // Update progress
     updateProgress();
+    
+    console.log(`✅ ${files.length} file(s) added to ${actualFieldName}`);
 }
 
 // Remove file
@@ -10770,3 +10925,6364 @@ document.addEventListener('DOMContentLoaded', function() {
         return div.innerHTML.replace(/\n/g, '<br>');
     }
 });
+
+// ============================================
+// ELIGIBILITY CHECKER SYSTEM
+// ============================================
+
+// Eligibility Rules Database
+const ELIGIBILITY_RULES = {
+    canada: {
+        'fsw': {
+            name: 'Federal Skilled Worker (FSW)',
+            minPoints: 67,
+            hardRules: {
+                ageMin: 18,
+                ageMax: 44,
+                ieltsMin: 6,
+                experienceMin: 1,
+                educationMin: 'diploma'
+            },
+            calculatePoints: function(profile) {
+                let points = 0;
+                
+                // Age points (max 12)
+                if (profile.age >= 18 && profile.age <= 35) points += 12;
+                else if (profile.age === 36) points += 11;
+                else if (profile.age === 37) points += 10;
+                else if (profile.age === 38) points += 9;
+                else if (profile.age === 39) points += 8;
+                else if (profile.age === 40) points += 7;
+                else if (profile.age === 41) points += 6;
+                else if (profile.age === 42) points += 5;
+                else if (profile.age === 43) points += 4;
+                else if (profile.age === 44) points += 3;
+                
+                // Education points (max 25)
+                if (profile.highestQualification === 'phd') points += 25;
+                else if (profile.highestQualification === 'masters') points += 23;
+                else if (profile.highestQualification === 'bachelors') points += 21;
+                else if (profile.highestQualification === 'diploma') points += 19;
+                
+                // Experience points (max 15)
+                if (profile.totalExperience >= 4) points += 15;
+                else if (profile.totalExperience === 3) points += 11;
+                else if (profile.totalExperience === 2) points += 9;
+                else if (profile.totalExperience === 1) points += 9;
+                
+                // IELTS points (max 28)
+                const ielts = parseFloat(profile.ieltsOverall) || 0;
+                if (ielts >= 8) points += 28;
+                else if (ielts >= 7.5) points += 24;
+                else if (ielts >= 7) points += 20;
+                else if (ielts >= 6.5) points += 16;
+                else if (ielts >= 6) points += 12;
+                
+                // Adaptability points (max 10)
+                if (profile.relativeInCountry === 'canada') points += 5;
+                if (profile.spouseEducation && profile.spouseEducation !== 'none') points += 5;
+                if (profile.jobOffer === 'yes') points += 10;
+                
+                return Math.min(points, 100);
+            }
+        },
+        'cec': {
+            name: 'Canadian Experience Class (CEC)',
+            hardRules: {
+                canadianExperience: true,
+                ieltsMin: 7
+            }
+        }
+    },
+    australia: {
+        'skilled-migration': {
+            name: 'Skilled Migration (189/190/491)',
+            minPoints: 65,
+            hardRules: {
+                ageMax: 44,
+                ieltsMin: 6,
+                skillsAssessment: true
+            },
+            calculatePoints: function(profile) {
+                let points = 0;
+                
+                // Age points (max 30)
+                if (profile.age >= 18 && profile.age <= 24) points += 25;
+                else if (profile.age >= 25 && profile.age <= 32) points += 30;
+                else if (profile.age >= 33 && profile.age <= 39) points += 25;
+                else if (profile.age >= 40 && profile.age <= 44) points += 15;
+                
+                // Education points (max 20)
+                if (profile.highestQualification === 'phd') points += 20;
+                else if (profile.highestQualification === 'masters') points += 15;
+                else if (profile.highestQualification === 'bachelors') points += 15;
+                else if (profile.highestQualification === 'diploma') points += 10;
+                
+                // Experience points (max 20)
+                if (profile.totalExperience >= 8) points += 20;
+                else if (profile.totalExperience >= 5) points += 15;
+                else if (profile.totalExperience >= 3) points += 10;
+                else if (profile.totalExperience >= 1) points += 5;
+                
+                // IELTS points (max 20)
+                const ielts = parseFloat(profile.ieltsOverall) || 0;
+                if (ielts >= 8) points += 20;
+                else if (ielts >= 7) points += 10;
+                else if (ielts >= 6) points += 0;
+                
+                // Boosts
+                if (profile.relativeInCountry === 'australia') points += 10;
+                if (profile.jobOffer === 'yes') points += 5;
+                
+                return points;
+            }
+        }
+    },
+    germany: {
+        'opportunity-card': {
+            name: 'Germany Opportunity Card',
+            hardRules: {
+                degree: true,
+                language: 'B2',
+                experienceMin: 2
+            }
+        },
+        'eu-blue-card': {
+            name: 'EU Blue Card',
+            hardRules: {
+                degree: true,
+                salaryThreshold: true
+            }
+        }
+    },
+    'united-kingdom': {
+        'skilled-worker': {
+            name: 'Skilled Worker Visa',
+            hardRules: {
+                jobOffer: true,
+                salaryThreshold: true,
+                ieltsMin: 5.5
+            }
+        }
+    },
+    'new-zealand': {
+        'skilled-migrant': {
+            name: 'Skilled Migrant Category',
+            hardRules: {
+                ageMax: 55,
+                skillLevel: 'medium'
+            }
+        }
+    }
+};
+
+// Eligibility Checker Engine
+function checkEligibility(profile) {
+    const results = {};
+    
+    // Check each country
+    Object.keys(ELIGIBILITY_RULES).forEach(country => {
+        results[country] = {
+            country: country,
+            programs: []
+        };
+        
+        const countryRules = ELIGIBILITY_RULES[country];
+        Object.keys(countryRules).forEach(programKey => {
+            const program = countryRules[programKey];
+            const result = evaluateProgram(profile, program, country);
+            results[country].programs.push(result);
+        });
+    });
+    
+    return results;
+}
+
+// Evaluate a single program
+function evaluateProgram(profile, program, country) {
+    const result = {
+        name: program.name,
+        status: 'not-eligible',
+        score: 0,
+        maxScore: 0,
+        reasons: [],
+        improvements: []
+    };
+    
+    // Check hard rules first
+    const hardRules = program.hardRules || {};
+    let passedHardRules = true;
+    
+    // Age checks
+    if (hardRules.ageMin && profile.age < hardRules.ageMin) {
+        passedHardRules = false;
+        result.reasons.push(`Age ${profile.age} is below minimum ${hardRules.ageMin}`);
+        result.improvements.push(`Wait until you're ${hardRules.ageMin} years old`);
+    }
+    if (hardRules.ageMax && profile.age > hardRules.ageMax) {
+        passedHardRules = false;
+        result.reasons.push(`Age ${profile.age} exceeds maximum ${hardRules.ageMax}`);
+        result.improvements.push(`Consider countries without age limits (Germany, Poland, etc.)`);
+    }
+    
+    // IELTS checks
+    const ielts = parseFloat(profile.ieltsOverall) || 0;
+    if (hardRules.ieltsMin && ielts < hardRules.ieltsMin) {
+        passedHardRules = false;
+        result.reasons.push(`IELTS score ${ielts} is below minimum ${hardRules.ieltsMin}`);
+        result.improvements.push(`Improve IELTS to ${hardRules.ieltsMin}+ to become eligible`);
+    }
+    
+    // Experience checks
+    if (hardRules.experienceMin && profile.totalExperience < hardRules.experienceMin) {
+        passedHardRules = false;
+        result.reasons.push(`Experience ${profile.totalExperience} years is below minimum ${hardRules.experienceMin}`);
+        result.improvements.push(`Gain ${hardRules.experienceMin - profile.totalExperience} more years of experience`);
+    }
+    
+    // Education checks
+    if (hardRules.educationMin) {
+        const eduLevels = { 'phd': 5, 'masters': 4, 'bachelors': 3, 'diploma': 2, 'high-school': 1 };
+        const userEdu = eduLevels[profile.highestQualification] || 0;
+        const minEdu = eduLevels[hardRules.educationMin] || 0;
+        if (userEdu < minEdu) {
+            passedHardRules = false;
+            result.reasons.push(`Education level is below minimum requirement`);
+            result.improvements.push(`Complete ${hardRules.educationMin} to become eligible`);
+        }
+    }
+    
+    // Job offer checks
+    if (hardRules.jobOffer && profile.jobOffer !== 'yes') {
+        passedHardRules = false;
+        result.reasons.push(`Job offer is required for this program`);
+        result.improvements.push(`Secure a job offer from a ${country === 'united-kingdom' ? 'UK' : country} employer`);
+    }
+    
+    if (!passedHardRules) {
+        return result;
+    }
+    
+    // Calculate points if function exists
+    if (program.calculatePoints) {
+        result.score = program.calculatePoints(profile);
+        result.maxScore = 100;
+        
+        if (result.score >= (program.minPoints || 0)) {
+            result.status = 'eligible';
+            result.reasons.push(`Scored ${result.score} points (minimum: ${program.minPoints})`);
+        } else {
+            result.status = 'borderline';
+            const pointsNeeded = (program.minPoints || 0) - result.score;
+            result.reasons.push(`Scored ${result.score} points, need ${pointsNeeded} more to reach minimum ${program.minPoints}`);
+            
+            // Suggest improvements
+            if (ielts < 7) {
+                result.improvements.push(`Improve IELTS to 7.0+ to gain ${10 - (result.score % 10)} points`);
+            }
+            if (profile.totalExperience < 3) {
+                result.improvements.push(`Gain more work experience to increase points`);
+            }
+            if (profile.highestQualification === 'diploma' || profile.highestQualification === 'bachelors') {
+                result.improvements.push(`Consider higher education (Master's/PhD) for more points`);
+            }
+        }
+    } else {
+        // Simple pass/fail for programs without point system
+        result.status = 'eligible';
+        result.reasons.push(`Meets all basic requirements`);
+    }
+    
+    return result;
+}
+
+// Display eligibility results
+function displayEligibilityResults(results) {
+    const resultsContent = document.getElementById('resultsContent');
+    if (!resultsContent) return;
+    
+    let html = '';
+    
+    Object.keys(results).forEach(country => {
+        const countryData = results[country];
+        const countryName = country.charAt(0).toUpperCase() + country.slice(1).replace(/-/g, ' ');
+        const flagEmoji = {
+            'canada': '🇨🇦',
+            'australia': '🇦🇺',
+            'germany': '🇩🇪',
+            'united-kingdom': '🇬🇧',
+            'new-zealand': '🇳🇿'
+        }[country] || '🌍';
+        
+        html += `
+            <div class="country-result-card">
+                <div class="country-result-header">
+                    <h3>${flagEmoji} ${countryName}</h3>
+                </div>
+                <div class="programs-list">
+        `;
+        
+        countryData.programs.forEach(program => {
+            const statusIcon = {
+                'eligible': '✅',
+                'borderline': '⚠️',
+                'not-eligible': '❌'
+            }[program.status] || '❓';
+            
+            const statusClass = program.status;
+            
+            html += `
+                <div class="program-result ${statusClass}">
+                    <div class="program-header">
+                        <span class="status-icon">${statusIcon}</span>
+                        <h4>${program.name}</h4>
+                        <span class="status-badge ${statusClass}">${program.status.toUpperCase()}</span>
+                    </div>
+                    ${program.score > 0 ? `<div class="score-display">Score: ${program.score}/${program.maxScore} points</div>` : ''}
+                    <div class="reasons">
+                        <strong>Why:</strong>
+                        <ul>
+                            ${program.reasons.map(r => `<li>${r}</li>`).join('')}
+                        </ul>
+                    </div>
+                    ${program.improvements.length > 0 ? `
+                        <div class="improvements">
+                            <strong>How to Improve:</strong>
+                            <ul>
+                                ${program.improvements.map(i => `<li>${i}</li>`).join('')}
+                            </ul>
+                        </div>
+                    ` : ''}
+                </div>
+            `;
+        });
+        
+        html += `
+                </div>
+            </div>
+        `;
+    });
+    
+    resultsContent.innerHTML = html;
+    
+    // Show results, hide form
+    document.getElementById('eligibilityResults').style.display = 'block';
+    document.querySelector('.eligibility-form-wrapper').style.display = 'none';
+}
+
+// Handle form submission
+document.addEventListener('DOMContentLoaded', function() {
+    const eligibilityForm = document.getElementById('eligibilityForm');
+    const englishTestSelect = document.getElementById('englishTest');
+    const ieltsGroup = document.getElementById('ieltsGroup');
+    const ieltsBandsGroup = document.getElementById('ieltsBandsGroup');
+    
+    // Show/hide IELTS fields based on test selection
+    if (englishTestSelect) {
+        englishTestSelect.addEventListener('change', function() {
+            if (this.value === 'yes') {
+                if (ieltsGroup) ieltsGroup.style.display = 'block';
+                if (ieltsBandsGroup) ieltsBandsGroup.style.display = 'block';
+            } else {
+                if (ieltsGroup) ieltsGroup.style.display = 'none';
+                if (ieltsBandsGroup) ieltsBandsGroup.style.display = 'none';
+            }
+        });
+    }
+    
+    // Handle form submission
+    if (eligibilityForm) {
+        eligibilityForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            // Collect form data
+            const profile = {
+                age: parseInt(document.getElementById('age').value) || 0,
+                maritalStatus: document.getElementById('maritalStatus').value,
+                dependents: parseInt(document.getElementById('dependents').value) || 0,
+                highestQualification: document.getElementById('highestQualification').value,
+                fieldOfStudy: document.getElementById('fieldOfStudy').value,
+                yearOfCompletion: parseInt(document.getElementById('yearOfCompletion').value) || 0,
+                totalExperience: parseInt(document.getElementById('totalExperience').value) || 0,
+                currentOccupation: document.getElementById('currentOccupation').value,
+                nocCode: document.getElementById('nocCode').value,
+                englishTest: document.getElementById('englishTest').value,
+                ieltsOverall: document.getElementById('ieltsOverall').value,
+                ieltsListening: parseFloat(document.getElementById('ieltsListening').value) || 0,
+                ieltsReading: parseFloat(document.getElementById('ieltsReading').value) || 0,
+                ieltsWriting: parseFloat(document.getElementById('ieltsWriting').value) || 0,
+                ieltsSpeaking: parseFloat(document.getElementById('ieltsSpeaking').value) || 0,
+                settlementFunds: parseFloat(document.getElementById('settlementFunds').value) || 0,
+                proofOfFunds: document.getElementById('proofOfFunds').value,
+                spouseEducation: document.getElementById('spouseEducation').value,
+                spouseLanguage: document.getElementById('spouseLanguage').value,
+                relativeInCountry: document.getElementById('relativeInCountry').value,
+                jobOffer: document.getElementById('jobOffer').value
+            };
+            
+            // Check eligibility
+            const results = checkEligibility(profile);
+            
+            // Display results
+            displayEligibilityResults(results);
+            
+            // Scroll to results
+            document.getElementById('eligibilityResults').scrollIntoView({ behavior: 'smooth' });
+        });
+    }
+});
+
+// ============================================
+// POINTS & CALCULATORS SYSTEM
+// ============================================
+
+// Show calculator tab
+function showCalculator(calcId) {
+    // Hide all panels
+    document.querySelectorAll('.calculator-panel').forEach(panel => {
+        panel.classList.remove('active');
+    });
+    
+    // Remove active from all tabs
+    document.querySelectorAll('.calc-tab').forEach(tab => {
+        tab.classList.remove('active');
+    });
+    
+    // Show selected panel
+    const panel = document.getElementById('calc-' + calcId);
+    if (panel) {
+        panel.classList.add('active');
+    }
+    
+    // Activate selected tab
+    event.target.classList.add('active');
+}
+
+// Calculate FSW Score
+function calculateFSW() {
+    const age = parseInt(document.getElementById('fsw-age').value) || 0;
+    const education = document.getElementById('fsw-education').value;
+    const experience = parseInt(document.getElementById('fsw-experience').value) || 0;
+    const listening = parseFloat(document.getElementById('fsw-ielts-listening').value) || 0;
+    const reading = parseFloat(document.getElementById('fsw-ielts-reading').value) || 0;
+    const writing = parseFloat(document.getElementById('fsw-ielts-writing').value) || 0;
+    const speaking = parseFloat(document.getElementById('fsw-ielts-speaking').value) || 0;
+    const secondLanguage = document.getElementById('fsw-second-language').value;
+    const spouseIELTS = document.getElementById('fsw-spouse-ielts').value;
+    const canadaExperience = document.getElementById('fsw-canada-experience').value;
+    const relative = document.getElementById('fsw-relative').value;
+    
+    // Calculate Age Points
+    let agePoints = 0;
+    if (age >= 18 && age <= 35) agePoints = 12;
+    else if (age === 36) agePoints = 11;
+    else if (age === 37) agePoints = 10;
+    else if (age === 38) agePoints = 9;
+    else if (age === 39) agePoints = 8;
+    else if (age === 40) agePoints = 7;
+    else if (age === 41) agePoints = 6;
+    else if (age === 42) agePoints = 5;
+    else if (age === 43) agePoints = 4;
+    else if (age === 44) agePoints = 3;
+    else if (age === 45) agePoints = 2;
+    else if (age === 46) agePoints = 1;
+    
+    // Calculate Education Points
+    const eduPoints = {
+        'phd': 25,
+        'masters': 23,
+        'two-degrees': 22,
+        'bachelors': 21,
+        'diploma-2': 19,
+        'diploma-1': 15,
+        'secondary': 5
+    };
+    const educationPoints = eduPoints[education] || 0;
+    
+    // Calculate Experience Points
+    let experiencePoints = 0;
+    if (experience >= 6) experiencePoints = 15;
+    else if (experience >= 4) experiencePoints = 13;
+    else if (experience >= 2) experiencePoints = 11;
+    else if (experience >= 1) experiencePoints = 9;
+    
+    // Calculate Language Points (CLB conversion)
+    function getCLBLevel(score) {
+        if (score >= 8) return 9;
+        if (score >= 7.5) return 8;
+        if (score >= 6) return 7;
+        return 0;
+    }
+    
+    const clbL = getCLBLevel(listening);
+    const clbR = getCLBLevel(reading);
+    const clbW = getCLBLevel(writing);
+    const clbS = getCLBLevel(speaking);
+    
+    let languagePoints = 0;
+    if (clbL >= 9 && clbR >= 7 && clbW >= 7 && clbS >= 7) languagePoints = 24;
+    else if (clbL >= 8 && clbR >= 6.5 && clbW >= 6.5 && clbS >= 6.5) languagePoints = 20;
+    else if (clbL >= 7 && clbR >= 6 && clbW >= 6 && clbS >= 6) languagePoints = 16;
+    
+    if (secondLanguage === 'yes') languagePoints += 4;
+    languagePoints = Math.min(languagePoints, 28);
+    
+    // Calculate Adaptability Points
+    let adaptabilityPoints = 0;
+    if (spouseIELTS === 'yes') adaptabilityPoints += 5;
+    if (canadaExperience === 'yes') adaptabilityPoints += 5;
+    if (relative === 'yes') adaptabilityPoints += 5;
+    adaptabilityPoints = Math.min(adaptabilityPoints, 10);
+    
+    const totalPoints = agePoints + educationPoints + experiencePoints + languagePoints + adaptabilityPoints;
+    
+    // Update point displays
+    document.getElementById('fsw-age-points').textContent = agePoints + ' points';
+    document.getElementById('fsw-education-points').textContent = educationPoints + ' points';
+    document.getElementById('fsw-experience-points').textContent = experiencePoints + ' points';
+    document.getElementById('fsw-language-points').textContent = languagePoints + ' points';
+    document.getElementById('fsw-adaptability-points').textContent = adaptabilityPoints + ' points';
+    
+    // Display result
+    const resultDiv = document.getElementById('fsw-result');
+    let status = '';
+    let statusClass = '';
+    let improvements = [];
+    
+    if (totalPoints >= 67) {
+        status = '✅ ELIGIBLE';
+        statusClass = 'eligible';
+    } else if (totalPoints >= 60) {
+        status = '⚠️ BORDERLINE';
+        statusClass = 'borderline';
+        improvements.push(`You need ${67 - totalPoints} more points to be eligible`);
+    } else {
+        status = '❌ NOT ELIGIBLE';
+        statusClass = 'not-eligible';
+        improvements.push(`You need ${67 - totalPoints} more points to be eligible`);
+    }
+    
+    if (languagePoints < 20) {
+        improvements.push('Improve IELTS to CLB 8+ to gain more language points');
+    }
+    if (agePoints < 12 && age < 35) {
+        improvements.push('Consider applying before age 35 for maximum age points');
+    }
+    if (educationPoints < 25) {
+        improvements.push('Consider higher education (Master\'s/PhD) for more points');
+    }
+    
+    resultDiv.innerHTML = `
+        <div class="calc-result-content ${statusClass}">
+            <div class="result-header">
+                <h3>Your FSW Score: ${totalPoints} / 100</h3>
+                <div class="result-status ${statusClass}">${status}</div>
+            </div>
+            <div class="result-breakdown">
+                <h4>Points Breakdown:</h4>
+                <ul>
+                    <li>Age: ${agePoints} / 12</li>
+                    <li>Education: ${educationPoints} / 25</li>
+                    <li>Experience: ${experiencePoints} / 15</li>
+                    <li>Language: ${languagePoints} / 28</li>
+                    <li>Adaptability: ${adaptabilityPoints} / 10</li>
+                </ul>
+            </div>
+            ${improvements.length > 0 ? `
+                <div class="result-improvements">
+                    <h4>How to Improve:</h4>
+                    <ul>
+                        ${improvements.map(imp => `<li>${imp}</li>`).join('')}
+                    </ul>
+                </div>
+            ` : ''}
+        </div>
+    `;
+    resultDiv.style.display = 'block';
+}
+
+// Calculate CRS Score
+function calculateCRS() {
+    const age = parseInt(document.getElementById('crs-age').value) || 0;
+    const education = document.getElementById('crs-education').value;
+    const canadianExp = parseInt(document.getElementById('crs-canadian-exp').value) || 0;
+    const ieltsL = parseFloat(document.getElementById('crs-ielts-l').value) || 0;
+    const ieltsR = parseFloat(document.getElementById('crs-ielts-r').value) || 0;
+    const ieltsW = parseFloat(document.getElementById('crs-ielts-w').value) || 0;
+    const ieltsS = parseFloat(document.getElementById('crs-ielts-s').value) || 0;
+    const provincial = document.getElementById('crs-provincial').value;
+    const jobOffer = document.getElementById('crs-job-offer').value;
+    const canadianEdu = document.getElementById('crs-canadian-edu').value;
+    const french = document.getElementById('crs-french').value;
+    const sibling = document.getElementById('crs-sibling').value;
+    
+    // Simplified CRS calculation (core factors)
+    let corePoints = 0;
+    
+    // Age points (simplified)
+    if (age >= 18 && age <= 35) corePoints += 110;
+    else if (age <= 45) corePoints += Math.max(0, 110 - (age - 35) * 8);
+    
+    // Education points (simplified)
+    const eduPoints = {
+        'phd': 150,
+        'masters': 135,
+        'two-degrees': 128,
+        'bachelors': 120,
+        'diploma': 98
+    };
+    corePoints += eduPoints[education] || 0;
+    
+    // Language points (simplified - based on average)
+    const avgIELTS = (ieltsL + ieltsR + ieltsW + ieltsS) / 4;
+    if (avgIELTS >= 8) corePoints += 160;
+    else if (avgIELTS >= 7) corePoints += 120;
+    else if (avgIELTS >= 6) corePoints += 80;
+    
+    // Canadian experience
+    if (canadianExp >= 5) corePoints += 80;
+    else if (canadianExp >= 3) corePoints += 60;
+    else if (canadianExp >= 1) corePoints += 40;
+    
+    corePoints = Math.min(corePoints, 500);
+    
+    // Additional points
+    let additionalPoints = 0;
+    if (provincial === 'yes') additionalPoints += 600;
+    if (jobOffer === '50') additionalPoints += 50;
+    if (jobOffer === '200') additionalPoints += 200;
+    if (canadianEdu === 'yes') additionalPoints += 30;
+    if (french === 'yes') additionalPoints += 50;
+    if (sibling === 'yes') additionalPoints += 15;
+    
+    const totalCRS = corePoints + additionalPoints;
+    
+    // Update displays
+    document.getElementById('crs-core-points').textContent = corePoints + ' points';
+    document.getElementById('crs-additional-points').textContent = additionalPoints + ' points';
+    
+    // Display result
+    const resultDiv = document.getElementById('crs-result');
+    let status = '';
+    let statusClass = '';
+    
+    if (totalCRS >= 480) {
+        status = '✅ STRONG PROFILE';
+        statusClass = 'eligible';
+    } else if (totalCRS >= 430) {
+        status = '⚠️ COMPETITIVE';
+        statusClass = 'borderline';
+    } else {
+        status = '❌ NEEDS IMPROVEMENT';
+        statusClass = 'not-eligible';
+    }
+    
+    resultDiv.innerHTML = `
+        <div class="calc-result-content ${statusClass}">
+            <div class="result-header">
+                <h3>Your CRS Score: ${totalCRS} / 1200</h3>
+                <div class="result-status ${statusClass}">${status}</div>
+            </div>
+            <div class="result-breakdown">
+                <h4>Score Breakdown:</h4>
+                <ul>
+                    <li>Core Human Capital: ${corePoints} / 500</li>
+                    <li>Additional Factors: ${additionalPoints} / 600</li>
+                </ul>
+            </div>
+            ${totalCRS < 480 ? `
+                <div class="result-improvements">
+                    <h4>How to Improve:</h4>
+                    <ul>
+                        ${totalCRS < 430 ? '<li>Consider Provincial Nomination (+600 points)</li>' : ''}
+                        ${avgIELTS < 7 ? '<li>Improve IELTS to 7.0+ for more language points</li>' : ''}
+                        ${canadianExp === 0 ? '<li>Gain Canadian work experience for significant points boost</li>' : ''}
+                        ${french === 'no' ? '<li>Learn French for additional 50 points</li>' : ''}
+                    </ul>
+                </div>
+            ` : ''}
+        </div>
+    `;
+    resultDiv.style.display = 'block';
+}
+
+// Calculate Australia Points
+function calculateAustralia() {
+    const age = parseInt(document.getElementById('aus-age').value) || 0;
+    const ielts = parseFloat(document.getElementById('aus-ielts').value) || 0;
+    const overseasExp = parseInt(document.getElementById('aus-overseas-exp').value) || 0;
+    const australianExp = parseInt(document.getElementById('aus-australian-exp').value) || 0;
+    const education = document.getElementById('aus-education').value;
+    const stateNom = document.getElementById('aus-state-nom').value;
+    const regional = document.getElementById('aus-regional').value;
+    const partnerSkills = document.getElementById('aus-partner-skills').value;
+    const professionalYear = document.getElementById('aus-professional-year').value;
+    
+    // Age points
+    let agePoints = 0;
+    if (age >= 25 && age <= 32) agePoints = 30;
+    else if (age >= 18 && age <= 24) agePoints = 25;
+    else if (age >= 33 && age <= 39) agePoints = 25;
+    else if (age >= 40 && age <= 44) agePoints = 15;
+    
+    // English points
+    let englishPoints = 0;
+    if (ielts >= 8) englishPoints = 20;
+    else if (ielts >= 7) englishPoints = 10;
+    
+    // Experience points (overseas + Australian)
+    let experiencePoints = 0;
+    if (overseasExp >= 8) experiencePoints += 15;
+    else if (overseasExp >= 5) experiencePoints += 10;
+    else if (overseasExp >= 3) experiencePoints += 5;
+    
+    if (australianExp >= 8) experiencePoints += 20;
+    else if (australianExp >= 5) experiencePoints += 15;
+    else if (australianExp >= 3) experiencePoints += 10;
+    else if (australianExp >= 1) experiencePoints += 5;
+    
+    experiencePoints = Math.min(experiencePoints, 20);
+    
+    // Education points
+    const eduPoints = {
+        'phd': 20,
+        'masters': 15,
+        'diploma': 10
+    };
+    const educationPoints = eduPoints[education] || 0;
+    
+    // Bonus points
+    let bonusPoints = 0;
+    if (stateNom === 'yes') bonusPoints += 5;
+    if (regional === 'yes') bonusPoints += 15;
+    if (partnerSkills === 'yes') bonusPoints += 10;
+    if (professionalYear === 'yes') bonusPoints += 5;
+    
+    const totalPoints = agePoints + englishPoints + experiencePoints + educationPoints + bonusPoints;
+    
+    // Update displays
+    document.getElementById('aus-age-points').textContent = agePoints + ' points';
+    document.getElementById('aus-english-points').textContent = englishPoints + ' points';
+    document.getElementById('aus-experience-points').textContent = experiencePoints + ' points';
+    document.getElementById('aus-education-points').textContent = educationPoints + ' points';
+    document.getElementById('aus-bonus-points').textContent = bonusPoints + ' points';
+    
+    // Display result
+    const resultDiv = document.getElementById('australia-result');
+    let status = '';
+    let statusClass = '';
+    let improvements = [];
+    
+    if (totalPoints >= 65) {
+        status = '✅ ELIGIBLE';
+        statusClass = 'eligible';
+    } else {
+        status = '❌ NOT ELIGIBLE';
+        statusClass = 'not-eligible';
+        improvements.push(`You need ${65 - totalPoints} more points to be eligible`);
+    }
+    
+    if (ielts < 7) {
+        improvements.push('Improve IELTS to 7.0+ for 10 more points');
+    }
+    if (regional === 'no') {
+        improvements.push('Consider Regional Nomination (491) for +15 points');
+    }
+    if (partnerSkills === 'no') {
+        improvements.push('If spouse has skills, you can get +10 points');
+    }
+    
+    resultDiv.innerHTML = `
+        <div class="calc-result-content ${statusClass}">
+            <div class="result-header">
+                <h3>Your Australia Score: ${totalPoints} / 130+</h3>
+                <div class="result-status ${statusClass}">${status}</div>
+            </div>
+            <div class="result-breakdown">
+                <h4>Points Breakdown:</h4>
+                <ul>
+                    <li>Age: ${agePoints} / 30</li>
+                    <li>English: ${englishPoints} / 20</li>
+                    <li>Experience: ${experiencePoints} / 20</li>
+                    <li>Education: ${educationPoints} / 20</li>
+                    <li>Bonus: ${bonusPoints} / 25</li>
+                </ul>
+            </div>
+            ${improvements.length > 0 ? `
+                <div class="result-improvements">
+                    <h4>How to Improve:</h4>
+                    <ul>
+                        ${improvements.map(imp => `<li>${imp}</li>`).join('')}
+                    </ul>
+                </div>
+            ` : ''}
+        </div>
+    `;
+    resultDiv.style.display = 'block';
+}
+
+// Calculate Germany Opportunity Card
+function calculateGermany() {
+    const degree = document.getElementById('ger-degree').value;
+    const experience = document.getElementById('ger-experience').value;
+    const german = document.getElementById('ger-german').value;
+    const age = document.getElementById('ger-age').value;
+    const previousStay = document.getElementById('ger-previous-stay').value;
+    const shortage = document.getElementById('ger-shortage').value;
+    
+    let totalPoints = 0;
+    
+    if (degree === 'yes') totalPoints += 4;
+    if (experience === 'yes') totalPoints += 3;
+    if (german === 'a2') totalPoints += 1;
+    else if (german === 'b1') totalPoints += 2;
+    else if (german === 'b2') totalPoints += 3;
+    if (age === 'yes') totalPoints += 2;
+    if (previousStay === 'yes') totalPoints += 1;
+    if (shortage === 'yes') totalPoints += 1;
+    
+    document.getElementById('ger-total-points').textContent = totalPoints + ' / 14 points';
+    
+    // Display result
+    const resultDiv = document.getElementById('germany-result');
+    let status = '';
+    let statusClass = '';
+    let improvements = [];
+    
+    if (totalPoints >= 6) {
+        status = '✅ ELIGIBLE';
+        statusClass = 'eligible';
+    } else {
+        status = '❌ NOT ELIGIBLE';
+        statusClass = 'not-eligible';
+        improvements.push(`You need ${6 - totalPoints} more points to be eligible`);
+    }
+    
+    if (degree === 'no') {
+        improvements.push('Get a recognized degree (+4 points)');
+    }
+    if (experience === 'no') {
+        improvements.push('Gain 2+ years of work experience (+3 points)');
+    }
+    if (german === 'none' || german === 'a2') {
+        improvements.push('Learn German to B1/B2 level for more points');
+    }
+    if (age === 'no') {
+        improvements.push('Age under 35 gives +2 points');
+    }
+    
+    resultDiv.innerHTML = `
+        <div class="calc-result-content ${statusClass}">
+            <div class="result-header">
+                <h3>Your Germany Opportunity Card Score: ${totalPoints} / 14</h3>
+                <div class="result-status ${statusClass}">${status}</div>
+            </div>
+            ${improvements.length > 0 ? `
+                <div class="result-improvements">
+                    <h4>How to Improve:</h4>
+                    <ul>
+                        ${improvements.map(imp => `<li>${imp}</li>`).join('')}
+                    </ul>
+                </div>
+            ` : ''}
+        </div>
+    `;
+    resultDiv.style.display = 'block';
+}
+
+// Expose functions globally
+window.showCalculator = showCalculator;
+window.calculateFSW = calculateFSW;
+window.calculateCRS = calculateCRS;
+window.calculateAustralia = calculateAustralia;
+window.calculateGermany = calculateGermany;
+
+// ============================================
+// COUNTRIES INFORMATION SYSTEM
+// ============================================
+
+// Country Information Database
+const COUNTRY_INFO = {
+    'canada': {
+        name: 'Canada',
+        flag: '🇨🇦',
+        overview: 'Canada is one of the most popular immigration destinations, offering excellent quality of life, strong economy, and diverse opportunities for skilled workers, students, and families.',
+        whyMigrate: [
+            'High quality of life and excellent healthcare system',
+            'Strong economy with diverse job opportunities',
+            'Multicultural society welcoming immigrants',
+            'Pathway to citizenship after 3-5 years',
+            'Free public education and healthcare'
+        ],
+        visaTypes: [
+            {
+                name: 'Express Entry (FSW/CEC/FST)',
+                description: 'Points-based system for skilled workers',
+                requirements: 'Minimum 67 points (FSW), IELTS 6+, 1+ years experience',
+                processingTime: '6-8 months',
+                cost: 'CAD $1,325 (principal applicant)'
+            },
+            {
+                name: 'Provincial Nominee Program (PNP)',
+                description: 'Provincial nomination for permanent residence',
+                requirements: 'Varies by province, job offer often required',
+                processingTime: '12-18 months',
+                cost: 'CAD $1,325 + provincial fees'
+            },
+            {
+                name: 'Study Permit',
+                description: 'Study in Canada with work rights',
+                requirements: 'Acceptance letter, proof of funds, IELTS 6+',
+                processingTime: '4-6 weeks',
+                cost: 'CAD $150'
+            },
+            {
+                name: 'Work Permit',
+                description: 'Temporary work authorization',
+                requirements: 'LMIA or LMIA-exempt job offer',
+                processingTime: '2-4 months',
+                cost: 'CAD $155'
+            }
+        ],
+        eligibility: {
+            age: '18-44 years (preferred for Express Entry)',
+            education: 'Minimum diploma, ECA required',
+            language: 'IELTS 6+ (CLB 7+ preferred)',
+            experience: 'Minimum 1 year skilled work experience',
+            funds: 'CAD $13,310 (single) to CAD $35,000 (family of 4)'
+        },
+        processing: {
+            time: '6-18 months depending on program',
+            fees: 'CAD $1,325 (PR application)',
+            documents: 'Passport, ECA, IELTS, Police clearance, Medical exam'
+        },
+        settlement: {
+            jobs: 'Strong demand in IT, healthcare, engineering, trades',
+            accommodation: 'Average rent: CAD $1,200-2,500/month',
+            healthcare: 'Universal healthcare after PR (3 months wait)',
+            prPathway: 'Express Entry → PR → Citizenship (after 3 years)',
+            citizenship: 'After 3 years as PR, can apply for citizenship'
+        },
+        costOfLiving: 'CAD $2,000-3,500/month (varies by city)',
+        jobMarket: 'Strong demand in tech, healthcare, engineering, finance'
+    },
+    'australia': {
+        name: 'Australia',
+        flag: '🇦🇺',
+        overview: 'Australia offers a high standard of living, beautiful landscapes, and excellent opportunities for skilled migration through various visa pathways.',
+        whyMigrate: [
+            'High quality of life and beautiful climate',
+            'Strong economy with competitive salaries',
+            'Excellent education and healthcare systems',
+            'Pathway to PR and citizenship',
+            'Diverse and welcoming society'
+        ],
+        visaTypes: [
+            {
+                name: 'Skilled Independent Visa (Subclass 189)',
+                description: 'Points-based permanent residency, no sponsorship required',
+                requirements: '65+ points, age <45, positive skills assessment, IELTS 6+',
+                processingTime: '8-12 months',
+                cost: 'AUD $4,045'
+            },
+            {
+                name: 'Skilled Nominated Visa (Subclass 190)',
+                description: 'State-nominated permanent residency',
+                requirements: '65+ points, state nomination, skills assessment',
+                processingTime: '8-12 months',
+                cost: 'AUD $4,045'
+            },
+            {
+                name: 'Skilled Work Regional Visa (Subclass 491)',
+                description: 'Regional provisional visa, pathway to PR',
+                requirements: '65+ points, regional nomination, skills assessment',
+                processingTime: '8-12 months',
+                cost: 'AUD $4,045'
+            },
+            {
+                name: 'Student Visa (Subclass 500)',
+                description: 'Study in Australia with work rights',
+                requirements: 'CoE, IELTS 6+, proof of funds',
+                processingTime: '4-8 weeks',
+                cost: 'AUD $630'
+            }
+        ],
+        eligibility: {
+            age: 'Under 45 years (for skilled migration)',
+            education: 'Recognized degree, skills assessment required',
+            language: 'IELTS 6+ (7+ preferred for more points)',
+            experience: 'Minimum 2-3 years skilled work experience',
+            funds: 'AUD $20,000+ (for student/visitor visas)'
+        },
+        processing: {
+            time: '8-18 months for PR visas',
+            fees: 'AUD $4,045 (PR application)',
+            documents: 'Passport, Skills assessment, IELTS, Police clearance, Medical exam'
+        },
+        settlement: {
+            jobs: 'High demand in IT, healthcare, engineering, accounting',
+            accommodation: 'Average rent: AUD $1,500-3,000/month',
+            healthcare: 'Medicare available after PR',
+            prPathway: 'Skilled Migration → PR → Citizenship (after 4 years)',
+            citizenship: 'After 4 years as PR, can apply for citizenship'
+        },
+        costOfLiving: 'AUD $2,500-4,000/month (varies by city)',
+        jobMarket: 'Strong demand in tech, healthcare, engineering, trades'
+    },
+    'germany': {
+        name: 'Germany',
+        flag: '🇩🇪',
+        overview: 'Germany offers excellent opportunities for skilled workers, students, and professionals through the EU Blue Card and Opportunity Card programs.',
+        whyMigrate: [
+            'Strong economy and job market',
+            'High quality of life and social benefits',
+            'Excellent education system (many free universities)',
+            'Pathway to EU permanent residence',
+            'Central location in Europe'
+        ],
+        visaTypes: [
+            {
+                name: 'EU Blue Card',
+                description: 'Work permit for highly qualified professionals',
+                requirements: 'Recognized degree, job offer, salary threshold (€58,400)',
+                processingTime: '2-4 months',
+                cost: '€140'
+            },
+            {
+                name: 'Opportunity Card (Chancenkarte)',
+                description: 'Points-based work permit for job seekers',
+                requirements: '6+ points, recognized degree, German/English proficiency',
+                processingTime: '3-6 months',
+                cost: '€140'
+            },
+            {
+                name: 'Student Visa',
+                description: 'Study in Germany (many programs are free)',
+                requirements: 'University admission, proof of funds (€11,208/year)',
+                processingTime: '4-8 weeks',
+                cost: '€75'
+            },
+            {
+                name: 'Job Seeker Visa',
+                description: '6-month visa to search for jobs',
+                requirements: 'Recognized degree, proof of funds',
+                processingTime: '2-3 months',
+                cost: '€75'
+            }
+        ],
+        eligibility: {
+            age: 'No strict age limit (preferred under 45)',
+            education: 'Recognized degree required',
+            language: 'German A2-B2 or English B2+',
+            experience: '2+ years experience preferred',
+            funds: '€11,208/year (for student visa)'
+        },
+        processing: {
+            time: '2-6 months depending on visa type',
+            fees: '€75-140',
+            documents: 'Passport, Degree recognition, Language certificate, Job offer (if applicable)'
+        },
+        settlement: {
+            jobs: 'High demand in IT, engineering, healthcare, manufacturing',
+            accommodation: 'Average rent: €800-1,500/month',
+            healthcare: 'Mandatory health insurance (€80-200/month)',
+            prPathway: 'Work visa → Permanent residence (after 5 years) → Citizenship (after 8 years)',
+            citizenship: 'After 8 years (can be reduced to 6-7 years)'
+        },
+        costOfLiving: '€1,200-2,000/month (varies by city)',
+        jobMarket: 'Strong demand in tech, engineering, healthcare, automotive'
+    },
+    'united-kingdom': {
+        name: 'United Kingdom',
+        flag: '🇬🇧',
+        overview: 'The UK offers various visa pathways for skilled workers, students, and families through its points-based immigration system.',
+        whyMigrate: [
+            'Strong economy and job opportunities',
+            'World-class education system',
+            'Multicultural society',
+            'Pathway to settlement (ILR)',
+            'Access to Europe (with visa)'
+        ],
+        visaTypes: [
+            {
+                name: 'Skilled Worker Visa',
+                description: 'Points-based work visa with job offer',
+                requirements: 'Job offer from licensed sponsor, salary threshold, IELTS B1+',
+                processingTime: '3-8 weeks',
+                cost: '£625-1,423'
+            },
+            {
+                name: 'Student Visa',
+                description: 'Study in the UK',
+                requirements: 'CAS letter, IELTS 6+, proof of funds',
+                processingTime: '3-6 weeks',
+                cost: '£363'
+            },
+            {
+                name: 'Health and Care Worker Visa',
+                description: 'For healthcare professionals',
+                requirements: 'Job offer in healthcare, IELTS B1+',
+                processingTime: '3-8 weeks',
+                cost: '£247'
+            },
+            {
+                name: 'Graduate Visa',
+                description: 'Stay in UK after graduation',
+                requirements: 'UK degree, valid student visa',
+                processingTime: '8 weeks',
+                cost: '£715'
+            }
+        ],
+        eligibility: {
+            age: '18+ years',
+            education: 'Varies by visa type',
+            language: 'IELTS B1+ (4.0+)',
+            experience: 'Job offer required for work visas',
+            funds: '£1,334/month (for student visa)'
+        },
+        processing: {
+            time: '3-8 weeks for most visas',
+            fees: '£247-1,423 depending on visa type',
+            documents: 'Passport, Job offer/CAS, IELTS, TB test (if required)'
+        },
+        settlement: {
+            jobs: 'High demand in tech, finance, healthcare, engineering',
+            accommodation: 'Average rent: £800-1,500/month (outside London)',
+            healthcare: 'NHS available after paying IHS surcharge',
+            prPathway: 'Work visa → ILR (after 5 years) → Citizenship (after 6 years)',
+            citizenship: 'After 5 years ILR + 1 year, can apply for citizenship'
+        },
+        costOfLiving: '£1,200-2,500/month (varies by city, London is higher)',
+        jobMarket: 'Strong demand in tech, finance, healthcare, engineering'
+    }
+};
+
+// Add more countries with basic info (can be expanded)
+const additionalCountries = ['ireland', 'new-zealand', 'netherlands', 'poland', 'slovakia', 'romania', 'croatia', 'malta', 'latvia', 'sweden', 'switzerland', 'denmark', 'italy', 'france', 'south-korea', 'singapore', 'uae', 'philippines', 'malaysia', 'russia', 'bulgaria', 'albania', 'united-states'];
+
+additionalCountries.forEach(country => {
+    if (!COUNTRY_INFO[country]) {
+        COUNTRY_INFO[country] = {
+            name: country.split('-').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' '),
+            flag: '🌍',
+            overview: `Learn about migration opportunities in ${country.split('-').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ')}.`,
+            whyMigrate: ['Quality of life', 'Job opportunities', 'Education system', 'Pathway to residency'],
+            visaTypes: [
+                {
+                    name: 'Work Visa',
+                    description: 'Work permit for skilled professionals',
+                    requirements: 'Job offer, relevant qualifications',
+                    processingTime: '3-6 months',
+                    cost: 'Varies'
+                },
+                {
+                    name: 'Student Visa',
+                    description: 'Study opportunities',
+                    requirements: 'University admission, proof of funds',
+                    processingTime: '2-4 months',
+                    cost: 'Varies'
+                }
+            ],
+            eligibility: {
+                age: '18+ years',
+                education: 'Varies by program',
+                language: 'English or local language proficiency',
+                experience: 'Varies',
+                funds: 'Proof of sufficient funds required'
+            },
+            processing: {
+                time: '3-6 months',
+                fees: 'Varies by visa type',
+                documents: 'Passport, Qualifications, Language tests, Financial proof'
+            },
+            settlement: {
+                jobs: 'Various opportunities available',
+                accommodation: 'Varies by location',
+                healthcare: 'Available after obtaining residency',
+                prPathway: 'Varies by country',
+                citizenship: 'Varies by country'
+            },
+            costOfLiving: 'Varies by city and lifestyle',
+            jobMarket: 'Various sectors available'
+        };
+    }
+});
+
+// Show country details
+function showCountryDetails(countryKey) {
+    const country = COUNTRY_INFO[countryKey];
+    if (!country) {
+        console.error('Country not found:', countryKey);
+        return;
+    }
+    
+    const modal = document.getElementById('countryModal');
+    const modalTitle = document.getElementById('countryModalTitle');
+    const modalBody = document.getElementById('countryModalBody');
+    
+    modalTitle.innerHTML = `${country.flag} ${country.name}`;
+    
+    let html = `
+        <div class="country-details">
+            <div class="country-overview">
+                <h3><i class="fas fa-info-circle"></i> Overview</h3>
+                <p>${country.overview}</p>
+            </div>
+            
+            <div class="country-section">
+                <h3><i class="fas fa-star"></i> Why Migrate to ${country.name}?</h3>
+                <ul class="country-list">
+                    ${country.whyMigrate.map(item => `<li>${item}</li>`).join('')}
+                </ul>
+            </div>
+            
+            <div class="country-section">
+                <h3><i class="fas fa-file-alt"></i> Visa Types</h3>
+                <div class="visa-types-grid">
+                    ${country.visaTypes.map(visa => `
+                        <div class="visa-type-card">
+                            <h4>${visa.name}</h4>
+                            <p class="visa-description">${visa.description}</p>
+                            <div class="visa-details">
+                                <p><strong>Requirements:</strong> ${visa.requirements}</p>
+                                <p><strong>Processing Time:</strong> ${visa.processingTime}</p>
+                                <p><strong>Cost:</strong> ${visa.cost}</p>
+                            </div>
+                        </div>
+                    `).join('')}
+                </div>
+            </div>
+            
+            <div class="country-section">
+                <h3><i class="fas fa-check-circle"></i> Eligibility Criteria</h3>
+                <div class="eligibility-grid">
+                    <div class="eligibility-item">
+                        <strong>Age:</strong> ${country.eligibility.age}
+                    </div>
+                    <div class="eligibility-item">
+                        <strong>Education:</strong> ${country.eligibility.education}
+                    </div>
+                    <div class="eligibility-item">
+                        <strong>Language:</strong> ${country.eligibility.language}
+                    </div>
+                    <div class="eligibility-item">
+                        <strong>Experience:</strong> ${country.eligibility.experience}
+                    </div>
+                    <div class="eligibility-item">
+                        <strong>Funds:</strong> ${country.eligibility.funds}
+                    </div>
+                </div>
+            </div>
+            
+            <div class="country-section">
+                <h3><i class="fas fa-clock"></i> Processing & Cost</h3>
+                <div class="processing-info">
+                    <p><strong>Processing Time:</strong> ${country.processing.time}</p>
+                    <p><strong>Application Fees:</strong> ${country.processing.fees}</p>
+                    <p><strong>Required Documents:</strong> ${country.processing.documents}</p>
+                </div>
+            </div>
+            
+            <div class="country-section">
+                <h3><i class="fas fa-home"></i> Settlement Information</h3>
+                <div class="settlement-info">
+                    <div class="settlement-item">
+                        <strong>Jobs After Arrival:</strong> ${country.settlement.jobs}
+                    </div>
+                    <div class="settlement-item">
+                        <strong>Accommodation:</strong> ${country.settlement.accommodation}
+                    </div>
+                    <div class="settlement-item">
+                        <strong>Healthcare:</strong> ${country.settlement.healthcare}
+                    </div>
+                    <div class="settlement-item">
+                        <strong>PR Pathway:</strong> ${country.settlement.prPathway}
+                    </div>
+                    <div class="settlement-item">
+                        <strong>Citizenship:</strong> ${country.settlement.citizenship}
+                    </div>
+                </div>
+            </div>
+            
+            <div class="country-section">
+                <h3><i class="fas fa-dollar-sign"></i> Cost of Living</h3>
+                <p>${country.costOfLiving}</p>
+            </div>
+            
+            <div class="country-section">
+                <h3><i class="fas fa-briefcase"></i> Job Market</h3>
+                <p>${country.jobMarket}</p>
+            </div>
+        </div>
+    `;
+    
+    modalBody.innerHTML = html;
+    modal.style.display = 'flex';
+    document.body.style.overflow = 'hidden';
+}
+
+// Close country modal
+function closeCountryModal() {
+    const modal = document.getElementById('countryModal');
+    modal.style.display = 'none';
+    document.body.style.overflow = 'auto';
+}
+
+// Close modal when clicking outside
+document.addEventListener('DOMContentLoaded', function() {
+    const modal = document.getElementById('countryModal');
+    if (modal) {
+        modal.addEventListener('click', function(e) {
+            if (e.target === modal) {
+                closeCountryModal();
+            }
+        });
+    }
+});
+
+// Expose functions globally
+window.showCountryDetails = showCountryDetails;
+window.closeCountryModal = closeCountryModal;
+
+// ============================================
+// VISA PATHWAYS SYSTEM
+// ============================================
+
+const PATHWAY_INFO = {
+    'express-entry': {
+        name: 'Express Entry',
+        country: 'Canada',
+        description: 'Express Entry is Canada\'s main system for managing applications for permanent residence from skilled workers.',
+        whoCanApply: 'Skilled workers with at least 1 year of experience, language test results, and education assessment',
+        requirements: [
+            'Minimum 1 year of skilled work experience',
+            'Language test (IELTS/CELPIP/TEF) - CLB 7+',
+            'Educational Credential Assessment (ECA)',
+            'Meet minimum CRS score (varies by draw)',
+            'Proof of settlement funds'
+        ],
+        processingTime: '6-8 months after ITA',
+        cost: 'CAD $1,325 (principal applicant)',
+        pros: [
+            'Fast processing time',
+            'No job offer required',
+            'Can include spouse and dependents',
+            'Direct pathway to PR'
+        ],
+        cons: [
+            'Competitive CRS scores required',
+            'Need strong language skills',
+            'Education assessment required'
+        ],
+        prPossibility: 'Yes - Direct PR upon approval'
+    },
+    'fsw': {
+        name: 'Federal Skilled Worker Program',
+        country: 'Canada',
+        description: 'Points-based program for skilled workers who want to become permanent residents of Canada.',
+        whoCanApply: 'Skilled workers with foreign work experience, education, and language abilities',
+        requirements: [
+            'Minimum 67 points out of 100',
+            'At least 1 year of continuous skilled work experience',
+            'Language test - CLB 7 minimum',
+            'Educational Credential Assessment',
+            'Proof of funds'
+        ],
+        processingTime: '6-8 months',
+        cost: 'CAD $1,325',
+        pros: [
+            'No job offer required',
+            'Can live anywhere in Canada',
+            'Direct PR pathway'
+        ],
+        cons: [
+            'Must meet 67-point threshold',
+            'Competitive program'
+        ],
+        prPossibility: 'Yes - Permanent Residency'
+    },
+    'cec': {
+        name: 'Canadian Experience Class',
+        country: 'Canada',
+        description: 'For skilled workers who have Canadian work experience and want to become permanent residents.',
+        whoCanApply: 'Workers with at least 1 year of skilled work experience in Canada',
+        requirements: [
+            'At least 1 year of skilled work experience in Canada',
+            'Language test - CLB 7 for NOC 0/A, CLB 5 for NOC B',
+            'Valid work permit or status',
+            'Meet CRS score requirements'
+        ],
+        processingTime: '6-8 months',
+        cost: 'CAD $1,325',
+        pros: [
+            'Faster processing for those already in Canada',
+            'No education assessment required',
+            'Lower language requirements for some occupations'
+        ],
+        cons: [
+            'Requires Canadian work experience',
+            'Must have valid status'
+        ],
+        prPossibility: 'Yes - Permanent Residency'
+    },
+    'subclass-189': {
+        name: 'Skilled Independent Visa (Subclass 189)',
+        country: 'Australia',
+        description: 'Points-tested permanent residency visa for skilled workers without state or employer sponsorship.',
+        whoCanApply: 'Skilled workers under 45, with positive skills assessment and 65+ points',
+        requirements: [
+            'Age under 45',
+            'Minimum 65 points',
+            'Positive skills assessment',
+            'IELTS 6+ (or equivalent)',
+            'Meet health and character requirements'
+        ],
+        processingTime: '8-12 months',
+        cost: 'AUD $4,045',
+        pros: [
+            'Permanent residency from day one',
+            'No state or employer sponsorship needed',
+            'Can live and work anywhere in Australia'
+        ],
+        cons: [
+            'Competitive points system',
+            'Age limit of 45',
+            'Skills assessment required'
+        ],
+        prPossibility: 'Yes - Permanent Residency'
+    },
+    'subclass-190': {
+        name: 'Skilled Nominated Visa (Subclass 190)',
+        country: 'Australia',
+        description: 'Permanent residency visa requiring nomination by an Australian state or territory.',
+        whoCanApply: 'Skilled workers nominated by a state/territory, with 65+ points',
+        requirements: [
+            'State/territory nomination',
+            'Minimum 65 points (including 5 from nomination)',
+            'Positive skills assessment',
+            'IELTS 6+',
+            'Age under 45'
+        ],
+        processingTime: '8-12 months',
+        cost: 'AUD $4,045',
+        pros: [
+            'Permanent residency',
+            '5 extra points from nomination',
+            'May have lower points requirement'
+        ],
+        cons: [
+            'Must commit to living in nominating state',
+            'State nomination requirements vary'
+        ],
+        prPossibility: 'Yes - Permanent Residency'
+    },
+    'eu-blue-card': {
+        name: 'EU Blue Card',
+        country: 'Europe',
+        description: 'Work permit for highly qualified non-EU professionals to work in EU member states.',
+        whoCanApply: 'Highly qualified professionals with recognized degree and job offer',
+        requirements: [
+            'Recognized university degree',
+            'Job offer with salary threshold (€58,400/year or higher)',
+            'Valid work contract (minimum 1 year)',
+            'Health insurance'
+        ],
+        processingTime: '2-4 months',
+        cost: '€140',
+        pros: [
+            'Work and live in EU country',
+            'Family can join',
+            'Pathway to permanent residence',
+            'Can move between EU countries after 18 months'
+        ],
+        cons: [
+            'High salary threshold',
+            'Job offer required',
+            'Degree recognition needed'
+        ],
+        prPossibility: 'Yes - After 33 months (or 21 months with language)'
+    }
+};
+
+// Show pathway details
+function showPathwayDetails(pathwayKey) {
+    const pathway = PATHWAY_INFO[pathwayKey];
+    if (!pathway) {
+        // Create basic info for pathways not in database
+        const pathwayNames = {
+            'pnp': { name: 'Provincial Nominee Program', country: 'Canada' },
+            'rnip': { name: 'RNIPP', country: 'Canada' },
+            'aipp': { name: 'AIPP / AAIP', country: 'Canada' },
+            'quebec': { name: 'Quebec Skilled Worker', country: 'Canada' },
+            'lmia': { name: 'LMIA Work Permits', country: 'Canada' },
+            'subclass-491': { name: 'Subclass 491', country: 'Australia' },
+            'subclass-407': { name: 'Subclass 407', country: 'Australia' },
+            'subclass-482': { name: 'Subclass 482', country: 'Australia' },
+            'subclass-186': { name: 'Subclass 186', country: 'Australia' },
+            'subclass-494': { name: 'Subclass 494', country: 'Australia' },
+            'germany-opportunity': { name: 'Germany Opportunity Card', country: 'Germany' },
+            'national-work-permit': { name: 'National Work Permits', country: 'Europe' }
+        };
+        const basic = pathwayNames[pathwayKey] || { name: pathwayKey, country: 'Various' };
+        pathway = {
+            name: basic.name,
+            country: basic.country,
+            description: `Learn about ${basic.name} requirements and process.`,
+            whoCanApply: 'Varies by program',
+            requirements: ['Check specific program requirements'],
+            processingTime: 'Varies',
+            cost: 'Varies',
+            pros: ['Program-specific benefits'],
+            cons: ['Check program limitations'],
+            prPossibility: 'Varies by program'
+        };
+    }
+    
+    const modal = document.getElementById('pathwayModal');
+    const modalTitle = document.getElementById('pathwayModalTitle');
+    const modalBody = document.getElementById('pathwayModalBody');
+    
+    modalTitle.textContent = `${pathway.name} - ${pathway.country}`;
+    
+    modalBody.innerHTML = `
+        <div class="pathway-details">
+            <div class="pathway-overview">
+                <h3><i class="fas fa-info-circle"></i> Overview</h3>
+                <p>${pathway.description}</p>
+            </div>
+            
+            <div class="pathway-section">
+                <h3><i class="fas fa-user-check"></i> Who Can Apply</h3>
+                <p>${pathway.whoCanApply}</p>
+            </div>
+            
+            <div class="pathway-section">
+                <h3><i class="fas fa-list-check"></i> Requirements</h3>
+                <ul class="pathway-list">
+                    ${pathway.requirements.map(req => `<li>${req}</li>`).join('')}
+                </ul>
+            </div>
+            
+            <div class="pathway-section">
+                <h3><i class="fas fa-clock"></i> Processing & Cost</h3>
+                <div class="pathway-info-grid">
+                    <div class="pathway-info-item">
+                        <strong>Processing Time:</strong> ${pathway.processingTime}
+                    </div>
+                    <div class="pathway-info-item">
+                        <strong>Application Cost:</strong> ${pathway.cost}
+                    </div>
+                </div>
+            </div>
+            
+            <div class="pathway-section">
+                <h3><i class="fas fa-thumbs-up"></i> Pros</h3>
+                <ul class="pathway-list pros">
+                    ${pathway.pros.map(pro => `<li>${pro}</li>`).join('')}
+                </ul>
+            </div>
+            
+            <div class="pathway-section">
+                <h3><i class="fas fa-exclamation-circle"></i> Cons</h3>
+                <ul class="pathway-list cons">
+                    ${pathway.cons.map(con => `<li>${con}</li>`).join('')}
+                </ul>
+            </div>
+            
+            <div class="pathway-section">
+                <h3><i class="fas fa-flag"></i> PR Possibility</h3>
+                <p><strong>${pathway.prPossibility}</strong></p>
+            </div>
+        </div>
+    `;
+    
+    modal.style.display = 'flex';
+    document.body.style.overflow = 'hidden';
+}
+
+function closePathwayModal() {
+    document.getElementById('pathwayModal').style.display = 'none';
+    document.body.style.overflow = 'auto';
+}
+
+// ============================================
+// STUDY ABROAD SYSTEM
+// ============================================
+
+const STUDY_INFO = {
+    'canada': {
+        name: 'Study in Canada',
+        flag: '🇨🇦',
+        overview: 'Canada offers world-class education with post-graduation work permits leading to permanent residence.',
+        admissionRequirements: [
+            'Acceptance letter from Designated Learning Institution (DLI)',
+            'Proof of financial support (CAD $10,000+ per year)',
+            'IELTS 6.0+ or equivalent',
+            'Medical exam (if required)',
+            'Police clearance certificate'
+        ],
+        financialProof: 'CAD $10,000+ per year of study + tuition fees',
+        languageTests: 'IELTS, TOEFL, PTE, CAEL, or Duolingo',
+        workRights: '20 hours/week during studies, full-time during breaks',
+        postStudyWork: 'Post-Graduation Work Permit (PGWP) - up to 3 years',
+        prConversion: 'Express Entry, Provincial Nominee Program, or Canadian Experience Class',
+        popularCourses: 'Engineering, IT, Business, Healthcare, Hospitality',
+        averageTuition: 'CAD $15,000-30,000/year (varies by program)',
+        processingTime: '4-6 weeks'
+    },
+    'australia': {
+        name: 'Study in Australia',
+        flag: '🇦🇺',
+        overview: 'Australia provides high-quality education with excellent post-study work opportunities.',
+        admissionRequirements: [
+            'Confirmation of Enrolment (CoE)',
+            'Proof of funds (AUD $20,000+ per year)',
+            'IELTS 6.0+ or equivalent',
+            'Overseas Student Health Cover (OSHC)',
+            'Genuine Temporary Entrant (GTE) statement'
+        ],
+        financialProof: 'AUD $20,000+ per year + tuition fees',
+        languageTests: 'IELTS, TOEFL, PTE, or CAE',
+        workRights: '40 hours/fortnight during studies, unlimited during breaks',
+        postStudyWork: 'Temporary Graduate Visa (485) - 2-4 years depending on qualification',
+        prConversion: 'Skilled Migration (189/190/491) or Employer Sponsored',
+        popularCourses: 'Engineering, IT, Healthcare, Business, Hospitality',
+        averageTuition: 'AUD $20,000-45,000/year',
+        processingTime: '4-8 weeks'
+    }
+};
+
+const COURSE_INFO = {
+    'engineering': {
+        name: 'Engineering Programs',
+        description: 'Engineering degrees are highly valued globally and offer excellent career prospects.',
+        specializations: ['Mechanical Engineering', 'Civil Engineering', 'Electrical Engineering', 'Software Engineering', 'Chemical Engineering'],
+        careerProspects: 'High demand in all countries, excellent salary potential',
+        duration: '3-4 years (Bachelor\'s), 1-2 years (Master\'s)',
+        requirements: 'Strong math and science background, IELTS 6.0-6.5+'
+    },
+    'it-ai': {
+        name: 'IT & AI Programs',
+        description: 'Computer Science, Data Science, and AI programs are in extremely high demand.',
+        specializations: ['Computer Science', 'Data Science', 'Artificial Intelligence', 'Cybersecurity', 'Software Development'],
+        careerProspects: 'Highest demand field, excellent salaries, global opportunities',
+        duration: '3-4 years (Bachelor\'s), 1-2 years (Master\'s)',
+        requirements: 'Strong analytical skills, IELTS 6.0-6.5+'
+    }
+};
+
+function showStudyDetails(countryKey) {
+    const study = STUDY_INFO[countryKey] || {
+        name: `Study in ${countryKey.charAt(0).toUpperCase() + countryKey.slice(1)}`,
+        flag: '🌍',
+        overview: 'Quality education opportunities available.',
+        admissionRequirements: ['University admission', 'Proof of funds', 'Language proficiency'],
+        financialProof: 'Varies by country',
+        languageTests: 'IELTS, TOEFL, or country-specific tests',
+        workRights: 'Varies by country',
+        postStudyWork: 'Check country-specific post-study work options',
+        prConversion: 'Varies by country',
+        popularCourses: 'Engineering, IT, Business, Healthcare',
+        averageTuition: 'Varies',
+        processingTime: '2-4 months'
+    };
+    
+    const modal = document.getElementById('studyModal');
+    const modalTitle = document.getElementById('studyModalTitle');
+    const modalBody = document.getElementById('studyModalBody');
+    
+    modalTitle.innerHTML = `${study.flag} ${study.name}`;
+    
+    modalBody.innerHTML = `
+        <div class="study-details">
+            <div class="study-overview">
+                <h3><i class="fas fa-info-circle"></i> Overview</h3>
+                <p>${study.overview}</p>
+            </div>
+            
+            <div class="study-section">
+                <h3><i class="fas fa-file-alt"></i> Admission Requirements</h3>
+                <ul class="study-list">
+                    ${study.admissionRequirements.map(req => `<li>${req}</li>`).join('')}
+                </ul>
+            </div>
+            
+            <div class="study-section">
+                <h3><i class="fas fa-dollar-sign"></i> Financial Proof</h3>
+                <p>${study.financialProof}</p>
+            </div>
+            
+            <div class="study-section">
+                <h3><i class="fas fa-language"></i> Language Tests</h3>
+                <p>${study.languageTests}</p>
+            </div>
+            
+            <div class="study-section">
+                <h3><i class="fas fa-briefcase"></i> Work Rights</h3>
+                <p>${study.workRights}</p>
+            </div>
+            
+            <div class="study-section">
+                <h3><i class="fas fa-graduation-cap"></i> Post-Study Work</h3>
+                <p>${study.postStudyWork}</p>
+            </div>
+            
+            <div class="study-section">
+                <h3><i class="fas fa-flag"></i> PR Conversion</h3>
+                <p>${study.prConversion}</p>
+            </div>
+            
+            <div class="study-section">
+                <h3><i class="fas fa-book"></i> Popular Courses</h3>
+                <p>${study.popularCourses}</p>
+            </div>
+            
+            <div class="study-section">
+                <h3><i class="fas fa-money-bill"></i> Average Tuition</h3>
+                <p>${study.averageTuition}</p>
+            </div>
+            
+            <div class="study-section">
+                <h3><i class="fas fa-clock"></i> Processing Time</h3>
+                <p>${study.processingTime}</p>
+            </div>
+        </div>
+    `;
+    
+    modal.style.display = 'flex';
+    document.body.style.overflow = 'hidden';
+}
+
+function showCourseDetails(courseKey) {
+    const course = COURSE_INFO[courseKey] || {
+        name: courseKey,
+        description: 'Quality program available in multiple countries.',
+        specializations: ['Various specializations available'],
+        careerProspects: 'Good career opportunities',
+        duration: '3-4 years',
+        requirements: 'Varies by program'
+    };
+    
+    const modal = document.getElementById('studyModal');
+    const modalTitle = document.getElementById('studyModalTitle');
+    const modalBody = document.getElementById('studyModalBody');
+    
+    modalTitle.textContent = course.name;
+    
+    modalBody.innerHTML = `
+        <div class="course-details">
+            <div class="course-overview">
+                <h3><i class="fas fa-info-circle"></i> Overview</h3>
+                <p>${course.description}</p>
+            </div>
+            
+            <div class="course-section">
+                <h3><i class="fas fa-list"></i> Specializations</h3>
+                <ul class="course-list">
+                    ${course.specializations.map(spec => `<li>${spec}</li>`).join('')}
+                </ul>
+            </div>
+            
+            <div class="course-section">
+                <h3><i class="fas fa-chart-line"></i> Career Prospects</h3>
+                <p>${course.careerProspects}</p>
+            </div>
+            
+            <div class="course-section">
+                <h3><i class="fas fa-clock"></i> Duration</h3>
+                <p>${course.duration}</p>
+            </div>
+            
+            <div class="course-section">
+                <h3><i class="fas fa-check-circle"></i> Requirements</h3>
+                <p>${course.requirements}</p>
+            </div>
+        </div>
+    `;
+    
+    modal.style.display = 'flex';
+    document.body.style.overflow = 'hidden';
+}
+
+function closeStudyModal() {
+    document.getElementById('studyModal').style.display = 'none';
+    document.body.style.overflow = 'auto';
+}
+
+// ============================================
+// HEALTHCARE & NURSES SYSTEM
+// ============================================
+
+const HEALTHCARE_INFO = {
+    'nurses-canada': {
+        title: 'Nurses to Canada',
+        country: '🇨🇦 Canada',
+        overview: 'Canada has a high demand for registered nurses, licensed practical nurses, and registered psychiatric nurses.',
+        licensingBodies: [
+            'College of Nurses of Ontario (CNO) - Ontario',
+            'British Columbia College of Nursing Professionals (BCCNP) - BC',
+            'College of Registered Nurses of Manitoba (CRNM) - Manitoba',
+            'Nurses Association of New Brunswick (NANB) - New Brunswick'
+        ],
+        examsRequired: [
+            'NCLEX-RN (for Registered Nurses)',
+            'Canadian Practical Nurse Registration Exam (CPNRE)',
+            'Canadian Registered Nurse Examination (CRNE) - being phased out'
+        ],
+        languageLevel: 'IELTS 7.0+ in all bands (or CELPIP equivalent)',
+        salary: 'CAD $60,000-90,000/year (varies by province)',
+        prChance: 'Excellent - Nurses are in high demand, fast-track options available',
+        process: [
+            'Educational Credential Assessment (ECA)',
+            'Apply to provincial nursing regulatory body',
+            'Complete bridging program (if required)',
+            'Pass licensing exam',
+            'Apply for work permit or Express Entry'
+        ],
+        visaOptions: ['Express Entry', 'Provincial Nominee Program', 'Work Permit']
+    },
+    'nurses-australia': {
+        title: 'Nurses to Australia',
+        country: '🇦🇺 Australia',
+        overview: 'Australia has a strong demand for nurses, with AHPRA being the main regulatory body.',
+        licensingBodies: ['AHPRA (Australian Health Practitioner Regulation Agency)'],
+        examsRequired: ['NCLEX-RN or country-specific assessment'],
+        languageLevel: 'IELTS 7.0+ in all bands (or OET B+)',
+        salary: 'AUD $65,000-95,000/year',
+        prChance: 'Excellent - Nurses on skilled occupation lists',
+        process: [
+            'Skills assessment through ANMAC',
+            'AHPRA registration',
+            'IELTS/OET language test',
+            'Apply for visa (189/190/491)'
+        ],
+        visaOptions: ['Subclass 189', 'Subclass 190', 'Subclass 491', 'Subclass 482']
+    }
+};
+
+function showHealthcareDetails(healthcareKey) {
+    const healthcare = HEALTHCARE_INFO[healthcareKey] || {
+        title: healthcareKey.replace(/-/g, ' ').replace(/\b\w/g, l => l.toUpperCase()),
+        country: 'Various',
+        overview: 'Healthcare opportunities available in multiple countries.',
+        licensingBodies: ['Check country-specific regulatory body'],
+        examsRequired: ['Varies by country and profession'],
+        languageLevel: 'IELTS 6.5-7.0+ typically required',
+        salary: 'Varies by country and position',
+        prChance: 'Good - Healthcare professionals are in demand',
+        process: ['Check specific country requirements'],
+        visaOptions: ['Varies by country']
+    };
+    
+    const modal = document.getElementById('healthcareModal');
+    const modalTitle = document.getElementById('healthcareModalTitle');
+    const modalBody = document.getElementById('healthcareModalBody');
+    
+    modalTitle.innerHTML = `${healthcare.country} - ${healthcare.title}`;
+    
+    modalBody.innerHTML = `
+        <div class="healthcare-details">
+            <div class="healthcare-overview">
+                <h3><i class="fas fa-info-circle"></i> Overview</h3>
+                <p>${healthcare.overview}</p>
+            </div>
+            
+            <div class="healthcare-section">
+                <h3><i class="fas fa-certificate"></i> Licensing Bodies</h3>
+                <ul class="healthcare-list">
+                    ${healthcare.licensingBodies.map(body => `<li>${body}</li>`).join('')}
+                </ul>
+            </div>
+            
+            <div class="healthcare-section">
+                <h3><i class="fas fa-clipboard-check"></i> Exams Required</h3>
+                <ul class="healthcare-list">
+                    ${healthcare.examsRequired.map(exam => `<li>${exam}</li>`).join('')}
+                </ul>
+            </div>
+            
+            <div class="healthcare-section">
+                <h3><i class="fas fa-language"></i> Language Level</h3>
+                <p>${healthcare.languageLevel}</p>
+            </div>
+            
+            <div class="healthcare-section">
+                <h3><i class="fas fa-dollar-sign"></i> Salary Range</h3>
+                <p>${healthcare.salary}</p>
+            </div>
+            
+            <div class="healthcare-section">
+                <h3><i class="fas fa-star"></i> PR Chance</h3>
+                <p>${healthcare.prChance}</p>
+            </div>
+            
+            <div class="healthcare-section">
+                <h3><i class="fas fa-list-ol"></i> Process</h3>
+                <ol class="healthcare-list">
+                    ${healthcare.process.map(step => `<li>${step}</li>`).join('')}
+                </ol>
+            </div>
+            
+            <div class="healthcare-section">
+                <h3><i class="fas fa-file-alt"></i> Visa Options</h3>
+                <ul class="healthcare-list">
+                    ${healthcare.visaOptions.map(visa => `<li>${visa}</li>`).join('')}
+                </ul>
+            </div>
+        </div>
+    `;
+    
+    modal.style.display = 'flex';
+    document.body.style.overflow = 'hidden';
+}
+
+function closeHealthcareModal() {
+    document.getElementById('healthcareModal').style.display = 'none';
+    document.body.style.overflow = 'auto';
+}
+
+// ============================================
+// VISITOR VISAS SYSTEM
+// ============================================
+
+const VISITOR_INFO = {
+    'canada': {
+        name: 'Canada Visitor Visa',
+        flag: '🇨🇦',
+        overview: 'Temporary resident visa for tourism, business, or family visits to Canada.',
+        eligibility: [
+            'Valid passport',
+            'Proof of ties to home country',
+            'Sufficient funds for stay',
+            'No criminal record',
+            'Medical exam may be required',
+            'Travel history (preferred)'
+        ],
+        documents: [
+            'Valid passport',
+            'Completed application forms',
+            'Proof of financial support',
+            'Travel itinerary',
+            'Invitation letter (if visiting family)',
+            'Proof of ties to home country',
+            'Police clearance certificate'
+        ],
+        processingTime: '2-4 weeks (online), 4-6 weeks (paper)',
+        visaValidity: 'Up to 10 years (multiple entry), stay up to 6 months per visit',
+        cost: 'CAD $100 (single entry), CAD $500 (multiple entry)',
+        rejectionReasons: [
+            'Insufficient funds',
+            'Weak ties to home country',
+            'Incomplete documentation',
+            'Previous immigration violations',
+            'Security concerns'
+        ],
+        tips: [
+            'Show strong ties to home country',
+            'Provide detailed travel itinerary',
+            'Include invitation letter if visiting family',
+            'Show sufficient funds (CAD $1,000+ per week)'
+        ]
+    },
+    'australia': {
+        name: 'Australia Visitor Visa',
+        flag: '🇦🇺',
+        overview: 'Temporary visa for tourism, business, or visiting family in Australia.',
+        eligibility: [
+            'Genuine temporary entrant',
+            'Sufficient funds for stay',
+            'Health insurance recommended',
+            'No criminal record',
+            'Meet health requirements'
+        ],
+        documents: [
+            'Valid passport',
+            'Completed application form',
+            'Proof of funds',
+            'Travel itinerary',
+            'Health insurance (recommended)',
+            'Invitation letter (if applicable)'
+        ],
+        processingTime: '2-4 weeks',
+        visaValidity: '3, 6, or 12 months (single or multiple entry)',
+        cost: 'AUD $145 (tourist stream)',
+        rejectionReasons: [
+            'Not genuine temporary entrant',
+            'Insufficient funds',
+            'Health concerns',
+            'Character issues'
+        ],
+        tips: [
+            'Provide detailed GTE statement',
+            'Show strong travel history',
+            'Include health insurance',
+            'Demonstrate sufficient funds'
+        ]
+    }
+};
+
+function showVisitorDetails(countryKey) {
+    const visitor = VISITOR_INFO[countryKey] || {
+        name: `${countryKey} Visitor Visa`,
+        flag: '🌍',
+        overview: 'Visitor visa requirements vary by country.',
+        eligibility: ['Valid passport', 'Proof of funds', 'Return ticket'],
+        documents: ['Passport', 'Application form', 'Financial proof'],
+        processingTime: '2-4 weeks',
+        visaValidity: 'Varies',
+        cost: 'Varies',
+        rejectionReasons: ['Insufficient documentation', 'Weak ties to home country'],
+        tips: ['Provide complete documentation', 'Show strong ties to home country']
+    };
+    
+    const modal = document.getElementById('visitorModal');
+    const modalTitle = document.getElementById('visitorModalTitle');
+    const modalBody = document.getElementById('visitorModalBody');
+    
+    modalTitle.innerHTML = `${visitor.flag} ${visitor.name}`;
+    
+    modalBody.innerHTML = `
+        <div class="visitor-details">
+            <div class="visitor-overview">
+                <h3><i class="fas fa-info-circle"></i> Overview</h3>
+                <p>${visitor.overview}</p>
+            </div>
+            
+            <div class="visitor-section">
+                <h3><i class="fas fa-check-circle"></i> Eligibility</h3>
+                <ul class="visitor-list">
+                    ${visitor.eligibility.map(item => `<li>${item}</li>`).join('')}
+                </ul>
+            </div>
+            
+            <div class="visitor-section">
+                <h3><i class="fas fa-file-alt"></i> Required Documents</h3>
+                <ul class="visitor-list">
+                    ${visitor.documents.map(doc => `<li>${doc}</li>`).join('')}
+                </ul>
+            </div>
+            
+            <div class="visitor-section">
+                <h3><i class="fas fa-clock"></i> Processing Time</h3>
+                <p>${visitor.processingTime}</p>
+            </div>
+            
+            <div class="visitor-section">
+                <h3><i class="fas fa-calendar-check"></i> Visa Validity</h3>
+                <p>${visitor.visaValidity}</p>
+            </div>
+            
+            <div class="visitor-section">
+                <h3><i class="fas fa-dollar-sign"></i> Cost</h3>
+                <p>${visitor.cost}</p>
+            </div>
+            
+            <div class="visitor-section">
+                <h3><i class="fas fa-exclamation-triangle"></i> Common Rejection Reasons</h3>
+                <ul class="visitor-list rejection">
+                    ${visitor.rejectionReasons.map(reason => `<li>${reason}</li>`).join('')}
+                </ul>
+            </div>
+            
+            <div class="visitor-section">
+                <h3><i class="fas fa-lightbulb"></i> Tips for Success</h3>
+                <ul class="visitor-list tips">
+                    ${visitor.tips.map(tip => `<li>${tip}</li>`).join('')}
+                </ul>
+            </div>
+        </div>
+    `;
+    
+    modal.style.display = 'flex';
+    document.body.style.overflow = 'hidden';
+}
+
+function closeVisitorModal() {
+    document.getElementById('visitorModal').style.display = 'none';
+    document.body.style.overflow = 'auto';
+}
+
+// Close modals when clicking outside
+document.addEventListener('DOMContentLoaded', function() {
+    const modals = ['pathwayModal', 'studyModal', 'healthcareModal', 'visitorModal'];
+    modals.forEach(modalId => {
+        const modal = document.getElementById(modalId);
+        if (modal) {
+            modal.addEventListener('click', function(e) {
+                if (e.target === modal) {
+                    modal.style.display = 'none';
+                    document.body.style.overflow = 'auto';
+                }
+            });
+        }
+    });
+});
+
+// Expose functions globally
+window.showPathwayDetails = showPathwayDetails;
+window.closePathwayModal = closePathwayModal;
+window.showStudyDetails = showStudyDetails;
+window.showCourseDetails = showCourseDetails;
+window.closeStudyModal = closeStudyModal;
+window.showHealthcareDetails = showHealthcareDetails;
+window.closeHealthcareModal = closeHealthcareModal;
+window.showVisitorDetails = showVisitorDetails;
+window.closeVisitorModal = closeVisitorModal;
+
+// ============================================
+// NEWS & UPDATES SYSTEM
+// ============================================
+
+// Sample News Data (Replace with API call in production)
+let NEWS_DATA = [
+    {
+        id: 1,
+        title: 'Express Entry Draw #285: 3,200 Invitations Issued',
+        summary: 'IRCC conducted a new Express Entry draw, issuing 3,200 invitations to apply (ITAs) with a minimum CRS score of 485.',
+        country: 'Canada',
+        category: 'Draw',
+        source_name: 'CIC News',
+        source_url: 'https://www.cicnews.com/',
+        published_date: '2025-01-15',
+        full_content: 'The latest Express Entry draw saw 3,200 candidates receive invitations. The minimum CRS score was 485, slightly lower than the previous draw. This draw included candidates from all Express Entry programs: Federal Skilled Worker, Canadian Experience Class, and Federal Skilled Trades.'
+    },
+    {
+        id: 2,
+        title: 'Australia Subclass 189 Invitation Round - January 2025',
+        summary: 'Department of Home Affairs issued 2,500 invitations in the latest SkillSelect round for Subclass 189 visa.',
+        country: 'Australia',
+        category: 'Draw',
+        source_name: 'Department of Home Affairs',
+        source_url: 'https://immi.homeaffairs.gov.au/',
+        published_date: '2025-01-14',
+        full_content: 'The January 2025 invitation round for the Skilled Independent visa (Subclass 189) saw 2,500 invitations issued. The minimum points score was 65 points. Healthcare, IT, and Engineering occupations received the most invitations.'
+    },
+    {
+        id: 3,
+        title: 'IRCC Announces Faster Processing for Study Permits',
+        summary: 'Immigration Canada introduces new processing standards aiming to process study permits within 4 weeks.',
+        country: 'Canada',
+        category: 'Processing Update',
+        source_name: 'IRCC',
+        source_url: 'https://www.canada.ca/en/immigration-refugees-citizenship/',
+        published_date: '2025-01-13',
+        full_content: 'IRCC has announced new processing standards for study permit applications. The department aims to process 80% of complete applications within 4 weeks. This improvement is part of IRCC\'s commitment to faster processing times across all immigration programs.'
+    },
+    {
+        id: 4,
+        title: 'Germany Opportunity Card Now Accepting Applications',
+        summary: 'The new Germany Opportunity Card (Chancenkarte) program is now open for applications from skilled workers.',
+        country: 'Germany',
+        category: 'New Program',
+        source_name: 'Make it in Germany',
+        source_url: 'https://www.make-it-in-germany.com/',
+        published_date: '2025-01-12',
+        full_content: 'Germany has officially launched the Opportunity Card program, allowing skilled workers to come to Germany for up to one year to search for employment. The program requires a minimum of 6 points based on qualifications, experience, language skills, and age.'
+    },
+    {
+        id: 5,
+        title: 'UK Skilled Worker Visa Salary Thresholds Updated',
+        summary: 'UK Home Office announces new salary thresholds for Skilled Worker visas effective April 2025.',
+        country: 'UK',
+        category: 'Policy Change',
+        source_name: 'UK Home Office',
+        source_url: 'https://www.gov.uk/',
+        published_date: '2025-01-11',
+        full_content: 'The UK Home Office has updated the salary thresholds for Skilled Worker visas. The general threshold will increase to £38,700 per year, while some occupations may have lower thresholds. This change affects all new applications submitted after April 2025.'
+    },
+    {
+        id: 6,
+        title: 'High Demand for Nurses in Canada - Fast-Track Options Available',
+        summary: 'Canadian provinces announce fast-track immigration pathways for registered nurses due to critical shortages.',
+        country: 'Canada',
+        category: 'Policy Change',
+        source_name: 'CIC News',
+        source_url: 'https://www.cicnews.com/',
+        published_date: '2025-01-10',
+        full_content: 'Multiple Canadian provinces have announced fast-track immigration programs specifically for registered nurses. Ontario, British Columbia, and Nova Scotia are offering expedited processing and additional points for nurses in their Provincial Nominee Programs.'
+    },
+    {
+        id: 7,
+        title: 'Schengen Visa Processing Times Reduced',
+        summary: 'EU announces improved processing times for Schengen visas, now averaging 10-15 days.',
+        country: 'Europe',
+        category: 'Processing Update',
+        source_name: 'Schengen Visa Info',
+        source_url: 'https://www.schengenvisainfo.com/',
+        published_date: '2025-01-09',
+        full_content: 'The European Union has announced improvements in Schengen visa processing times. Most applications are now processed within 10-15 days, down from the previous 15-30 day average. This improvement applies to all 26 Schengen member countries.'
+    },
+    {
+        id: 8,
+        title: 'Australia Increases Student Visa Financial Requirements',
+        summary: 'Department of Home Affairs increases financial proof requirements for student visa applications.',
+        country: 'Australia',
+        category: 'Policy Change',
+        source_name: 'Department of Home Affairs',
+        source_url: 'https://immi.homeaffairs.gov.au/',
+        published_date: '2025-01-08',
+        full_content: 'Australia has increased the financial proof requirements for student visa applications. Applicants must now show AUD $24,505 per year of study, up from AUD $21,041. This change applies to all applications submitted after January 1, 2025.'
+    },
+    {
+        id: 9,
+        title: 'New Zealand Skilled Migrant Category Reopens',
+        summary: 'New Zealand reopens the Skilled Migrant Category with new simplified points system.',
+        country: 'New Zealand',
+        category: 'New Program',
+        source_name: 'Immigration New Zealand',
+        source_url: 'https://www.immigration.govt.nz/',
+        published_date: '2025-01-07',
+        full_content: 'Immigration New Zealand has reopened the Skilled Migrant Category with a new simplified points system. The new system requires a minimum of 6 points based on qualifications, experience, and salary. Applications are now being accepted through the new online system.'
+    },
+    {
+        id: 10,
+        title: 'Global Immigration Trends 2025 Report Released',
+        summary: 'Comprehensive report on global immigration trends, policy changes, and opportunities for 2025.',
+        country: 'Global',
+        category: 'Policy Change',
+        source_name: 'Y-Axis Immigration',
+        source_url: 'https://www.y-axis.com/',
+        published_date: '2025-01-06',
+        full_content: 'A comprehensive report on global immigration trends for 2025 has been released, covering policy changes, new programs, and opportunities across major destination countries. The report highlights increasing demand for skilled workers, especially in healthcare and technology sectors.'
+    }
+];
+
+// Current filtered news
+let filteredNews = [...NEWS_DATA];
+
+// Load news from API (when backend is ready)
+async function loadNewsFromAPI() {
+    try {
+        const response = await fetch('/api/news');
+        if (response.ok) {
+            const data = await response.json();
+            NEWS_DATA = data;
+            filteredNews = [...NEWS_DATA];
+            displayNews();
+            updateNewsStats();
+        }
+    } catch (error) {
+        console.log('Using local news data:', error);
+        // Fallback to local data
+        filteredNews = [...NEWS_DATA];
+        displayNews();
+        updateNewsStats();
+    }
+}
+
+// Display news feed
+function displayNews() {
+    const newsFeed = document.getElementById('newsFeed');
+    if (!newsFeed) return;
+    
+    if (filteredNews.length === 0) {
+        document.getElementById('noNewsResults').style.display = 'block';
+        newsFeed.innerHTML = '';
+        return;
+    }
+    
+    document.getElementById('noNewsResults').style.display = 'none';
+    
+    newsFeed.innerHTML = filteredNews.map(news => {
+        const date = new Date(news.published_date);
+        const formattedDate = date.toLocaleDateString('en-US', { 
+            year: 'numeric', 
+            month: 'long', 
+            day: 'numeric' 
+        });
+        
+        const countryFlag = {
+            'Canada': '🇨🇦',
+            'Australia': '🇦🇺',
+            'UK': '🇬🇧',
+            'Germany': '🇩🇪',
+            'Europe': '🇪🇺',
+            'New Zealand': '🇳🇿',
+            'Global': '🌍'
+        }[news.country] || '🌍';
+        
+        const categoryIcon = {
+            'Draw': '🎯',
+            'Policy Change': '📋',
+            'New Program': '🆕',
+            'Processing Update': '⚡',
+            'Study Visa': '🎓',
+            'Work Visa': '💼'
+        }[news.category] || '📰';
+        
+        return `
+            <div class="news-item" onclick="showNewsDetail(${news.id})">
+                <div class="news-item-header">
+                    <div class="news-badges">
+                        <span class="news-country-badge">${countryFlag} ${news.country}</span>
+                        <span class="news-category-badge">${categoryIcon} ${news.category}</span>
+                    </div>
+                    <span class="news-date">${formattedDate}</span>
+                </div>
+                <h3 class="news-title">${news.title}</h3>
+                <p class="news-summary">${news.summary}</p>
+                <div class="news-footer">
+                    <span class="news-source"><i class="fas fa-external-link-alt"></i> ${news.source_name}</span>
+                    <button class="btn-read-more">Read More <i class="fas fa-arrow-right"></i></button>
+                </div>
+            </div>
+        `;
+    }).join('');
+}
+
+// Filter news
+function filterNews() {
+    const countryFilter = document.getElementById('newsCountryFilter').value;
+    const categoryFilter = document.getElementById('newsCategoryFilter').value;
+    const searchTerm = document.getElementById('newsSearch').value.toLowerCase();
+    
+    filteredNews = NEWS_DATA.filter(news => {
+        const matchCountry = countryFilter === 'all' || news.country === countryFilter;
+        const matchCategory = categoryFilter === 'all' || news.category === categoryFilter;
+        const matchSearch = searchTerm === '' || 
+            news.title.toLowerCase().includes(searchTerm) ||
+            news.summary.toLowerCase().includes(searchTerm) ||
+            news.country.toLowerCase().includes(searchTerm);
+        
+        return matchCountry && matchCategory && matchSearch;
+    });
+    
+    displayNews();
+    updateNewsStats();
+}
+
+// Update news statistics
+function updateNewsStats() {
+    document.getElementById('totalNewsCount').textContent = NEWS_DATA.length;
+    document.getElementById('filteredNewsCount').textContent = filteredNews.length;
+    
+    if (NEWS_DATA.length > 0) {
+        const latestDate = new Date(Math.max(...NEWS_DATA.map(n => new Date(n.published_date))));
+        document.getElementById('lastUpdated').textContent = latestDate.toLocaleDateString('en-US', {
+            month: 'short',
+            day: 'numeric',
+            year: 'numeric'
+        });
+    }
+}
+
+// Show news detail
+function showNewsDetail(newsId) {
+    const news = NEWS_DATA.find(n => n.id === newsId);
+    if (!news) return;
+    
+    const modal = document.getElementById('newsModal');
+    const modalTitle = document.getElementById('newsModalTitle');
+    const modalBody = document.getElementById('newsModalBody');
+    
+    const date = new Date(news.published_date);
+    const formattedDate = date.toLocaleDateString('en-US', { 
+        year: 'numeric', 
+        month: 'long', 
+        day: 'numeric' 
+    });
+    
+    const countryFlag = {
+        'Canada': '🇨🇦',
+        'Australia': '🇦🇺',
+        'UK': '🇬🇧',
+        'Germany': '🇩🇪',
+        'Europe': '🇪🇺',
+        'New Zealand': '🇳🇿',
+        'Global': '🌍'
+    }[news.country] || '🌍';
+    
+    modalTitle.innerHTML = `${countryFlag} ${news.title}`;
+    
+    modalBody.innerHTML = `
+        <div class="news-detail">
+            <div class="news-detail-header">
+                <div class="news-detail-badges">
+                    <span class="news-country-badge">${countryFlag} ${news.country}</span>
+                    <span class="news-category-badge">${news.category}</span>
+                </div>
+                <div class="news-detail-meta">
+                    <span><i class="fas fa-calendar"></i> ${formattedDate}</span>
+                    <span><i class="fas fa-newspaper"></i> ${news.source_name}</span>
+                </div>
+            </div>
+            
+            <div class="news-detail-content">
+                <p class="news-detail-summary">${news.summary}</p>
+                <div class="news-detail-full">
+                    <p>${news.full_content || news.summary}</p>
+                </div>
+            </div>
+            
+            <div class="news-detail-footer">
+                <a href="${news.source_url}" target="_blank" class="btn btn-primary">
+                    <i class="fas fa-external-link-alt"></i> Read Full Article at ${news.source_name}
+                </a>
+            </div>
+        </div>
+    `;
+    
+    modal.style.display = 'flex';
+    document.body.style.overflow = 'hidden';
+}
+
+// Close news modal
+function closeNewsModal() {
+    document.getElementById('newsModal').style.display = 'none';
+    document.body.style.overflow = 'auto';
+}
+
+// Refresh news
+function refreshNews() {
+    const loading = document.getElementById('newsLoading');
+    loading.style.display = 'flex';
+    
+    // Simulate API call (replace with actual API call)
+    setTimeout(() => {
+        loadNewsFromAPI();
+        loading.style.display = 'none';
+    }, 1000);
+}
+
+// Initialize news on page load
+document.addEventListener('DOMContentLoaded', function() {
+    // Load news when news section is shown
+    const newsSection = document.getElementById('news');
+    if (newsSection) {
+        const observer = new MutationObserver(function(mutations) {
+            mutations.forEach(function(mutation) {
+                if (newsSection.classList.contains('active')) {
+                    displayNews();
+                    updateNewsStats();
+                    observer.disconnect();
+                }
+            });
+        });
+        
+        observer.observe(newsSection, {
+            attributes: true,
+            attributeFilter: ['class']
+        });
+        
+        // Also check immediately
+        if (newsSection.classList.contains('active')) {
+            displayNews();
+            updateNewsStats();
+        }
+    }
+    
+    // Close modal when clicking outside
+    const newsModal = document.getElementById('newsModal');
+    if (newsModal) {
+        newsModal.addEventListener('click', function(e) {
+            if (e.target === newsModal) {
+                closeNewsModal();
+            }
+        });
+    }
+});
+
+// Expose functions globally
+window.filterNews = filterNews;
+window.refreshNews = refreshNews;
+window.showNewsDetail = showNewsDetail;
+window.closeNewsModal = closeNewsModal;
+
+// ============================================
+// WORK & SETTLE SYSTEM
+// ============================================
+
+const WORK_SETTLE_INFO = {
+    'skilled-jobs': {
+        title: 'Skilled Jobs',
+        icon: '💼',
+        overview: 'Professional and technical positions requiring specialized education, training, or experience.',
+        jobTypes: [
+            'IT & Software Development',
+            'Engineering (Mechanical, Civil, Electrical)',
+            'Healthcare Professionals (Doctors, Nurses)',
+            'Finance & Accounting',
+            'Management & Business',
+            'Education & Teaching',
+            'Legal Professionals',
+            'Architecture & Design'
+        ],
+        requirements: [
+            'Relevant degree or professional qualification',
+            'Work experience in the field (typically 2+ years)',
+            'Language proficiency (IELTS 6.0-7.0+)',
+            'Professional licensing (if required)',
+            'Job offer from employer (in most cases)'
+        ],
+        countries: [
+            'Canada - Express Entry, PNP',
+            'Australia - Subclass 189/190/491',
+            'UK - Skilled Worker Visa',
+            'Germany - EU Blue Card',
+            'New Zealand - Skilled Migrant Category'
+        ],
+        salaryRange: 'Varies by country and profession - typically $50,000-$150,000+',
+        prPathway: 'Most skilled jobs offer pathways to permanent residence',
+        processingTime: '3-12 months depending on country and program'
+    },
+    'unskilled-jobs': {
+        title: 'Unskilled / Semi-Skilled Jobs',
+        icon: '👷',
+        overview: 'Entry-level positions and manual labor jobs that don\'t require specialized education or extensive training.',
+        jobTypes: [
+            'Warehouse & Logistics',
+            'Construction Labor',
+            'Hospitality & Service',
+            'Manufacturing',
+            'Agriculture & Farming',
+            'Cleaning & Maintenance',
+            'Retail & Sales',
+            'Food Service'
+        ],
+        requirements: [
+            'Basic education (high school or equivalent)',
+            'Physical fitness (for manual labor)',
+            'Basic language skills (varies by country)',
+            'Job offer from employer',
+            'Work permit sponsorship'
+        ],
+        countries: [
+            'Poland - Work permits available',
+            'Slovakia - Warehouse and logistics',
+            'Latvia - 5-year unskilled permits',
+            'Romania - EU work opportunities',
+            'Croatia - Seasonal and permanent work'
+        ],
+        salaryRange: '€800-1,500/month (varies by country and job)',
+        prPathway: 'Some countries offer PR pathways after several years of work',
+        processingTime: '2-6 months'
+    },
+    'blue-collar': {
+        title: 'Blue-Collar Roles',
+        icon: '🔧',
+        overview: 'Skilled trades and manual labor positions requiring technical skills and training.',
+        jobTypes: [
+            'Electricians',
+            'Plumbers',
+            'Carpenters',
+            'Welders',
+            'Mechanics',
+            'Construction Workers',
+            'HVAC Technicians',
+            'Heavy Equipment Operators'
+        ],
+        requirements: [
+            'Trade certification or apprenticeship',
+            'Relevant work experience',
+            'Language proficiency (basic to intermediate)',
+            'Job offer from employer',
+            'Trade recognition (in some countries)'
+        ],
+        countries: [
+            'Canada - Federal Skilled Trades Program',
+            'Australia - Trades Recognition',
+            'Germany - Skilled Worker Visa',
+            'UK - Skilled Worker Visa',
+            'Poland - Work permits for trades'
+        ],
+        salaryRange: '$40,000-$80,000/year (varies by trade and country)',
+        prPathway: 'Many countries have fast-track options for skilled trades',
+        processingTime: '3-8 months'
+    },
+    'shortage-occupations': {
+        title: 'Shortage Occupations',
+        icon: '⚡',
+        overview: 'High-demand occupations with critical shortages, often offering fast-track immigration options.',
+        jobTypes: [
+            'Nurses & Healthcare Workers',
+            'IT Professionals',
+            'Engineers',
+            'Teachers',
+            'Truck Drivers',
+            'Chefs & Cooks',
+            'Construction Managers',
+            'Social Workers'
+        ],
+        requirements: [
+            'Relevant qualifications',
+            'Work experience',
+            'Language proficiency',
+            'Job offer (often required)',
+            'Fast-track processing available'
+        ],
+        countries: [
+            'Canada - Provincial Nominee Programs',
+            'Australia - Priority processing',
+            'UK - Shortage Occupation List',
+            'Germany - Opportunity Card',
+            'New Zealand - Immediate Skill Shortage List'
+        ],
+        salaryRange: 'Competitive salaries with benefits',
+        prPathway: 'Fast-track to permanent residence in most countries',
+        processingTime: '2-6 months (faster than standard processing)'
+    },
+    'poland': {
+        title: 'Work & Settle in Poland',
+        country: '🇵🇱 Poland',
+        overview: 'Poland offers excellent work opportunities for both skilled and unskilled workers, with pathways to EU permanent residence.',
+        jobTypes: [
+            'IT & Software Development',
+            'Manufacturing & Production',
+            'Construction',
+            'Logistics & Warehouse',
+            'Hospitality & Tourism',
+            'Healthcare',
+            'Engineering'
+        ],
+        workPermit: {
+            requirements: [
+                'Job offer from Polish employer',
+                'Work permit application by employer',
+                'Valid passport',
+                'Medical certificate',
+                'Criminal record check'
+            ],
+            processingTime: '2-4 months',
+            validity: 'Up to 3 years, renewable',
+            cost: 'PLN 100-200'
+        },
+        settlement: {
+            accommodation: 'Average rent: PLN 2,000-4,000/month',
+            costOfLiving: 'PLN 3,000-5,000/month',
+            healthcare: 'Public healthcare available after work permit',
+            prPathway: 'After 5 years of legal residence, can apply for permanent residence',
+            citizenship: 'After 8 years of legal residence'
+        },
+        salaryRange: 'PLN 4,000-12,000/month (varies by job)',
+        benefits: [
+            'EU work authorization',
+            'Family can join',
+            'Pathway to EU permanent residence',
+            'Access to EU countries',
+            'Good work-life balance'
+        ]
+    },
+    'slovakia': {
+        title: 'Slovakia Warehouse Jobs',
+        country: '🇸🇰 Slovakia',
+        overview: 'Slovakia has a growing logistics sector with many warehouse and distribution center opportunities.',
+        jobTypes: [
+            'Warehouse Operative',
+            'Forklift Operator',
+            'Logistics Coordinator',
+            'Packaging Worker',
+            'Quality Control',
+            'Inventory Management'
+        ],
+        workPermit: {
+            requirements: [
+                'Job offer from Slovak employer',
+                'Work permit application',
+                'Valid passport',
+                'Medical examination',
+                'Criminal record certificate'
+            ],
+            processingTime: '1-3 months',
+            validity: '1-3 years, renewable',
+            cost: '€135'
+        },
+        settlement: {
+            accommodation: 'Average rent: €300-600/month',
+            costOfLiving: '€600-1,000/month',
+            healthcare: 'Public healthcare after work permit',
+            prPathway: 'After 5 years, can apply for permanent residence',
+            citizenship: 'After 8 years'
+        },
+        salaryRange: '€800-1,200/month (warehouse jobs)',
+        benefits: [
+            'EU member country',
+            'Lower cost of living',
+            'Good transportation',
+            'Family reunification possible',
+            'Pathway to EU residence'
+        ]
+    },
+    'albania': {
+        title: 'Albania Work Permit',
+        country: '🇦🇱 Albania',
+        overview: 'Albania offers work opportunities with relatively straightforward work permit processes.',
+        jobTypes: [
+            'Construction',
+            'Tourism & Hospitality',
+            'IT & Technology',
+            'Manufacturing',
+            'Agriculture',
+            'Education'
+        ],
+        workPermit: {
+            requirements: [
+                'Job offer from Albanian employer',
+                'Work permit application',
+                'Valid passport',
+                'Medical certificate',
+                'Police clearance'
+            ],
+            processingTime: '1-2 months',
+            validity: '1 year, renewable',
+            cost: 'ALL 5,000-10,000'
+        },
+        settlement: {
+            accommodation: 'Average rent: €200-400/month',
+            costOfLiving: '€400-700/month',
+            healthcare: 'Public healthcare available',
+            prPathway: 'After 5 years of legal residence',
+            citizenship: 'After 7 years'
+        },
+        salaryRange: '€400-800/month (varies by job)',
+        benefits: [
+            'Lower cost of living',
+            'Beautiful country',
+            'Growing economy',
+            'EU candidate country',
+            'Relatively easy process'
+        ]
+    },
+    'romania': {
+        title: 'Romania Work Permit',
+        country: '🇷🇴 Romania',
+        overview: 'Romania, as an EU member, offers work opportunities with access to the European market.',
+        jobTypes: [
+            'IT & Software',
+            'Manufacturing',
+            'Construction',
+            'Agriculture',
+            'Tourism',
+            'Call Centers'
+        ],
+        workPermit: {
+            requirements: [
+                'Job offer from Romanian employer',
+                'Work permit application',
+                'Valid passport',
+                'Medical certificate',
+                'Criminal record check'
+            ],
+            processingTime: '2-3 months',
+            validity: '1-2 years, renewable',
+            cost: 'RON 200-500'
+        },
+        settlement: {
+            accommodation: 'Average rent: €250-500/month',
+            costOfLiving: '€500-900/month',
+            healthcare: 'Public healthcare after work permit',
+            prPathway: 'After 5 years, EU permanent residence',
+            citizenship: 'After 8 years'
+        },
+        salaryRange: '€500-1,200/month',
+        benefits: [
+            'EU member country',
+            'Low cost of living',
+            'Growing IT sector',
+            'EU work rights',
+            'Family can join'
+        ]
+    },
+    'croatia': {
+        title: 'Croatia Work Permit',
+        country: '🇭🇷 Croatia',
+        overview: 'Croatia offers work opportunities in tourism, construction, and growing tech sectors.',
+        jobTypes: [
+            'Tourism & Hospitality',
+            'Construction',
+            'IT & Technology',
+            'Maritime & Shipping',
+            'Agriculture',
+            'Healthcare'
+        ],
+        workPermit: {
+            requirements: [
+                'Job offer from Croatian employer',
+                'Work permit application',
+                'Valid passport',
+                'Medical examination',
+                'Criminal record certificate'
+            ],
+            processingTime: '1-3 months',
+            validity: '1-2 years, renewable',
+            cost: 'HRK 200-500'
+        },
+        settlement: {
+            accommodation: 'Average rent: €300-600/month',
+            costOfLiving: '€600-1,000/month',
+            healthcare: 'Public healthcare available',
+            prPathway: 'After 5 years, EU permanent residence',
+            citizenship: 'After 8 years'
+        },
+        salaryRange: '€700-1,500/month',
+        benefits: [
+            'EU member country',
+            'Beautiful coastline',
+            'Growing economy',
+            'Tourism opportunities',
+            'EU work authorization'
+        ]
+    },
+    'malta': {
+        title: 'Malta Work Permits',
+        country: '🇲🇹 Malta',
+        overview: 'Malta offers work opportunities in tourism, gaming, finance, and healthcare sectors.',
+        jobTypes: [
+            'Gaming & iGaming',
+            'Finance & Banking',
+            'Tourism & Hospitality',
+            'Healthcare',
+            'IT & Technology',
+            'Construction'
+        ],
+        workPermit: {
+            requirements: [
+                'Job offer from Maltese employer',
+                'Work permit application',
+                'Valid passport',
+                'Medical certificate',
+                'Police clearance'
+            ],
+            processingTime: '2-4 months',
+            validity: '1-3 years, renewable',
+            cost: '€280'
+        },
+        settlement: {
+            accommodation: 'Average rent: €600-1,200/month',
+            costOfLiving: '€1,000-1,500/month',
+            healthcare: 'Public healthcare after work permit',
+            prPathway: 'After 5 years, EU permanent residence',
+            citizenship: 'After 7 years (investment option available)'
+        },
+        salaryRange: '€1,200-2,500/month',
+        benefits: [
+            'EU member country',
+            'English-speaking',
+            'Strong gaming industry',
+            'Good weather',
+            'EU work rights'
+        ]
+    },
+    'latvia': {
+        title: 'Latvia 5-Year Unskilled Permit',
+        country: '🇱🇻 Latvia',
+        overview: 'Latvia offers 5-year work permits for unskilled workers, providing long-term stability.',
+        jobTypes: [
+            'Construction',
+            'Manufacturing',
+            'Agriculture',
+            'Warehouse & Logistics',
+            'Hospitality',
+            'Cleaning & Maintenance'
+        ],
+        workPermit: {
+            requirements: [
+                'Job offer from Latvian employer',
+                'Work permit application',
+                'Valid passport',
+                'Medical certificate',
+                'Criminal record check'
+            ],
+            processingTime: '1-2 months',
+            validity: '5 years (unskilled permit)',
+            cost: '€50-100'
+        },
+        settlement: {
+            accommodation: 'Average rent: €300-600/month',
+            costOfLiving: '€600-1,000/month',
+            healthcare: 'Public healthcare after work permit',
+            prPathway: 'After 5 years of legal residence',
+            citizenship: 'After 10 years'
+        },
+        salaryRange: '€700-1,200/month',
+        benefits: [
+            '5-year permit (long-term stability)',
+            'EU member country',
+            'Low cost of living',
+            'Family can join',
+            'Pathway to EU residence'
+        ],
+        specialNote: 'The 5-year unskilled permit is unique to Latvia and provides excellent long-term work authorization.'
+    },
+    'netherlands': {
+        title: 'Amsterdam Internship & Work',
+        country: '🇳🇱 Netherlands',
+        overview: 'The Netherlands, especially Amsterdam, offers internship and work opportunities in various sectors.',
+        jobTypes: [
+            'IT & Technology',
+            'Finance & Banking',
+            'Marketing & Advertising',
+            'Hospitality & Tourism',
+            'Engineering',
+            'Healthcare',
+            'Internships (various fields)'
+        ],
+        workPermit: {
+            requirements: [
+                'Job offer or internship from Dutch employer',
+                'Work permit application (employer applies)',
+                'Valid passport',
+                'Health insurance',
+                'For internships: enrollment in education or recent graduation'
+            ],
+            processingTime: '2-4 weeks (fast-track available)',
+            validity: '1-3 years, renewable',
+            cost: '€300-600'
+        },
+        settlement: {
+            accommodation: 'Average rent: €800-1,500/month (Amsterdam higher)',
+            costOfLiving: '€1,200-2,000/month',
+            healthcare: 'Mandatory health insurance (€100-150/month)',
+            prPathway: 'After 5 years, can apply for permanent residence',
+            citizenship: 'After 5 years (with integration exam)'
+        },
+        salaryRange: '€1,500-3,500/month (varies by job)',
+        benefits: [
+            'EU member country',
+            'English widely spoken',
+            'Excellent work-life balance',
+            'Strong economy',
+            'Beautiful cities',
+            'Internship opportunities for students'
+        ],
+        specialNote: 'Amsterdam is particularly popular for internships in tech, finance, and creative industries.'
+    }
+};
+
+// Show Work & Settle details
+function showWorkSettleDetails(key) {
+    const info = WORK_SETTLE_INFO[key];
+    if (!info) {
+        console.error('Work & Settle info not found:', key);
+        return;
+    }
+    
+    const modal = document.getElementById('workSettleModal');
+    const modalTitle = document.getElementById('workSettleModalTitle');
+    const modalBody = document.getElementById('workSettleModalBody');
+    
+    modalTitle.innerHTML = `${info.icon || ''} ${info.title}${info.country ? ' - ' + info.country : ''}`;
+    
+    let html = `
+        <div class="work-settle-details">
+            <div class="work-settle-overview">
+                <h3><i class="fas fa-info-circle"></i> Overview</h3>
+                <p>${info.overview}</p>
+            </div>
+    `;
+    
+    if (info.jobTypes) {
+        html += `
+            <div class="work-settle-section">
+                <h3><i class="fas fa-briefcase"></i> Job Types</h3>
+                <ul class="work-settle-list">
+                    ${info.jobTypes.map(job => `<li>${job}</li>`).join('')}
+                </ul>
+            </div>
+        `;
+    }
+    
+    if (info.requirements) {
+        html += `
+            <div class="work-settle-section">
+                <h3><i class="fas fa-list-check"></i> Requirements</h3>
+                <ul class="work-settle-list">
+                    ${info.requirements.map(req => `<li>${req}</li>`).join('')}
+                </ul>
+            </div>
+        `;
+    }
+    
+    if (info.countries) {
+        html += `
+            <div class="work-settle-section">
+                <h3><i class="fas fa-globe"></i> Available Countries</h3>
+                <ul class="work-settle-list">
+                    ${info.countries.map(country => `<li>${country}</li>`).join('')}
+                </ul>
+            </div>
+        `;
+    }
+    
+    if (info.workPermit) {
+        html += `
+            <div class="work-settle-section">
+                <h3><i class="fas fa-file-alt"></i> Work Permit Details</h3>
+                <div class="work-permit-info">
+                    <h4>Requirements:</h4>
+                    <ul class="work-settle-list">
+                        ${info.workPermit.requirements.map(req => `<li>${req}</li>`).join('')}
+                    </ul>
+                    <div class="work-permit-details-grid">
+                        <div class="work-permit-item">
+                            <strong>Processing Time:</strong> ${info.workPermit.processingTime}
+                        </div>
+                        <div class="work-permit-item">
+                            <strong>Validity:</strong> ${info.workPermit.validity}
+                        </div>
+                        <div class="work-permit-item">
+                            <strong>Cost:</strong> ${info.workPermit.cost}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        `;
+    }
+    
+    if (info.settlement) {
+        html += `
+            <div class="work-settle-section">
+                <h3><i class="fas fa-home"></i> Settlement Information</h3>
+                <div class="settlement-details">
+                    <div class="settlement-item">
+                        <strong>Accommodation:</strong> ${info.settlement.accommodation}
+                    </div>
+                    <div class="settlement-item">
+                        <strong>Cost of Living:</strong> ${info.settlement.costOfLiving}
+                    </div>
+                    <div class="settlement-item">
+                        <strong>Healthcare:</strong> ${info.settlement.healthcare}
+                    </div>
+                    <div class="settlement-item">
+                        <strong>PR Pathway:</strong> ${info.settlement.prPathway}
+                    </div>
+                    <div class="settlement-item">
+                        <strong>Citizenship:</strong> ${info.settlement.citizenship}
+                    </div>
+                </div>
+            </div>
+        `;
+    }
+    
+    if (info.salaryRange) {
+        html += `
+            <div class="work-settle-section">
+                <h3><i class="fas fa-dollar-sign"></i> Salary Range</h3>
+                <p>${info.salaryRange}</p>
+            </div>
+        `;
+    }
+    
+    if (info.benefits) {
+        html += `
+            <div class="work-settle-section">
+                <h3><i class="fas fa-star"></i> Benefits</h3>
+                <ul class="work-settle-list benefits">
+                    ${info.benefits.map(benefit => `<li>${benefit}</li>`).join('')}
+                </ul>
+            </div>
+        `;
+    }
+    
+    if (info.prPathway) {
+        html += `
+            <div class="work-settle-section">
+                <h3><i class="fas fa-flag"></i> PR Pathway</h3>
+                <p>${info.prPathway}</p>
+            </div>
+        `;
+    }
+    
+    if (info.processingTime) {
+        html += `
+            <div class="work-settle-section">
+                <h3><i class="fas fa-clock"></i> Processing Time</h3>
+                <p>${info.processingTime}</p>
+            </div>
+        `;
+    }
+    
+    if (info.specialNote) {
+        html += `
+            <div class="work-settle-section special-note">
+                <h3><i class="fas fa-lightbulb"></i> Special Note</h3>
+                <p>${info.specialNote}</p>
+            </div>
+        `;
+    }
+    
+    html += `</div>`;
+    
+    modalBody.innerHTML = html;
+    modal.style.display = 'flex';
+    document.body.style.overflow = 'hidden';
+}
+
+// Close Work & Settle modal
+function closeWorkSettleModal() {
+    document.getElementById('workSettleModal').style.display = 'none';
+    document.body.style.overflow = 'auto';
+}
+
+// Close modal when clicking outside
+document.addEventListener('DOMContentLoaded', function() {
+    const modal = document.getElementById('workSettleModal');
+    if (modal) {
+        modal.addEventListener('click', function(e) {
+            if (e.target === modal) {
+                closeWorkSettleModal();
+            }
+        });
+    }
+});
+
+// Expose functions globally
+window.showWorkSettleDetails = showWorkSettleDetails;
+window.closeWorkSettleModal = closeWorkSettleModal;
+
+// ============================================
+// MISTAKES & REJECTIONS SYSTEM
+// ============================================
+
+const MISTAKES_INFO = {
+    'common-rejections': {
+        title: 'Common Visa Rejection Reasons',
+        icon: '❌',
+        overview: 'Understanding the most common reasons for visa rejections helps you avoid these mistakes and improve your chances of approval.',
+        topReasons: [
+            {
+                reason: 'Insufficient Financial Proof',
+                description: 'Not showing enough funds to support yourself during your stay',
+                percentage: '35%',
+                howToAvoid: 'Show 3-6 months of bank statements with sufficient balance, include all income sources, and provide clear documentation'
+            },
+            {
+                reason: 'Weak Ties to Home Country',
+                description: 'Immigration officer believes you won\'t return home after your visa expires',
+                percentage: '28%',
+                howToAvoid: 'Show employment letter, property ownership, family ties, business ownership, or other strong connections to home country'
+            },
+            {
+                reason: 'Incomplete or Inaccurate Documentation',
+                description: 'Missing documents, incorrect information, or poorly prepared files',
+                percentage: '22%',
+                howToAvoid: 'Double-check all documents, ensure translations are certified, verify all dates and information are accurate'
+            },
+            {
+                reason: 'Insufficient Language Proficiency',
+                description: 'Language test scores below minimum requirements',
+                percentage: '18%',
+                howToAvoid: 'Prepare thoroughly for IELTS/PTE, take practice tests, consider language courses if needed'
+            },
+            {
+                reason: 'Previous Immigration Violations',
+                description: 'History of overstaying, working illegally, or other violations',
+                percentage: '15%',
+                howToAvoid: 'Always comply with visa conditions, maintain valid status, and disclose any previous issues honestly'
+            },
+            {
+                reason: 'Inconsistent Information',
+                description: 'Information in application doesn\'t match supporting documents',
+                percentage: '12%',
+                howToAvoid: 'Ensure all dates, names, and details are consistent across all documents and forms'
+            },
+            {
+                reason: 'Health or Character Issues',
+                description: 'Medical conditions or criminal record concerns',
+                percentage: '10%',
+                howToAvoid: 'Complete medical exams early, disclose all health conditions, provide character certificates, and explain any criminal history'
+            },
+            {
+                reason: 'Genuine Temporary Entrant (GTE) Concerns',
+                description: 'For student visas: doubts about genuine intention to study',
+                percentage: '25%',
+                howToAvoid: 'Write a strong Statement of Purpose, show clear career goals, explain why you chose the specific course and country'
+            }
+        ],
+        preventionTips: [
+            'Always provide complete and accurate information',
+            'Show strong financial capacity with clear documentation',
+            'Demonstrate strong ties to your home country',
+            'Meet all language requirements before applying',
+            'Prepare a compelling Statement of Purpose (if required)',
+            'Get professional help if unsure about any aspect',
+            'Apply well in advance to avoid rushing'
+        ]
+    },
+    'country-mistakes': {
+        title: 'Country-Wise Rejection Mistakes',
+        icon: '🌍',
+        overview: 'Each country has specific requirements and common mistakes. Learn what to avoid for your target destination.',
+        countries: [
+            {
+                country: 'Canada',
+                commonMistakes: [
+                    'Not meeting minimum CRS score requirements',
+                    'Incomplete Express Entry profile',
+                    'Missing Educational Credential Assessment (ECA)',
+                    'Insufficient proof of funds (not showing 6 months history)',
+                    'Job offer not supported by LMIA',
+                    'Police clearance from wrong countries',
+                    'Medical exam not completed by panel physician'
+                ],
+                specificTips: [
+                    'Ensure your CRS score is competitive before creating profile',
+                    'Complete ECA before entering Express Entry pool',
+                    'Show proof of funds for all family members',
+                    'Get police clearance from ALL countries lived 6+ months since age 18',
+                    'Use only IRCC-approved panel physicians for medical exam'
+                ]
+            },
+            {
+                country: 'Australia',
+                commonMistakes: [
+                    'Not meeting minimum 65 points requirement',
+                    'Skills assessment not completed or expired',
+                    'State nomination not properly documented',
+                    'IELTS scores below minimum (especially for skilled migration)',
+                    'GTE statement not convincing for student visas',
+                    'Insufficient work experience documentation',
+                    'Age over 45 for skilled migration'
+                ],
+                specificTips: [
+                    'Calculate your points accurately before applying',
+                    'Complete skills assessment early (valid for 3 years)',
+                    'For student visas, write a detailed GTE statement',
+                    'Ensure IELTS scores meet minimum requirements (6.0+ for most)',
+                    'Provide detailed employment reference letters with duties',
+                    'Check age requirements before applying'
+                ]
+            },
+            {
+                country: 'United Kingdom',
+                commonMistakes: [
+                    'Job offer from non-licensed sponsor',
+                    'Salary below minimum threshold',
+                    'Insufficient maintenance funds',
+                    'Tuberculosis (TB) test not completed (if required)',
+                    'Previous UK visa refusals not disclosed',
+                    'Incorrect visa category selected'
+                ],
+                specificTips: [
+                    'Verify employer has valid sponsor license',
+                    'Ensure salary meets minimum threshold for your occupation',
+                    'Show maintenance funds for 28 days minimum',
+                    'Complete TB test if from required countries',
+                    'Always disclose previous UK visa history',
+                    'Select correct visa category based on your purpose'
+                ]
+            },
+            {
+                country: 'Germany',
+                commonMistakes: [
+                    'Degree not recognized in Germany',
+                    'Salary below Blue Card threshold (€58,400)',
+                    'Insufficient German language proof',
+                    'Job offer not matching qualifications',
+                    'Health insurance not arranged',
+                    'Incomplete application in German'
+                ],
+                specificTips: [
+                    'Get degree recognition (Anabin) before applying',
+                    'Ensure salary meets Blue Card requirements',
+                    'Provide appropriate language certificates (A2-B2)',
+                    'Match job description with your qualifications',
+                    'Arrange health insurance before arrival',
+                    'Consider professional translation of documents'
+                ]
+            },
+            {
+                country: 'United States',
+                commonMistakes: [
+                    'Insufficient ties to home country (for visitor visas)',
+                    'Previous visa overstay not disclosed',
+                    'DS-160 form errors or inconsistencies',
+                    'Insufficient interview preparation',
+                    'Missing required documents for interview',
+                    'Not explaining purpose of visit clearly'
+                ],
+                specificTips: [
+                    'Show strong ties to home country for B1/B2 visas',
+                    'Always disclose previous US visa history',
+                    'Fill DS-160 form carefully and accurately',
+                    'Prepare thoroughly for visa interview',
+                    'Bring all required documents to interview',
+                    'Be clear and honest about your travel purpose'
+                ]
+            }
+        ]
+    },
+    'ielts-mistakes': {
+        title: 'IELTS Mistakes That Lead to Rejection',
+        icon: '📝',
+        overview: 'IELTS is crucial for most immigration programs. Common mistakes can lead to visa rejection even if you have the required score.',
+        commonMistakes: [
+            {
+                mistake: 'Test Results Expired',
+                description: 'IELTS results are only valid for 2 years. Using expired results leads to automatic rejection.',
+                impact: 'High - Application will be rejected',
+                solution: 'Check validity before applying. Retake test if expired. Plan your application timeline accordingly.'
+            },
+            {
+                mistake: 'Not Meeting Individual Band Requirements',
+                description: 'Some programs require minimum scores in each band (Listening, Reading, Writing, Speaking), not just overall score.',
+                impact: 'High - Application will be rejected',
+                solution: 'Check specific band requirements for your program. Practice all four skills equally.'
+            },
+            {
+                mistake: 'Wrong Test Type',
+                description: 'Using Academic IELTS when General Training is required, or vice versa.',
+                impact: 'High - Application will be rejected',
+                solution: 'Verify which test type your program requires. Most immigration programs need General Training.'
+            },
+            {
+                mistake: 'Score Below Minimum Requirement',
+                description: 'IELTS score below the minimum required for your visa category.',
+                impact: 'High - Application will be rejected',
+                solution: 'Retake IELTS to improve scores. Consider IELTS preparation courses. Allow time for multiple attempts.'
+            },
+            {
+                mistake: 'Not Providing Original Test Report Form (TRF)',
+                description: 'Submitting copies or screenshots instead of original TRF.',
+                impact: 'Medium - May cause delays or rejection',
+                solution: 'Always submit original TRF. Request additional copies from British Council/IDP if needed.'
+            },
+            {
+                mistake: 'Test Center Not Recognized',
+                description: 'Taking IELTS from a center not recognized by the immigration authority.',
+                impact: 'High - Results may not be accepted',
+                solution: 'Take IELTS only from authorized centers (British Council, IDP, or Cambridge).'
+            },
+            {
+                mistake: 'Mismatched Test Dates',
+                description: 'Test dates don\'t align with application timeline or work experience dates.',
+                impact: 'Medium - May raise questions',
+                solution: 'Ensure test dates are within validity period and align with your application timeline.'
+            }
+        ],
+        preparationTips: [
+            'Start preparing 3-6 months before your test date',
+            'Take practice tests regularly to identify weak areas',
+            'Focus on all four skills (Listening, Reading, Writing, Speaking)',
+            'Consider professional IELTS coaching if needed',
+            'Take the test well before your visa application deadline',
+            'Keep original TRF safe and request additional copies',
+            'Verify test center is authorized before booking'
+        ],
+        scoreRequirements: {
+            'Canada FSW': 'CLB 7 (IELTS 6.0 in all bands)',
+            'Canada CEC': 'CLB 7 for NOC 0/A, CLB 5 for NOC B',
+            'Australia Skilled Migration': 'IELTS 6.0 minimum (7.0+ for more points)',
+            'UK Skilled Worker': 'IELTS B1 (4.0+)',
+            'New Zealand SMC': 'IELTS 6.5 overall'
+        }
+    },
+    'document-errors': {
+        title: 'Document Errors That Cause Rejections',
+        icon: '📄',
+        overview: 'Documentation errors are one of the most common reasons for visa rejection. Learn what to avoid.',
+        commonErrors: [
+            {
+                error: 'Missing Required Documents',
+                description: 'Not submitting all documents listed in the checklist',
+                impact: 'High - Application may be rejected or returned',
+                examples: [
+                    'Missing police clearance certificate',
+                    'No proof of funds',
+                    'Missing educational certificates',
+                    'No employment reference letters',
+                    'Missing medical exam results'
+                ],
+                solution: 'Use official document checklist. Double-check before submission. Get professional review if unsure.'
+            },
+            {
+                error: 'Incorrect Translations',
+                description: 'Documents not translated by certified translators or translations not accurate',
+                impact: 'High - Documents may not be accepted',
+                examples: [
+                    'Using Google Translate',
+                    'Not getting certified translations',
+                    'Missing translator credentials',
+                    'Incomplete translations'
+                ],
+                solution: 'Use only certified translators. Include translator credentials. Get translations stamped and signed.'
+            },
+            {
+                error: 'Expired Documents',
+                description: 'Submitting documents that have expired (passports, medical exams, police clearances)',
+                impact: 'High - Application will be rejected',
+                examples: [
+                    'Passport expiring within 6 months',
+                    'Medical exam older than 12 months',
+                    'Police clearance older than 6 months',
+                    'IELTS results older than 2 years'
+                ],
+                solution: 'Check validity of all documents. Renew passports early. Get fresh medical exams and police clearances.'
+            },
+            {
+                error: 'Inconsistent Information',
+                description: 'Information in different documents doesn\'t match',
+                impact: 'High - Raises suspicion and may lead to rejection',
+                examples: [
+                    'Different dates in different documents',
+                    'Name spelling variations',
+                    'Address inconsistencies',
+                    'Employment dates mismatch'
+                ],
+                solution: 'Ensure all documents have consistent information. Use same name format everywhere. Verify all dates match.'
+            },
+            {
+                error: 'Poor Quality Documents',
+                description: 'Blurry, unclear, or incomplete document scans',
+                impact: 'Medium - May cause delays or rejection',
+                examples: [
+                    'Low resolution scans',
+                    'Cut-off text or signatures',
+                    'Watermarks covering important information',
+                    'Illegible text'
+                ],
+                solution: 'Scan documents at high resolution (300 DPI). Ensure all text is visible. Check file sizes meet requirements.'
+            },
+            {
+                error: 'Incorrect Document Format',
+                description: 'Documents not in required format (PDF, JPG, etc.) or wrong file size',
+                impact: 'Medium - May cause technical issues',
+                examples: [
+                    'Submitting Word documents instead of PDF',
+                    'File sizes too large',
+                    'Wrong file naming convention',
+                    'Multiple pages in single file when separate required'
+                ],
+                solution: 'Follow exact format requirements. Check file size limits. Use proper naming conventions.'
+            },
+            {
+                error: 'Missing Notarization or Certification',
+                description: 'Documents requiring notarization submitted without it',
+                impact: 'High - Documents may not be accepted',
+                examples: [
+                    'Educational certificates not attested',
+                    'Employment letters not on company letterhead',
+                    'Bank statements not stamped',
+                    'Affidavits not notarized'
+                ],
+                solution: 'Check which documents need notarization. Get proper attestation. Use official letterheads.'
+            }
+        ],
+        bestPractices: [
+            'Create a checklist of all required documents',
+            'Start collecting documents 3-6 months before applying',
+            'Get certified translations for all non-English documents',
+            'Ensure all documents are recent and valid',
+            'Double-check all information for consistency',
+            'Scan documents at high quality',
+            'Organize documents as per requirements',
+            'Get professional review before submission'
+        ]
+    },
+    'fake-consultants': {
+        title: 'Fake Consultant Warnings',
+        icon: '⚠️',
+        overview: 'Protect yourself from fraudulent immigration consultants. Learn how to identify legitimate services.',
+        redFlags: [
+            {
+                flag: 'Guaranteed Visa Approval',
+                description: 'No legitimate consultant can guarantee visa approval. Immigration decisions are made by government authorities.',
+                why: 'Immigration outcomes depend on individual circumstances and government policies, not consultant promises.'
+            },
+            {
+                flag: 'Upfront Full Payment Required',
+                description: 'Legitimate consultants typically work on a fee structure with payments at different stages.',
+                why: 'Reputable consultants charge for services rendered, not all upfront. Be wary of demands for full payment before work begins.'
+            },
+            {
+                flag: 'No Registration or License',
+                description: 'Consultant cannot provide registration number or license from regulatory body.',
+                why: 'All legitimate immigration consultants must be registered with regulatory bodies (RCIC in Canada, MARA in Australia, etc.).'
+            },
+            {
+                flag: 'Pressure to Act Quickly',
+                description: 'Creating false urgency or deadlines that don\'t exist.',
+                why: 'Legitimate consultants provide realistic timelines. Fake ones create urgency to prevent you from researching or thinking.'
+            },
+            {
+                flag: 'Asking for Money to be Sent to Personal Accounts',
+                description: 'Requesting payments to personal bank accounts instead of business accounts.',
+                why: 'Legitimate businesses have proper business accounts. Personal accounts are a major red flag.'
+            },
+            {
+                flag: 'Promising Faster Processing for Extra Fees',
+                description: 'Claiming they can speed up government processing for additional payment.',
+                why: 'Government processing times cannot be influenced by consultants. This is a scam.'
+            },
+            {
+                flag: 'No Physical Office or Contact Information',
+                description: 'Only online presence, no verifiable office address or contact details.',
+                why: 'Legitimate consultants have verifiable offices and contact information. Be suspicious of P.O. boxes only.'
+            },
+            {
+                flag: 'Asking You to Lie or Provide False Information',
+                description: 'Suggesting you provide false documents or information.',
+                why: 'This is illegal and will result in permanent ban. Legitimate consultants never suggest fraud.'
+            }
+        ],
+        howToVerify: [
+            'Check consultant registration with regulatory body',
+            'Verify business license and registration',
+            'Read reviews and check credentials',
+            'Ask for references from previous clients',
+            'Verify physical office address',
+            'Check if they have proper business accounts',
+            'Ensure they provide written contracts',
+            'Verify their track record and experience'
+        ],
+        regulatoryBodies: {
+            'Canada': 'RCIC (Regulated Canadian Immigration Consultant) - Check on ICCRC website',
+            'Australia': 'MARA (Migration Agents Registration Authority) - Check on MARA website',
+            'UK': 'OISC (Office of the Immigration Services Commissioner) - Check on OISC website',
+            'Global': 'Check with local immigration authorities or professional associations'
+        },
+        whatToDoIfScammed: [
+            'Report to local police immediately',
+            'Contact regulatory body (RCIC, MARA, etc.)',
+            'Report to immigration authorities',
+            'Contact your bank to stop payments if possible',
+            'Document all communications and transactions',
+            'Seek legal advice',
+            'Warn others through reviews and forums'
+        ]
+    },
+    'when-reapply': {
+        title: 'When to Reapply After Rejection',
+        icon: '🔄',
+        overview: 'Understanding when and how to reapply after a visa rejection is crucial. Not all rejections are final.',
+        canReapply: [
+            {
+                situation: 'Insufficient Documents',
+                canReapply: 'Yes - Immediately',
+                waitTime: 'No waiting period',
+                action: 'Gather missing documents and reapply with complete application',
+                successChance: 'High if all documents are now provided'
+            },
+            {
+                situation: 'Financial Proof Issues',
+                canReapply: 'Yes - After 1-3 months',
+                waitTime: '1-3 months to improve financial situation',
+                action: 'Build savings, get proper bank statements, show additional income sources',
+                successChance: 'Good if financial situation genuinely improved'
+            },
+            {
+                situation: 'IELTS Score Below Requirement',
+                canReapply: 'Yes - After retaking test',
+                waitTime: 'No waiting period after getting required score',
+                action: 'Retake IELTS/PTE to meet minimum requirements, then reapply',
+                successChance: 'High if you meet all requirements now'
+            },
+            {
+                situation: 'Weak Ties to Home Country',
+                canReapply: 'Yes - After 3-6 months',
+                waitTime: '3-6 months to strengthen ties',
+                action: 'Get employment letter, show property ownership, demonstrate family ties, start business',
+                successChance: 'Moderate to good depending on improvements'
+            },
+            {
+                situation: 'GTE Concerns (Student Visa)',
+                canReapply: 'Yes - After improving application',
+                waitTime: '1-3 months to strengthen application',
+                action: 'Write better SOP, show clear career goals, explain course choice, show financial capacity',
+                successChance: 'Good if application is significantly improved'
+            }
+        ],
+        cannotReapply: [
+            {
+                situation: 'Misrepresentation or Fraud',
+                canReapply: 'No - Permanent Ban',
+                waitTime: 'Permanent ban (5-10 years minimum)',
+                action: 'Cannot reapply. May need legal assistance for appeal.',
+                note: 'Very serious - seek legal advice immediately'
+            },
+            {
+                situation: 'Criminal Record (Serious Offenses)',
+                canReapply: 'Maybe - After rehabilitation period',
+                waitTime: '5-10 years depending on offense',
+                action: 'Complete rehabilitation, get character references, may need legal waiver',
+                note: 'Consult immigration lawyer for specific cases'
+            },
+            {
+                situation: 'Health Issues (Contagious Diseases)',
+                canReapply: 'Maybe - After treatment',
+                waitTime: 'After medical clearance',
+                action: 'Complete treatment, get medical clearance, may need health waiver',
+                note: 'Depends on specific condition and country requirements'
+            }
+        ],
+        reapplicationSteps: [
+            'Understand the rejection reason completely',
+            'Address the specific issue that caused rejection',
+            'Wait appropriate time (if required)',
+            'Improve your application significantly',
+            'Gather stronger supporting documents',
+            'Consider professional help if needed',
+            'Submit new application with improvements',
+            'Be prepared for interview if required'
+        ],
+        tipsForSuccess: [
+            'Don\'t rush - take time to address rejection reasons',
+            'Significantly improve your application, not just minor changes',
+            'Get professional help if you were rejected before',
+            'Be honest about previous rejection in new application',
+            'Show how you\'ve addressed previous concerns',
+            'Provide additional supporting documents',
+            'Consider different visa category if applicable',
+            'Maintain patience and persistence'
+        ],
+        appealOptions: [
+            {
+                country: 'Canada',
+                option: 'Appeal to Immigration Appeal Division (IAD) or Federal Court',
+                timeframe: '30-60 days to file appeal',
+                successRate: 'Varies by case type'
+            },
+            {
+                country: 'Australia',
+                option: 'Appeal to Administrative Appeals Tribunal (AAT)',
+                timeframe: '21 days to file appeal',
+                successRate: 'Moderate - depends on case'
+            },
+            {
+                country: 'UK',
+                option: 'Administrative Review or Appeal to First-tier Tribunal',
+                timeframe: '14-28 days depending on visa type',
+                successRate: 'Varies by grounds for appeal'
+            }
+        ]
+    }
+};
+
+// Show mistake details
+function showMistakeDetails(key) {
+    const info = MISTAKES_INFO[key];
+    if (!info) {
+        console.error('Mistake info not found:', key);
+        return;
+    }
+    
+    const modal = document.getElementById('mistakeModal');
+    const modalTitle = document.getElementById('mistakeModalTitle');
+    const modalBody = document.getElementById('mistakeModalBody');
+    
+    modalTitle.innerHTML = `${info.icon} ${info.title}`;
+    
+    let html = `
+        <div class="mistake-details">
+            <div class="mistake-overview">
+                <h3><i class="fas fa-info-circle"></i> Overview</h3>
+                <p>${info.overview}</p>
+            </div>
+    `;
+    
+    // Common Rejections
+    if (info.topReasons) {
+        html += `
+            <div class="mistake-section">
+                <h3><i class="fas fa-list-ol"></i> Top Rejection Reasons</h3>
+                <div class="rejection-reasons-list">
+        `;
+        info.topReasons.forEach((reason, index) => {
+            html += `
+                <div class="rejection-reason-item">
+                    <div class="reason-header">
+                        <span class="reason-number">${index + 1}</span>
+                        <h4>${reason.reason} <span class="reason-percentage">(${reason.percentage} of rejections)</span></h4>
+                    </div>
+                    <p class="reason-description">${reason.description}</p>
+                    <div class="reason-solution">
+                        <strong><i class="fas fa-lightbulb"></i> How to Avoid:</strong>
+                        <p>${reason.howToAvoid}</p>
+                    </div>
+                </div>
+            `;
+        });
+        html += `</div></div>`;
+        
+        if (info.preventionTips) {
+            html += `
+                <div class="mistake-section">
+                    <h3><i class="fas fa-shield-alt"></i> Prevention Tips</h3>
+                    <ul class="mistake-list tips">
+                        ${info.preventionTips.map(tip => `<li>${tip}</li>`).join('')}
+                    </ul>
+                </div>
+            `;
+        }
+    }
+    
+    // Country Mistakes
+    if (info.countries) {
+        html += `
+            <div class="mistake-section">
+                <h3><i class="fas fa-globe"></i> Country-Specific Mistakes</h3>
+        `;
+        info.countries.forEach(country => {
+            html += `
+                <div class="country-mistake-card">
+                    <h4>${country.country}</h4>
+                    <div class="mistake-subsection">
+                        <strong>Common Mistakes:</strong>
+                        <ul class="mistake-list">
+                            ${country.commonMistakes.map(mistake => `<li>${mistake}</li>`).join('')}
+                        </ul>
+                    </div>
+                    <div class="mistake-subsection">
+                        <strong>How to Avoid:</strong>
+                        <ul class="mistake-list tips">
+                            ${country.specificTips.map(tip => `<li>${tip}</li>`).join('')}
+                        </ul>
+                    </div>
+                </div>
+            `;
+        });
+        html += `</div>`;
+    }
+    
+    // IELTS Mistakes
+    if (info.commonMistakes && key === 'ielts-mistakes') {
+        html += `
+            <div class="mistake-section">
+                <h3><i class="fas fa-exclamation-circle"></i> Common IELTS Mistakes</h3>
+        `;
+        info.commonMistakes.forEach(mistake => {
+            html += `
+                <div class="mistake-item-card">
+                    <div class="mistake-item-header">
+                        <h4>${mistake.mistake}</h4>
+                        <span class="impact-badge ${mistake.impact.toLowerCase().includes('high') ? 'high' : 'medium'}">${mistake.impact}</span>
+                    </div>
+                    <p class="mistake-description">${mistake.description}</p>
+                    <div class="mistake-solution">
+                        <strong><i class="fas fa-check-circle"></i> Solution:</strong>
+                        <p>${mistake.solution}</p>
+                    </div>
+                </div>
+            `;
+        });
+        html += `</div>`;
+        
+        if (info.preparationTips) {
+            html += `
+                <div class="mistake-section">
+                    <h3><i class="fas fa-graduation-cap"></i> IELTS Preparation Tips</h3>
+                    <ul class="mistake-list tips">
+                        ${info.preparationTips.map(tip => `<li>${tip}</li>`).join('')}
+                    </ul>
+                </div>
+            `;
+        }
+        
+        if (info.scoreRequirements) {
+            html += `
+                <div class="mistake-section">
+                    <h3><i class="fas fa-chart-line"></i> Score Requirements by Program</h3>
+                    <div class="score-requirements-grid">
+                        ${Object.entries(info.scoreRequirements).map(([program, requirement]) => `
+                            <div class="score-requirement-item">
+                                <strong>${program}:</strong> ${requirement}
+                            </div>
+                        `).join('')}
+                    </div>
+                </div>
+            `;
+        }
+    }
+    
+    // Document Errors
+    if (info.commonErrors) {
+        html += `
+            <div class="mistake-section">
+                <h3><i class="fas fa-file-exclamation"></i> Common Document Errors</h3>
+        `;
+        info.commonErrors.forEach(error => {
+            html += `
+                <div class="mistake-item-card">
+                    <div class="mistake-item-header">
+                        <h4>${error.error}</h4>
+                        <span class="impact-badge ${error.impact.toLowerCase().includes('high') ? 'high' : 'medium'}">${error.impact}</span>
+                    </div>
+                    <p class="mistake-description">${error.description}</p>
+                    ${error.examples ? `
+                        <div class="mistake-examples">
+                            <strong>Examples:</strong>
+                            <ul class="mistake-list">
+                                ${error.examples.map(example => `<li>${example}</li>`).join('')}
+                            </ul>
+                        </div>
+                    ` : ''}
+                    <div class="mistake-solution">
+                        <strong><i class="fas fa-check-circle"></i> Solution:</strong>
+                        <p>${error.solution}</p>
+                    </div>
+                </div>
+            `;
+        });
+        html += `</div>`;
+        
+        if (info.bestPractices) {
+            html += `
+                <div class="mistake-section">
+                    <h3><i class="fas fa-star"></i> Best Practices</h3>
+                    <ul class="mistake-list tips">
+                        ${info.bestPractices.map(practice => `<li>${practice}</li>`).join('')}
+                    </ul>
+                </div>
+            `;
+        }
+    }
+    
+    // Fake Consultants
+    if (info.redFlags) {
+        html += `
+            <div class="mistake-section">
+                <h3><i class="fas fa-exclamation-triangle"></i> Red Flags - Warning Signs</h3>
+        `;
+        info.redFlags.forEach(flag => {
+            html += `
+                <div class="red-flag-card">
+                    <div class="red-flag-header">
+                        <i class="fas fa-flag"></i>
+                        <h4>${flag.flag}</h4>
+                    </div>
+                    <p class="flag-description">${flag.description}</p>
+                    <div class="flag-explanation">
+                        <strong>Why this is a red flag:</strong>
+                        <p>${flag.why}</p>
+                    </div>
+                </div>
+            `;
+        });
+        html += `</div>`;
+        
+        if (info.howToVerify) {
+            html += `
+                <div class="mistake-section">
+                    <h3><i class="fas fa-shield-check"></i> How to Verify Legitimate Consultants</h3>
+                    <ul class="mistake-list tips">
+                        ${info.howToVerify.map(step => `<li>${step}</li>`).join('')}
+                    </ul>
+                </div>
+            `;
+        }
+        
+        if (info.regulatoryBodies) {
+            html += `
+                <div class="mistake-section">
+                    <h3><i class="fas fa-building"></i> Regulatory Bodies</h3>
+                    <div class="regulatory-bodies-list">
+                        ${Object.entries(info.regulatoryBodies).map(([country, body]) => `
+                            <div class="regulatory-item">
+                                <strong>${country}:</strong> ${body}
+                            </div>
+                        `).join('')}
+                    </div>
+                </div>
+            `;
+        }
+        
+        if (info.whatToDoIfScammed) {
+            html += `
+                <div class="mistake-section warning-section">
+                    <h3><i class="fas fa-phone-alt"></i> What to Do If You've Been Scammed</h3>
+                    <ul class="mistake-list urgent">
+                        ${info.whatToDoIfScammed.map(action => `<li>${action}</li>`).join('')}
+                    </ul>
+                </div>
+            `;
+        }
+    }
+    
+    // When to Reapply
+    if (info.canReapply) {
+        html += `
+            <div class="mistake-section">
+                <h3><i class="fas fa-check-circle"></i> Situations Where You CAN Reapply</h3>
+        `;
+        info.canReapply.forEach(situation => {
+            html += `
+                <div class="reapply-situation-card can-reapply">
+                    <div class="situation-header">
+                        <h4>${situation.situation}</h4>
+                        <span class="reapply-badge yes">Can Reapply</span>
+                    </div>
+                    <div class="situation-details">
+                        <p><strong>Wait Time:</strong> ${situation.waitTime}</p>
+                        <p><strong>Action Required:</strong> ${situation.action}</p>
+                        <p><strong>Success Chance:</strong> ${situation.successChance}</p>
+                    </div>
+                </div>
+            `;
+        });
+        html += `</div>`;
+    }
+    
+    if (info.cannotReapply) {
+        html += `
+            <div class="mistake-section">
+                <h3><i class="fas fa-times-circle"></i> Situations Where Reapplication is Difficult</h3>
+        `;
+        info.cannotReapply.forEach(situation => {
+            html += `
+                <div class="reapply-situation-card cannot-reapply">
+                    <div class="situation-header">
+                        <h4>${situation.situation}</h4>
+                        <span class="reapply-badge no">${situation.canReapply}</span>
+                    </div>
+                    <div class="situation-details">
+                        <p><strong>Wait Time:</strong> ${situation.waitTime}</p>
+                        <p><strong>Action Required:</strong> ${situation.action}</p>
+                        <p class="situation-note"><strong>Note:</strong> ${situation.note}</p>
+                    </div>
+                </div>
+            `;
+        });
+        html += `</div>`;
+    }
+    
+    if (info.reapplicationSteps) {
+        html += `
+            <div class="mistake-section">
+                <h3><i class="fas fa-list-ol"></i> Reapplication Steps</h3>
+                <ol class="mistake-list numbered">
+                    ${info.reapplicationSteps.map((step, index) => `<li>${step}</li>`).join('')}
+                </ol>
+            </div>
+        `;
+    }
+    
+    if (info.tipsForSuccess) {
+        html += `
+            <div class="mistake-section">
+                <h3><i class="fas fa-lightbulb"></i> Tips for Successful Reapplication</h3>
+                <ul class="mistake-list tips">
+                    ${info.tipsForSuccess.map(tip => `<li>${tip}</li>`).join('')}
+                </ul>
+            </div>
+        `;
+    }
+    
+    if (info.appealOptions) {
+        html += `
+            <div class="mistake-section">
+                <h3><i class="fas fa-gavel"></i> Appeal Options</h3>
+        `;
+        info.appealOptions.forEach(option => {
+            html += `
+                <div class="appeal-option-card">
+                    <h4>${option.country}</h4>
+                    <p><strong>Option:</strong> ${option.option}</p>
+                    <p><strong>Timeframe:</strong> ${option.timeframe}</p>
+                    <p><strong>Success Rate:</strong> ${option.successRate}</p>
+                </div>
+            `;
+        });
+        html += `</div>`;
+    }
+    
+    html += `</div>`;
+    
+    modalBody.innerHTML = html;
+    modal.style.display = 'flex';
+    document.body.style.overflow = 'hidden';
+}
+
+// Close mistake modal
+function closeMistakeModal() {
+    document.getElementById('mistakeModal').style.display = 'none';
+    document.body.style.overflow = 'auto';
+}
+
+// Close modal when clicking outside
+document.addEventListener('DOMContentLoaded', function() {
+    const modal = document.getElementById('mistakeModal');
+    if (modal) {
+        modal.addEventListener('click', function(e) {
+            if (e.target === modal) {
+                closeMistakeModal();
+            }
+        });
+    }
+});
+
+// Expose functions globally
+window.showMistakeDetails = showMistakeDetails;
+window.closeMistakeModal = closeMistakeModal;
+
+// ============================================
+// ABOUT MIGRATION LAWS SYSTEM
+// ============================================
+
+const LAWS_INFO = {
+    'immigration-basics': {
+        title: 'Immigration Law Basics',
+        icon: '📚',
+        overview: 'Understanding the fundamental principles and concepts of immigration law is essential for anyone planning to migrate.',
+        keyConcepts: [
+            {
+                concept: 'What is Immigration Law?',
+                description: 'Immigration law governs who can enter, stay, and become citizens of a country. It includes rules about visas, work permits, permanent residence, and citizenship.'
+            },
+            {
+                concept: 'Sovereignty Principle',
+                description: 'Every country has the right to control who enters and stays in its territory. This is a fundamental principle of international law.'
+            },
+            {
+                concept: 'Non-Citizen Categories',
+                description: 'Countries classify non-citizens into categories: visitors, temporary residents, permanent residents, and citizens. Each category has different rights and obligations.'
+            },
+            {
+                concept: 'Immigration vs Emigration',
+                description: 'Immigration is entering a new country to live there. Emigration is leaving your home country. Both are regulated by laws.'
+            },
+            {
+                concept: 'Legal vs Illegal Immigration',
+                description: 'Legal immigration follows official processes and requirements. Illegal immigration violates laws and can result in deportation and bans.'
+            }
+        ],
+        typesOfVisas: [
+            'Temporary Visas - Short-term stays (tourist, business, student)',
+            'Work Visas - Employment authorization',
+            'Family Visas - Joining family members',
+            'Permanent Residence - Long-term residency rights',
+            'Refugee/Asylum - Protection for those fleeing persecution'
+        ],
+        importantPrinciples: [
+            'All immigration is discretionary - no automatic right to enter',
+            'Compliance with visa conditions is mandatory',
+            'Misrepresentation can result in permanent bans',
+            'Immigration laws change frequently',
+            'Each country has its own immigration system'
+        ]
+    },
+    'pr-vs-citizenship': {
+        title: 'Permanent Residence vs Citizenship',
+        icon: '🆔',
+        overview: 'Understanding the difference between Permanent Residence (PR) and Citizenship is crucial for planning your migration journey.',
+        prDefinition: {
+            title: 'Permanent Residence (PR)',
+            description: 'Permanent Residence grants you the right to live, work, and study in a country indefinitely, but you remain a citizen of your home country.',
+            rights: [
+                'Live and work indefinitely in the country',
+                'Access to public healthcare and education',
+                'Social security benefits',
+                'Freedom to travel in and out of the country',
+                'Sponsor family members (in most cases)',
+                'Pathway to citizenship (after meeting requirements)'
+            ],
+            limitations: [
+                'Cannot vote in national elections',
+                'Cannot hold certain government positions',
+                'Must maintain residency requirements',
+                'Can be revoked for serious crimes or misrepresentation',
+                'May need to renew PR card periodically',
+                'Subject to deportation for serious violations'
+            ],
+            requirements: [
+                'Meet eligibility criteria (points, skills, family ties)',
+                'Pass medical and security checks',
+                'Show proof of funds',
+                'Meet language requirements',
+                'Maintain valid status during application'
+            ]
+        },
+        citizenshipDefinition: {
+            title: 'Citizenship',
+            description: 'Citizenship is the highest status, making you a full member of the country with all rights and responsibilities.',
+            rights: [
+                'All PR rights plus:',
+                'Right to vote in all elections',
+                'Right to hold public office',
+                'Right to a passport from that country',
+                'Cannot be deported (except in extreme cases)',
+                'Right to live abroad and return freely',
+                'Full legal protection as a citizen'
+            ],
+            obligations: [
+                'Pledge allegiance to the country',
+                'Obey all laws',
+                'May be required to serve in military (some countries)',
+                'Pay taxes as a citizen',
+                'May lose original citizenship (depending on country)'
+            ],
+            requirements: [
+                'Hold PR status for required period (typically 3-5 years)',
+                'Meet residency requirements (physical presence)',
+                'Pass citizenship test (language, history, values)',
+                'Good character (no serious criminal record)',
+                'Pay citizenship application fees'
+            ]
+        },
+        comparison: {
+            pr: {
+                duration: 'Indefinite (with conditions)',
+                voting: 'No',
+                passport: 'No',
+                deportation: 'Possible for serious violations',
+                residency: 'Must maintain minimum residency',
+                timeToObtain: '6 months - 2 years'
+            },
+            citizenship: {
+                duration: 'Permanent (cannot be revoked easily)',
+                voting: 'Yes',
+                passport: 'Yes',
+                deportation: 'Rarely (only extreme cases)',
+                residency: 'Can live abroad and return',
+                timeToObtain: '3-5 years after PR + application time'
+            }
+        },
+        countrySpecific: {
+            'Canada': {
+                pr: 'Permanent Resident Card, valid for 5 years, must meet residency obligation (730 days in 5 years)',
+                citizenship: 'After 3 years as PR (1,095 days), must pass citizenship test',
+                dualCitizenship: 'Allowed'
+            },
+            'Australia': {
+                pr: 'Permanent Resident Visa, can travel for 5 years, must maintain ties',
+                citizenship: 'After 4 years as PR, must pass citizenship test',
+                dualCitizenship: 'Allowed'
+            },
+            'UK': {
+                pr: 'Indefinite Leave to Remain (ILR), can be lost if absent 2+ years',
+                citizenship: 'After 5-6 years (depending on route), must pass Life in UK test',
+                dualCitizenship: 'Allowed'
+            },
+            'USA': {
+                pr: 'Green Card, must maintain permanent residence, can be lost if absent 1+ year',
+                citizenship: 'After 5 years (3 if married to US citizen), must pass naturalization test',
+                dualCitizenship: 'Allowed'
+            },
+            'Germany': {
+                pr: 'Permanent Residence Permit, can be lost if absent 6+ months without reason',
+                citizenship: 'After 8 years (can be reduced to 6-7), must pass integration test',
+                dualCitizenship: 'Limited (depends on origin country)'
+            }
+        }
+    },
+    'visa-validity': {
+        title: 'Visa Validity Rules',
+        icon: '📅',
+        overview: 'Understanding visa validity periods, entry dates, and stay durations is essential to avoid overstaying and violations.',
+        validityTypes: [
+            {
+                type: 'Single Entry Visa',
+                description: 'Allows one entry into the country. Once you leave, you cannot re-enter with the same visa.',
+                example: 'Most tourist visas, some work visas'
+            },
+            {
+                type: 'Multiple Entry Visa',
+                description: 'Allows multiple entries during the validity period. You can leave and return as long as the visa is valid.',
+                example: 'Canada visitor visa (10 years), USA B1/B2 visa (10 years)'
+            },
+            {
+                type: 'Visa Validity vs Stay Duration',
+                description: 'Visa validity is when you can enter. Stay duration is how long you can remain. These are different!',
+                example: 'A 10-year visa may only allow 6-month stays per entry'
+            }
+        ],
+        importantDates: [
+            {
+                date: 'Entry Date',
+                description: 'The date by which you must enter the country. Entering after this date may invalidate your visa.',
+                importance: 'Critical - Enter before or on this date'
+            },
+            {
+                date: 'Expiry Date',
+                description: 'The date your visa expires. You must leave before this date unless you have extended your stay.',
+                importance: 'Critical - Leave before this date or extend legally'
+            },
+            {
+                date: 'Stay Duration',
+                description: 'How long you can remain in the country per entry. This is different from visa validity.',
+                importance: 'Important - Don\'t confuse with visa validity period'
+            }
+        ],
+        commonRules: [
+            'Visa validity ≠ Stay duration',
+            'You must enter before visa expiry date',
+            'You must leave before stay duration expires',
+            'Overstaying even one day is a violation',
+            'Extensions must be applied for before expiry',
+            'Working on a visitor visa is illegal',
+            'Study restrictions apply to most visitor visas'
+        ],
+        countrySpecific: {
+            'Canada': {
+                visitorVisa: 'Up to 10 years validity, 6 months stay per entry (can be extended)',
+                workPermit: 'Tied to job offer, typically 1-4 years',
+                studyPermit: 'Valid for duration of study program + 90 days',
+                extension: 'Can apply for extension before expiry'
+            },
+            'Australia': {
+                visitorVisa: '3, 6, or 12 months validity, stay as per grant',
+                workVisa: 'Tied to employer, typically 2-4 years',
+                studentVisa: 'Valid for course duration + 1-2 months',
+                extension: 'Can apply for extension, but not guaranteed'
+            },
+            'UK': {
+                visitorVisa: '6 months validity, stay up to 6 months',
+                workVisa: 'Tied to sponsor, typically 3-5 years',
+                studentVisa: 'Valid for course duration + 4 months',
+                extension: 'Can apply for extension before expiry'
+            },
+            'USA': {
+                visitorVisa: '10 years validity (B1/B2), stay determined at entry (typically 6 months)',
+                workVisa: 'H-1B: 3 years, extendable to 6 years',
+                studentVisa: 'F-1: Valid for course duration + 60 days',
+                extension: 'Can apply for extension, but complex'
+            }
+        },
+        extensionRules: [
+            'Apply before current visa expires',
+            'Show valid reason for extension',
+            'Maintain valid status during application',
+            'Provide updated financial proof',
+            'Extension not guaranteed - plan accordingly'
+        ]
+    },
+    'overstay-consequences': {
+        title: 'Overstay Consequences',
+        icon: '⚠️',
+        overview: 'Overstaying your visa is a serious violation with severe consequences. Understanding these helps you avoid costly mistakes.',
+        immediateConsequences: [
+            {
+                consequence: 'Illegal Status',
+                description: 'You become an illegal immigrant the day after your visa expires',
+                severity: 'High',
+                impact: 'Cannot work legally, access healthcare, or use services'
+            },
+            {
+                consequence: 'Arrest and Detention',
+                description: 'Can be arrested, detained, and deported at any time',
+                severity: 'Very High',
+                impact: 'Detention centers, deportation proceedings, barred from re-entry'
+            },
+            {
+                consequence: 'Deportation',
+                description: 'Forced removal from the country at your own expense',
+                severity: 'Very High',
+                impact: 'Permanent record, travel ban, financial costs'
+            }
+        ],
+        longTermConsequences: [
+            {
+                consequence: 'Re-Entry Bans',
+                description: 'Banned from re-entering the country for a period (1-10 years depending on overstay length)',
+                duration: '1-10 years',
+                impact: 'Cannot return even as a visitor'
+            },
+            {
+                consequence: 'Permanent Record',
+                description: 'Overstay becomes part of your immigration record permanently',
+                duration: 'Permanent',
+                impact: 'Affects all future visa applications worldwide'
+            },
+            {
+                consequence: 'Future Visa Refusals',
+                description: 'Very difficult to get visas for other countries after overstay',
+                duration: 'Long-term',
+                impact: 'Other countries see you as high-risk'
+            },
+            {
+                consequence: 'Employment Issues',
+                description: 'Cannot work legally, risk of exploitation, no legal protection',
+                duration: 'While overstaying',
+                impact: 'No worker rights, low wages, exploitation risk'
+            }
+        ],
+        countrySpecific: {
+            'Canada': {
+                banDuration: '1 year ban for overstay less than 6 months, up to permanent ban for longer',
+                consequences: 'Cannot apply for PR, work permits, or visitor visas',
+                exceptions: 'Very limited - humanitarian cases only',
+                advice: 'Leave before expiry or apply for extension well in advance'
+            },
+            'Australia': {
+                banDuration: '3-year ban for overstay, can be permanent for serious cases',
+                consequences: 'Cannot return, affects all visa applications',
+                exceptions: 'Very rare exceptions',
+                advice: 'Never overstay - apply for extension or leave before expiry'
+            },
+            'UK': {
+                banDuration: '1-10 year ban depending on overstay length',
+                consequences: 'Cannot return, affects all future UK applications',
+                exceptions: 'Extremely limited',
+                advice: 'Leave before visa expires or apply for extension'
+            },
+            'USA': {
+                banDuration: '3-10 year ban, can be permanent',
+                consequences: 'Cannot return, affects all US visa applications',
+                exceptions: 'Very limited',
+                advice: 'Never overstay - serious consequences including permanent ban'
+            }
+        },
+        whatToDoIfOverstayed: [
+            'Contact immigration lawyer immediately',
+            'Do not try to leave and re-enter illegally',
+            'Document your situation and reasons',
+            'Apply for restoration/extension if still within grace period',
+            'Consider voluntary departure if possible',
+            'Prepare for potential ban period',
+            'Never work illegally while overstaying'
+        ],
+        prevention: [
+            'Set reminders for visa expiry dates',
+            'Apply for extensions 2-3 months before expiry',
+            'Keep track of stay duration (not just visa validity)',
+            'Understand difference between visa validity and stay duration',
+            'Plan travel dates carefully',
+            'Get professional help if unsure about dates'
+        ]
+    },
+    'visa-conditions': {
+        title: 'Visa Conditions & Restrictions',
+        icon: '📋',
+        overview: 'Every visa comes with specific conditions and restrictions. Violating these can result in cancellation and deportation.',
+        commonConditions: [
+            {
+                condition: 'No Work Restriction',
+                description: 'Most visitor and student visas prohibit or limit work',
+                examples: [
+                    'Visitor visas: No work allowed',
+                    'Student visas: Limited hours (20-40 hours/week)',
+                    'Work visas: Only for specified employer/job'
+                ],
+                violation: 'Working illegally can result in immediate visa cancellation and deportation'
+            },
+            {
+                condition: 'Study Restrictions',
+                description: 'Visitor visas typically prohibit formal study',
+                examples: [
+                    'Cannot enroll in full-time courses on visitor visa',
+                    'Short courses (under 3 months) may be allowed',
+                    'Must have student visa for formal education'
+                ],
+                violation: 'Studying without proper visa is illegal'
+            },
+            {
+                condition: 'Residency Requirements',
+                description: 'Must maintain valid status and comply with entry/exit rules',
+                examples: [
+                    'Must enter before visa expiry',
+                    'Must leave before stay duration expires',
+                    'Cannot stay continuously beyond allowed period'
+                ],
+                violation: 'Overstaying violates visa conditions'
+            },
+            {
+                condition: 'Health Insurance',
+                description: 'Many countries require health insurance for certain visas',
+                examples: [
+                    'Student visas: Mandatory health insurance',
+                    'Work visas: May require health coverage',
+                    'Visitor visas: Recommended, sometimes mandatory'
+                ],
+                violation: 'Lack of insurance can affect visa renewal'
+            },
+            {
+                condition: 'Financial Maintenance',
+                description: 'Must have sufficient funds to support yourself',
+                examples: [
+                    'Cannot rely on public funds',
+                    'Must show financial capacity',
+                    'Cannot become a public charge'
+                ],
+                violation: 'Using public funds can result in visa cancellation'
+            }
+        ],
+        workRestrictions: {
+            'Visitor Visa': 'No work allowed - violation is serious',
+            'Student Visa': 'Limited hours (varies by country), only during study period',
+            'Work Visa': 'Only for specified employer and job, cannot change without permission',
+            'Spouse Visa': 'Usually can work without restrictions',
+            'PR': 'Can work anywhere, any job'
+        },
+        studyRestrictions: {
+            'Visitor Visa': 'No formal study, only short courses',
+            'Work Visa': 'Usually cannot study full-time',
+            'Student Visa': 'Must maintain enrollment, attend classes',
+            'PR': 'Can study anywhere without restrictions'
+        },
+        travelRestrictions: [
+            'Cannot travel to certain countries (check visa conditions)',
+            'Must return before visa/stay expires',
+            'Multiple entry visas allow re-entry',
+            'Single entry visas expire after one entry',
+            'Some visas require you to maintain residence'
+        ],
+        violationConsequences: [
+            'Immediate visa cancellation',
+            'Deportation',
+            'Re-entry bans',
+            'Future visa refusals',
+            'Criminal charges (in some cases)',
+            'Permanent record of violation'
+        ]
+    },
+    'rights-obligations': {
+        title: 'Rights & Obligations of Immigrants',
+        icon: '⚖️',
+        overview: 'Understanding your rights and obligations as an immigrant helps you navigate your new country successfully and legally.',
+        rights: [
+            {
+                right: 'Right to Fair Treatment',
+                description: 'Immigrants have the right to fair and equal treatment under the law',
+                details: 'Cannot be discriminated against based on origin, protected by anti-discrimination laws'
+            },
+            {
+                right: 'Right to Legal Representation',
+                description: 'Right to hire immigration lawyers or consultants for assistance',
+                details: 'Can appeal decisions, get legal help, and understand your rights'
+            },
+            {
+                right: 'Right to Work (if authorized)',
+                description: 'If you have work authorization, you have the right to work and receive fair wages',
+                details: 'Protected by labor laws, entitled to minimum wage, safe working conditions'
+            },
+            {
+                right: 'Right to Education (if authorized)',
+                description: 'Children have right to public education, adults can study if authorized',
+                details: 'Public schools for children, access to education based on visa type'
+            },
+            {
+                right: 'Right to Healthcare',
+                description: 'Access to healthcare varies by visa type and country',
+                details: 'Emergency care usually available, full access depends on status and insurance'
+            },
+            {
+                right: 'Right to Privacy',
+                description: 'Immigration information is confidential',
+                details: 'Your application details are private, shared only with authorized officials'
+            }
+        ],
+        obligations: [
+            {
+                obligation: 'Comply with Visa Conditions',
+                description: 'Must follow all conditions of your visa',
+                details: 'Work restrictions, study limits, residency requirements, etc.'
+            },
+            {
+                obligation: 'Obey All Laws',
+                description: 'Immigrants must follow all local, state, and federal laws',
+                details: 'Criminal violations can result in deportation and bans'
+            },
+            {
+                obligation: 'Maintain Valid Status',
+                description: 'Keep your immigration status valid and up-to-date',
+                details: 'Renew visas, extend stays, report changes, maintain documents'
+            },
+            {
+                obligation: 'Pay Taxes',
+                description: 'Must pay taxes on income earned in the country',
+                details: 'Tax obligations vary by residency status and visa type'
+            },
+            {
+                obligation: 'Report Changes',
+                description: 'Report significant changes (address, employment, family status)',
+                details: 'Many countries require updates to immigration authorities'
+            },
+            {
+                obligation: 'Respect Cultural Norms',
+                description: 'While not legally required, respecting local culture is important',
+                details: 'Helps integration and avoids conflicts'
+            }
+        ],
+        prRights: [
+            'Live and work anywhere in the country',
+            'Access to public healthcare and education',
+            'Social security benefits',
+            'Sponsor family members',
+            'Travel freely (with valid PR card)',
+            'Pathway to citizenship'
+        ],
+        prObligations: [
+            'Maintain residency requirements',
+            'Obey all laws',
+            'Pay taxes',
+            'Renew PR card when required',
+            'Report significant changes',
+            'Cannot vote (until citizenship)'
+        ]
+    },
+    'family-members': {
+        title: 'Family Member Rights',
+        icon: '👨‍👩‍👧‍👦',
+        overview: 'Understanding the rights of family members (spouse, children, dependents) in immigration processes is crucial for family migration.',
+        spouseRights: [
+            {
+                right: 'Included in Application',
+                description: 'Spouse can be included in most immigration applications',
+                details: 'Can apply together, reducing processing time and costs'
+            },
+            {
+                right: 'Work Authorization',
+                description: 'Spouse usually gets work authorization when main applicant has work visa',
+                details: 'Can work without restrictions in most cases'
+            },
+            {
+                right: 'Study Rights',
+                description: 'Spouse can usually study on dependent visa',
+                details: 'Access to education, can change to student visa if needed'
+            },
+            {
+                right: 'Healthcare Access',
+                description: 'Spouse included in health insurance coverage',
+                details: 'Same healthcare access as main applicant'
+            },
+            {
+                right: 'Pathway to PR',
+                description: 'Spouse included in PR application, gets PR together',
+                details: 'No separate application needed in most cases'
+            }
+        ],
+        childrenRights: [
+            {
+                right: 'Dependent Status',
+                description: 'Children under certain age (usually 18-22) can be included',
+                details: 'Age limits vary by country and program'
+            },
+            {
+                right: 'Education Access',
+                description: 'Children have right to public education',
+                details: 'Free public schools, same as local children'
+            },
+            {
+                right: 'Healthcare Access',
+                description: 'Children included in health coverage',
+                details: 'Full access to healthcare services'
+            },
+            {
+                right: 'Work Rights (when eligible)',
+                description: 'Older children can work when they reach working age',
+                details: 'Subject to local labor laws and visa conditions'
+            }
+        ],
+        ageLimits: {
+            'Canada': 'Children under 22 (or under 19 if not in full-time study)',
+            'Australia': 'Children under 23 (if dependent and studying)',
+            'UK': 'Children under 18 (or under 19 if in full-time education)',
+            'USA': 'Children under 21',
+            'Germany': 'Children under 18'
+        },
+        documentation: [
+            'Marriage certificate (for spouse)',
+            'Birth certificates (for children)',
+            'Proof of relationship',
+            'Medical exams for all family members',
+            'Police clearances for adults',
+            'Financial proof for all dependents'
+        ],
+        importantNotes: [
+            'All family members must meet health and character requirements',
+            'Adding family members later can be complex and expensive',
+            'Age limits are strict - children aging out cannot be added',
+            'Relationship must be genuine and legally recognized',
+            'Divorce or separation affects dependent status',
+            'Each country has different rules for family inclusion'
+        ]
+    },
+    'legal-disclaimers': {
+        title: 'Legal Disclaimers',
+        icon: '⚖️',
+        overview: 'Important legal information about the use of this platform and immigration information.',
+        disclaimer: {
+            title: 'General Disclaimer',
+            content: 'The information provided on Gubicoo Migration Navigator is for educational and informational purposes only. It does not constitute legal advice, immigration advice, or professional consultation.',
+            important: [
+                'This is not a substitute for professional legal advice',
+                'Immigration laws change frequently and vary by country',
+                'Individual circumstances affect eligibility and outcomes',
+                'Always consult qualified professionals for your specific situation'
+            ]
+        },
+        noGuarantee: {
+            title: 'No Guarantee of Results',
+            content: 'Gubicoo Migration Navigator does not guarantee:',
+            items: [
+                'Visa approval or success',
+                'Accuracy of all information (laws change)',
+                'Eligibility for any specific program',
+                'Processing times or outcomes',
+                'Points calculations or scores'
+            ]
+        },
+        professionalAdvice: {
+            title: 'When to Seek Professional Advice',
+            content: 'You should consult with a qualified immigration lawyer or registered consultant if:',
+            situations: [
+                'You have been refused a visa before',
+                'You have criminal record or health issues',
+                'Your case is complex or unusual',
+                'You are unsure about your eligibility',
+                'You need help with documentation',
+                'You want to appeal a decision',
+                'You have questions about your specific situation'
+            ]
+        },
+        informationAccuracy: {
+            title: 'Information Accuracy',
+            content: 'While we strive for accuracy:',
+            notes: [
+                'Immigration laws change frequently',
+                'Information may become outdated',
+                'Country-specific rules vary',
+                'Always verify with official sources',
+                'Check government websites for latest updates'
+            ]
+        },
+        liability: {
+            title: 'Limitation of Liability',
+            content: 'Gubicoo Migration Navigator is not liable for:',
+            items: [
+                'Visa refusals or rejections',
+                'Financial losses from migration decisions',
+                'Incorrect information or calculations',
+                'Changes in immigration laws',
+                'Delays or errors in processing',
+                'Decisions made based on platform information'
+            ]
+        },
+        userResponsibility: {
+            title: 'Your Responsibility',
+            content: 'As a user, you are responsible for:',
+            items: [
+                'Verifying all information independently',
+                'Consulting professionals when needed',
+                'Making informed decisions',
+                'Providing accurate information in applications',
+                'Complying with all immigration laws',
+                'Keeping yourself updated on law changes'
+            ]
+        },
+        officialSources: {
+            title: 'Official Sources',
+            content: 'Always refer to official government sources:',
+            sources: [
+                'Canada: IRCC (immigration.gc.ca)',
+                'Australia: Department of Home Affairs (immi.homeaffairs.gov.au)',
+                'UK: UK Home Office (gov.uk)',
+                'USA: USCIS (uscis.gov)',
+                'Germany: Federal Foreign Office (make-it-in-germany.com)'
+            ]
+        }
+    }
+};
+
+// Show law details
+function showLawDetails(key) {
+    const info = LAWS_INFO[key];
+    if (!info) {
+        console.error('Law info not found:', key);
+        return;
+    }
+    
+    const modal = document.getElementById('lawModal');
+    const modalTitle = document.getElementById('lawModalTitle');
+    const modalBody = document.getElementById('lawModalBody');
+    
+    modalTitle.innerHTML = `${info.icon} ${info.title}`;
+    
+    let html = `
+        <div class="law-details">
+            <div class="law-overview">
+                <h3><i class="fas fa-info-circle"></i> Overview</h3>
+                <p>${info.overview}</p>
+            </div>
+    `;
+    
+    // Immigration Basics
+    if (info.keyConcepts) {
+        html += `
+            <div class="law-section">
+                <h3><i class="fas fa-lightbulb"></i> Key Concepts</h3>
+        `;
+        info.keyConcepts.forEach(concept => {
+            html += `
+                <div class="concept-card">
+                    <h4>${concept.concept}</h4>
+                    <p>${concept.description}</p>
+                </div>
+            `;
+        });
+        html += `</div>`;
+        
+        if (info.typesOfVisas) {
+            html += `
+                <div class="law-section">
+                    <h3><i class="fas fa-file-alt"></i> Types of Visas</h3>
+                    <ul class="law-list">
+                        ${info.typesOfVisas.map(type => `<li>${type}</li>`).join('')}
+                    </ul>
+                </div>
+            `;
+        }
+        
+        if (info.importantPrinciples) {
+            html += `
+                <div class="law-section">
+                    <h3><i class="fas fa-star"></i> Important Principles</h3>
+                    <ul class="law-list">
+                        ${info.importantPrinciples.map(principle => `<li>${principle}</li>`).join('')}
+                    </ul>
+                </div>
+            `;
+        }
+    }
+    
+    // PR vs Citizenship
+    if (info.prDefinition) {
+        html += `
+            <div class="law-section">
+                <h3><i class="fas fa-id-card"></i> ${info.prDefinition.title}</h3>
+                <p>${info.prDefinition.description}</p>
+                <div class="rights-obligations-grid">
+                    <div class="rights-box">
+                        <h4><i class="fas fa-check-circle"></i> Rights</h4>
+                        <ul class="law-list">
+                            ${info.prDefinition.rights.map(right => `<li>${right}</li>`).join('')}
+                        </ul>
+                    </div>
+                    <div class="obligations-box">
+                        <h4><i class="fas fa-exclamation-circle"></i> Limitations</h4>
+                        <ul class="law-list">
+                            ${info.prDefinition.limitations.map(limitation => `<li>${limitation}</li>`).join('')}
+                        </ul>
+                    </div>
+                </div>
+                <div class="requirements-box">
+                    <h4><i class="fas fa-list-check"></i> Requirements</h4>
+                    <ul class="law-list">
+                        ${info.prDefinition.requirements.map(req => `<li>${req}</li>`).join('')}
+                    </ul>
+                </div>
+            </div>
+        `;
+        
+        if (info.citizenshipDefinition) {
+            html += `
+                <div class="law-section">
+                    <h3><i class="fas fa-flag"></i> ${info.citizenshipDefinition.title}</h3>
+                    <p>${info.citizenshipDefinition.description}</p>
+                    <div class="rights-obligations-grid">
+                        <div class="rights-box">
+                            <h4><i class="fas fa-check-circle"></i> Rights</h4>
+                            <ul class="law-list">
+                                ${info.citizenshipDefinition.rights.map(right => `<li>${right}</li>`).join('')}
+                            </ul>
+                        </div>
+                        <div class="obligations-box">
+                            <h4><i class="fas fa-exclamation-circle"></i> Obligations</h4>
+                            <ul class="law-list">
+                                ${info.citizenshipDefinition.obligations.map(obligation => `<li>${obligation}</li>`).join('')}
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="requirements-box">
+                        <h4><i class="fas fa-list-check"></i> Requirements</h4>
+                        <ul class="law-list">
+                            ${info.citizenshipDefinition.requirements.map(req => `<li>${req}</li>`).join('')}
+                        </ul>
+                    </div>
+                </div>
+            `;
+        }
+        
+        if (info.comparison) {
+            html += `
+                <div class="law-section">
+                    <h3><i class="fas fa-balance-scale"></i> PR vs Citizenship Comparison</h3>
+                    <div class="comparison-table">
+                        <table class="law-comparison-table">
+                            <thead>
+                                <tr>
+                                    <th>Feature</th>
+                                    <th>Permanent Residence</th>
+                                    <th>Citizenship</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td><strong>Duration</strong></td>
+                                    <td>${info.comparison.pr.duration}</td>
+                                    <td>${info.comparison.citizenship.duration}</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Voting Rights</strong></td>
+                                    <td>${info.comparison.pr.voting}</td>
+                                    <td>${info.comparison.citizenship.voting}</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Passport</strong></td>
+                                    <td>${info.comparison.pr.passport}</td>
+                                    <td>${info.comparison.citizenship.passport}</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Deportation Risk</strong></td>
+                                    <td>${info.comparison.pr.deportation}</td>
+                                    <td>${info.comparison.citizenship.deportation}</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Residency</strong></td>
+                                    <td>${info.comparison.pr.residency}</td>
+                                    <td>${info.comparison.citizenship.residency}</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Time to Obtain</strong></td>
+                                    <td>${info.comparison.pr.timeToObtain}</td>
+                                    <td>${info.comparison.citizenship.timeToObtain}</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            `;
+        }
+        
+        if (info.countrySpecific) {
+            html += `
+                <div class="law-section">
+                    <h3><i class="fas fa-globe"></i> Country-Specific Information</h3>
+            `;
+            Object.entries(info.countrySpecific).forEach(([country, data]) => {
+                html += `
+                    <div class="country-law-card">
+                        <h4>${country}</h4>
+                        <div class="country-law-details">
+                            <p><strong>PR:</strong> ${data.pr}</p>
+                            <p><strong>Citizenship:</strong> ${data.citizenship}</p>
+                            <p><strong>Dual Citizenship:</strong> ${data.dualCitizenship}</p>
+                        </div>
+                    </div>
+                `;
+            });
+            html += `</div>`;
+        }
+    }
+    
+    // Visa Validity
+    if (info.validityTypes) {
+        html += `
+            <div class="law-section">
+                <h3><i class="fas fa-calendar-alt"></i> Types of Visa Validity</h3>
+        `;
+        info.validityTypes.forEach(type => {
+            html += `
+                <div class="validity-type-card">
+                    <h4>${type.type}</h4>
+                    <p>${type.description}</p>
+                    <p class="validity-example"><strong>Example:</strong> ${type.example}</p>
+                </div>
+            `;
+        });
+        html += `</div>`;
+        
+        if (info.importantDates) {
+            html += `
+                <div class="law-section">
+                    <h3><i class="fas fa-calendar-check"></i> Important Dates to Remember</h3>
+            `;
+            info.importantDates.forEach(date => {
+                html += `
+                    <div class="date-importance-card">
+                        <div class="date-header">
+                            <h4>${date.date}</h4>
+                            <span class="importance-badge ${date.importance.toLowerCase().includes('critical') ? 'critical' : 'important'}">${date.importance}</span>
+                        </div>
+                        <p>${date.description}</p>
+                    </div>
+                `;
+            });
+            html += `</div>`;
+        }
+        
+        if (info.commonRules) {
+            html += `
+                <div class="law-section">
+                    <h3><i class="fas fa-rules"></i> Common Rules</h3>
+                    <ul class="law-list">
+                        ${info.commonRules.map(rule => `<li>${rule}</li>`).join('')}
+                    </ul>
+                </div>
+            `;
+        }
+        
+        if (info.countrySpecific) {
+            html += `
+                <div class="law-section">
+                    <h3><i class="fas fa-globe"></i> Country-Specific Validity Rules</h3>
+            `;
+            Object.entries(info.countrySpecific).forEach(([country, rules]) => {
+                html += `
+                    <div class="country-validity-card">
+                        <h4>${country}</h4>
+                        <div class="validity-rules">
+                            <p><strong>Visitor Visa:</strong> ${rules.visitorVisa}</p>
+                            <p><strong>Work Permit:</strong> ${rules.workPermit}</p>
+                            <p><strong>Study Permit:</strong> ${rules.studyPermit}</p>
+                            <p><strong>Extension:</strong> ${rules.extension}</p>
+                        </div>
+                    </div>
+                `;
+            });
+            html += `</div>`;
+        }
+        
+        if (info.extensionRules) {
+            html += `
+                <div class="law-section">
+                    <h3><i class="fas fa-clock"></i> Extension Rules</h3>
+                    <ul class="law-list">
+                        ${info.extensionRules.map(rule => `<li>${rule}</li>`).join('')}
+                    </ul>
+                </div>
+            `;
+        }
+    }
+    
+    // Overstay Consequences
+    if (info.immediateConsequences) {
+        html += `
+            <div class="law-section">
+                <h3><i class="fas fa-exclamation-triangle"></i> Immediate Consequences</h3>
+        `;
+        info.immediateConsequences.forEach(consequence => {
+            html += `
+                <div class="consequence-card immediate">
+                    <div class="consequence-header">
+                        <h4>${consequence.consequence}</h4>
+                        <span class="severity-badge ${consequence.severity.toLowerCase().includes('very') ? 'very-high' : 'high'}">${consequence.severity}</span>
+                    </div>
+                    <p>${consequence.description}</p>
+                    <p class="consequence-impact"><strong>Impact:</strong> ${consequence.impact}</p>
+                </div>
+            `;
+        });
+        html += `</div>`;
+        
+        if (info.longTermConsequences) {
+            html += `
+                <div class="law-section">
+                    <h3><i class="fas fa-hourglass-half"></i> Long-Term Consequences</h3>
+            `;
+            info.longTermConsequences.forEach(consequence => {
+                html += `
+                    <div class="consequence-card long-term">
+                        <div class="consequence-header">
+                            <h4>${consequence.consequence}</h4>
+                            <span class="duration-badge">${consequence.duration}</span>
+                        </div>
+                        <p>${consequence.description}</p>
+                        <p class="consequence-impact"><strong>Impact:</strong> ${consequence.impact}</p>
+                    </div>
+                `;
+            });
+            html += `</div>`;
+        }
+        
+        if (info.countrySpecific) {
+            html += `
+                <div class="law-section">
+                    <h3><i class="fas fa-globe"></i> Country-Specific Overstay Consequences</h3>
+            `;
+            Object.entries(info.countrySpecific).forEach(([country, data]) => {
+                html += `
+                    <div class="country-overstay-card">
+                        <h4>${country}</h4>
+                        <div class="overstay-details">
+                            <p><strong>Ban Duration:</strong> ${data.banDuration}</p>
+                            <p><strong>Consequences:</strong> ${data.consequences}</p>
+                            <p><strong>Exceptions:</strong> ${data.exceptions}</p>
+                            <div class="overstay-advice">
+                                <strong><i class="fas fa-lightbulb"></i> Advice:</strong>
+                                <p>${data.advice}</p>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            });
+            html += `</div>`;
+        }
+        
+        if (info.whatToDoIfOverstayed) {
+            html += `
+                <div class="law-section warning-section">
+                    <h3><i class="fas fa-phone-alt"></i> What to Do If You've Overstayed</h3>
+                    <ul class="law-list urgent">
+                        ${info.whatToDoIfOverstayed.map(action => `<li>${action}</li>`).join('')}
+                    </ul>
+                </div>
+            `;
+        }
+        
+        if (info.prevention) {
+            html += `
+                <div class="law-section">
+                    <h3><i class="fas fa-shield-alt"></i> Prevention Tips</h3>
+                    <ul class="law-list tips">
+                        ${info.prevention.map(tip => `<li>${tip}</li>`).join('')}
+                    </ul>
+                </div>
+            `;
+        }
+    }
+    
+    // Visa Conditions
+    if (info.commonConditions) {
+        html += `
+            <div class="law-section">
+                <h3><i class="fas fa-list-check"></i> Common Visa Conditions</h3>
+        `;
+        info.commonConditions.forEach(condition => {
+            html += `
+                <div class="condition-card">
+                    <h4>${condition.condition}</h4>
+                    <p>${condition.description}</p>
+                    <div class="condition-examples">
+                        <strong>Examples:</strong>
+                        <ul class="law-list">
+                            ${condition.examples.map(example => `<li>${example}</li>`).join('')}
+                        </ul>
+                    </div>
+                    <div class="condition-violation">
+                        <strong><i class="fas fa-exclamation-triangle"></i> Violation Consequence:</strong>
+                        <p>${condition.violation}</p>
+                    </div>
+                </div>
+            `;
+        });
+        html += `</div>`;
+        
+        if (info.workRestrictions) {
+            html += `
+                <div class="law-section">
+                    <h3><i class="fas fa-briefcase"></i> Work Restrictions by Visa Type</h3>
+                    <div class="restrictions-grid">
+                        ${Object.entries(info.workRestrictions).map(([visa, restriction]) => `
+                            <div class="restriction-item">
+                                <strong>${visa}:</strong> ${restriction}
+                            </div>
+                        `).join('')}
+                    </div>
+                </div>
+            `;
+        }
+        
+        if (info.studyRestrictions) {
+            html += `
+                <div class="law-section">
+                    <h3><i class="fas fa-graduation-cap"></i> Study Restrictions by Visa Type</h3>
+                    <div class="restrictions-grid">
+                        ${Object.entries(info.studyRestrictions).map(([visa, restriction]) => `
+                            <div class="restriction-item">
+                                <strong>${visa}:</strong> ${restriction}
+                            </div>
+                        `).join('')}
+                    </div>
+                </div>
+            `;
+        }
+        
+        if (info.violationConsequences) {
+            html += `
+                <div class="law-section">
+                    <h3><i class="fas fa-exclamation-circle"></i> Consequences of Violating Conditions</h3>
+                    <ul class="law-list">
+                        ${info.violationConsequences.map(consequence => `<li>${consequence}</li>`).join('')}
+                    </ul>
+                </div>
+            `;
+        }
+    }
+    
+    // Rights & Obligations
+    if (info.rights) {
+        html += `
+            <div class="law-section">
+                <h3><i class="fas fa-hand-paper"></i> Rights of Immigrants</h3>
+        `;
+        info.rights.forEach(right => {
+            html += `
+                <div class="right-card">
+                    <h4>${right.right}</h4>
+                    <p>${right.description}</p>
+                    <p class="right-details"><strong>Details:</strong> ${right.details}</p>
+                </div>
+            `;
+        });
+        html += `</div>`;
+        
+        if (info.obligations) {
+            html += `
+                <div class="law-section">
+                    <h3><i class="fas fa-tasks"></i> Obligations of Immigrants</h3>
+            `;
+            info.obligations.forEach(obligation => {
+                html += `
+                    <div class="obligation-card">
+                        <h4>${obligation.obligation}</h4>
+                        <p>${obligation.description}</p>
+                        <p class="obligation-details"><strong>Details:</strong> ${obligation.details}</p>
+                    </div>
+                `;
+            });
+            html += `</div>`;
+        }
+        
+        if (info.prRights) {
+            html += `
+                <div class="law-section">
+                    <h3><i class="fas fa-id-card"></i> Permanent Resident Rights</h3>
+                    <ul class="law-list">
+                        ${info.prRights.map(right => `<li>${right}</li>`).join('')}
+                    </ul>
+                </div>
+            `;
+        }
+        
+        if (info.prObligations) {
+            html += `
+                <div class="law-section">
+                    <h3><i class="fas fa-exclamation-circle"></i> Permanent Resident Obligations</h3>
+                    <ul class="law-list">
+                        ${info.prObligations.map(obligation => `<li>${obligation}</li>`).join('')}
+                    </ul>
+                </div>
+            `;
+        }
+    }
+    
+    // Family Members
+    if (info.spouseRights) {
+        html += `
+            <div class="law-section">
+                <h3><i class="fas fa-heart"></i> Spouse Rights</h3>
+        `;
+        info.spouseRights.forEach(right => {
+            html += `
+                <div class="family-right-card">
+                    <h4>${right.right}</h4>
+                    <p>${right.description}</p>
+                    <p class="family-details"><strong>Details:</strong> ${right.details}</p>
+                </div>
+            `;
+        });
+        html += `</div>`;
+        
+        if (info.childrenRights) {
+            html += `
+                <div class="law-section">
+                    <h3><i class="fas fa-child"></i> Children Rights</h3>
+            `;
+            info.childrenRights.forEach(right => {
+                html += `
+                    <div class="family-right-card">
+                        <h4>${right.right}</h4>
+                        <p>${right.description}</p>
+                        <p class="family-details"><strong>Details:</strong> ${right.details}</p>
+                    </div>
+                `;
+            });
+            html += `</div>`;
+        }
+        
+        if (info.ageLimits) {
+            html += `
+                <div class="law-section">
+                    <h3><i class="fas fa-birthday-cake"></i> Age Limits for Dependents</h3>
+                    <div class="age-limits-grid">
+                        ${Object.entries(info.ageLimits).map(([country, age]) => `
+                            <div class="age-limit-item">
+                                <strong>${country}:</strong> ${age}
+                            </div>
+                        `).join('')}
+                    </div>
+                </div>
+            `;
+        }
+        
+        if (info.documentation) {
+            html += `
+                <div class="law-section">
+                    <h3><i class="fas fa-file-alt"></i> Required Documentation for Family Members</h3>
+                    <ul class="law-list">
+                        ${info.documentation.map(doc => `<li>${doc}</li>`).join('')}
+                    </ul>
+                </div>
+            `;
+        }
+        
+        if (info.importantNotes) {
+            html += `
+                <div class="law-section">
+                    <h3><i class="fas fa-info-circle"></i> Important Notes</h3>
+                    <ul class="law-list">
+                        ${info.importantNotes.map(note => `<li>${note}</li>`).join('')}
+                    </ul>
+                </div>
+            `;
+        }
+    }
+    
+    // Legal Disclaimers
+    if (info.disclaimer) {
+        html += `
+            <div class="law-section warning-section">
+                <h3><i class="fas fa-exclamation-triangle"></i> ${info.disclaimer.title}</h3>
+                <p>${info.disclaimer.content}</p>
+                <ul class="law-list">
+                    ${info.disclaimer.important.map(item => `<li>${item}</li>`).join('')}
+                </ul>
+            </div>
+        `;
+        
+        if (info.noGuarantee) {
+            html += `
+                <div class="law-section">
+                    <h3><i class="fas fa-shield-alt"></i> ${info.noGuarantee.title}</h3>
+                    <p>${info.noGuarantee.content}</p>
+                    <ul class="law-list">
+                        ${info.noGuarantee.items.map(item => `<li>${item}</li>`).join('')}
+                    </ul>
+                </div>
+            `;
+        }
+        
+        if (info.professionalAdvice) {
+            html += `
+                <div class="law-section">
+                    <h3><i class="fas fa-user-tie"></i> ${info.professionalAdvice.title}</h3>
+                    <p>${info.professionalAdvice.content}</p>
+                    <ul class="law-list">
+                        ${info.professionalAdvice.situations.map(situation => `<li>${situation}</li>`).join('')}
+                    </ul>
+                </div>
+            `;
+        }
+        
+        if (info.informationAccuracy) {
+            html += `
+                <div class="law-section">
+                    <h3><i class="fas fa-check-circle"></i> ${info.informationAccuracy.title}</h3>
+                    <p>${info.informationAccuracy.content}</p>
+                    <ul class="law-list">
+                        ${info.informationAccuracy.notes.map(note => `<li>${note}</li>`).join('')}
+                    </ul>
+                </div>
+            `;
+        }
+        
+        if (info.liability) {
+            html += `
+                <div class="law-section">
+                    <h3><i class="fas fa-gavel"></i> ${info.liability.title}</h3>
+                    <p>${info.liability.content}</p>
+                    <ul class="law-list">
+                        ${info.liability.items.map(item => `<li>${item}</li>`).join('')}
+                    </ul>
+                </div>
+            `;
+        }
+        
+        if (info.userResponsibility) {
+            html += `
+                <div class="law-section">
+                    <h3><i class="fas fa-user-shield"></i> ${info.userResponsibility.title}</h3>
+                    <p>${info.userResponsibility.content}</p>
+                    <ul class="law-list">
+                        ${info.userResponsibility.items.map(item => `<li>${item}</li>`).join('')}
+                    </ul>
+                </div>
+            `;
+        }
+        
+        if (info.officialSources) {
+            html += `
+                <div class="law-section">
+                    <h3><i class="fas fa-globe"></i> ${info.officialSources.title}</h3>
+                    <p>${info.officialSources.content}</p>
+                    <ul class="law-list">
+                        ${info.officialSources.sources.map(source => `<li>${source}</li>`).join('')}
+                    </ul>
+                </div>
+            `;
+        }
+    }
+    
+    html += `</div>`;
+    
+    modalBody.innerHTML = html;
+    modal.style.display = 'flex';
+    document.body.style.overflow = 'hidden';
+}
+
+// Close law modal
+function closeLawModal() {
+    document.getElementById('lawModal').style.display = 'none';
+    document.body.style.overflow = 'auto';
+}
+
+// Close modal when clicking outside
+document.addEventListener('DOMContentLoaded', function() {
+    const modal = document.getElementById('lawModal');
+    if (modal) {
+        modal.addEventListener('click', function(e) {
+            if (e.target === modal) {
+                closeLawModal();
+            }
+        });
+    }
+});
+
+// Expose functions globally
+window.showLawDetails = showLawDetails;
+window.closeLawModal = closeLawModal;
+
+// ============================================
+// INTERACTIVE FAQ SYSTEM
+// ============================================
+
+// Comprehensive FAQ Data
+const FAQ_DATA = [
+    {
+        id: 1,
+        category: 'eligibility',
+        question: 'Can I migrate without IELTS?',
+        answer: 'Yes! Multiple alternatives exist, but requirements vary by country. Here\'s a comprehensive breakdown:',
+        details: [
+            '🇨🇦 CANADA - Multiple Options Available:',
+            '  ✅ CELPIP (Canadian English) - Fully accepted, easier format for some',
+            '  ✅ TEF (French) - For Quebec programs, can be easier than English',
+            '  ✅ PTE Academic - Accepted for Express Entry, faster results',
+            '  ✅ Quebec Skilled Worker - French-only pathway, no English test needed',
+            '  💡 Tip: CELPIP is often considered easier than IELTS for Canadian migration',
+            '',
+            '🇦🇺 AUSTRALIA - Flexible Testing:',
+            '  ✅ PTE Academic - Widely accepted, computer-based, results in 2-5 days',
+            '  ✅ TOEFL iBT - Accepted for most visa types',
+            '  ✅ OET (Occupational English) - For healthcare professionals',
+            '  ✅ Cambridge English - C1 Advanced accepted',
+            '  ✅ Exemptions - Citizens of UK, USA, Canada, Ireland, New Zealand',
+            '  💡 Tip: PTE often provides higher scores than IELTS for same skill level',
+            '',
+            '🇩🇪 GERMANY - No English Test Required:',
+            '  ✅ Opportunity Card (Chancenkarte) - No English test needed',
+            '  ✅ German A2-B2 gives points but not mandatory initially',
+            '  ✅ Can learn German after arrival',
+            '  💡 Best Option: If you want to avoid English tests completely',
+            '',
+            '🇬🇧 UK - Multiple Test Options:',
+            '  ✅ PTE Academic - Accepted for most visas',
+            '  ✅ TOEFL - Accepted for student and work visas',
+            '  ✅ Cambridge English - B1/B2/C1 levels accepted',
+            '  ✅ Exemptions - Nationals of majority English-speaking countries',
+            '  💡 Tip: UK accepts more test types than most countries',
+            '',
+            '📊 COMPARISON TABLE:',
+            '  Test Type | Canada | Australia | UK | Germany',
+            '  IELTS     | ✅ Yes | ✅ Yes    | ✅ Yes | ❌ No',
+            '  PTE       | ✅ Yes | ✅ Yes    | ✅ Yes | ❌ No',
+            '  CELPIP    | ✅ Yes | ❌ No     | ❌ No  | ❌ No',
+            '  TOEFL     | ❌ No  | ✅ Yes    | ✅ Yes | ❌ No',
+            '  French    | ✅ Yes | ❌ No     | ❌ No  | ❌ No',
+            '',
+            '⚠️ IMPORTANT CONSIDERATIONS:',
+            '  • Higher language scores = More points in points-based systems',
+            '  • IELTS is still the most widely recognized globally',
+            '  • Some tests are easier for certain people (computer-based vs paper)',
+            '  • Test costs vary: IELTS ($200-250), PTE ($200), CELPIP ($280 CAD)',
+            '  • Validity: Most tests valid for 2 years',
+            '',
+            '🎯 RECOMMENDATION:',
+            '  If avoiding IELTS: Consider Germany (no English test) or Canada with CELPIP/PTE',
+            '  If maximizing points: Take IELTS/PTE and aim for highest scores (CLB 9+ for Canada, 8.0+ for Australia)',
+            '  Best strategy: Research which test format suits you better (computer vs paper, speaking format, etc.)'
+        ],
+        related: [2, 6, 13],
+        tags: ['ielts', 'language', 'eligibility', 'alternatives', 'pte', 'celpip']
+    },
+    {
+        id: 2,
+        category: 'age',
+        question: 'Can I migrate after 35?',
+        answer: 'Absolutely YES! Age 35+ is very viable. Here\'s detailed breakdown by country with strategies:',
+        details: [
+            '🇨🇦 CANADA - Age Points Breakdown:',
+            '  📊 Age 18-35: 110 points (maximum)',
+            '  📊 Age 36: 105 points (-5)',
+            '  📊 Age 37: 99 points (-11)',
+            '  📊 Age 38: 94 points (-16)',
+            '  📊 Age 39: 88 points (-22)',
+            '  📊 Age 40: 83 points (-27)',
+            '  📊 Age 41: 77 points (-33)',
+            '  📊 Age 42: 72 points (-38)',
+            '  📊 Age 43: 66 points (-44)',
+            '  📊 Age 44: 61 points (-49)',
+            '  📊 Age 45+: 0 points',
+            '  ✅ Compensation Strategy:',
+            '     • Master\'s/PhD: +23-25 education points',
+            '     • 3+ years experience: +11-15 points',
+            '     • CLB 9+ language: +24 points (first language)',
+            '     • French language: +50 additional points',
+            '     • Canadian education: +30 points',
+            '     • Job offer: +50 to +200 points',
+            '  💡 Real Example: Age 40 with Master\'s, 5 years exp, CLB 9 = Still competitive!',
+            '',
+            '🇦🇺 AUSTRALIA - Age Points System:',
+            '  📊 Age 18-24: 25 points',
+            '  📊 Age 25-32: 30 points (maximum)',
+            '  📊 Age 33-39: 25 points (still excellent!)',
+            '  📊 Age 40-44: 15 points',
+            '  📊 Age 45+: 0 points',
+            '  ✅ Success Stories: Many professionals aged 40-44 successfully migrate',
+            '  ✅ Compensation Options:',
+            '     • Superior English (8.0+): +20 points',
+            '     • 8+ years experience: +15-20 points',
+            '     • State nomination (190): +5 points',
+            '     • Regional nomination (491): +15 points',
+            '     • Partner skills: +10 points',
+            '     • Professional Year: +5 points',
+            '  💡 Tip: Age 40-44 can still reach 65+ points with strong profile',
+            '',
+            '🇩🇪 GERMANY - No Age Discrimination:',
+            '  ✅ No maximum age limit for Opportunity Card',
+            '  ✅ Age under 35: +2 points (bonus, not requirement)',
+            '  ✅ Focus on: Degree, experience, German language, shortage occupation',
+            '  💡 Best Option: If you\'re 40+ and want fastest pathway',
+            '',
+            '🇬🇧 UK - Age-Friendly System:',
+            '  ✅ No age restrictions for Skilled Worker visa',
+            '  ✅ Points-based system doesn\'t penalize age',
+            '  ✅ Focus on: Job offer, salary threshold, English proficiency',
+            '  💡 Advantage: Age doesn\'t affect points calculation',
+            '',
+            '📈 COMPENSATION STRATEGY (For 35+ Applicants):',
+            '  1. Maximize Language Scores:',
+            '     • Aim for CLB 9+ (Canada) or 8.0+ (Australia)',
+            '     • Consider learning French for Canada (+50 points)',
+            '',
+            '  2. Boost Education Points:',
+            '     • Complete Master\'s or PhD if possible',
+            '     • Get ECA for highest qualification',
+            '',
+            '  3. Accumulate Work Experience:',
+            '     • 5+ years gives maximum points',
+            '     • Document all experience thoroughly',
+            '',
+            '  4. Target Job Offers:',
+            '     • LMIA job offer: +50 to +200 points (Canada)',
+            '     • State nomination: +5 to +15 points (Australia)',
+            '',
+            '  5. Consider Alternative Pathways:',
+            '     • Provincial Nominee Programs (Canada)',
+            '     • Regional visas (Australia 491)',
+            '     • Business/Investor visas',
+            '',
+            '💰 COST-BENEFIT ANALYSIS:',
+            '  • Age 35-39: Still competitive, focus on maximizing other points',
+            '  • Age 40-44: Requires stronger profile, but very achievable',
+            '  • Age 45+: Consider business/investor visas or family sponsorship',
+            '',
+            '🎯 SUCCESS RATE BY AGE:',
+            '  • Age 30-35: Highest success rate (maximum points)',
+            '  • Age 35-40: High success rate (slight point reduction)',
+            '  • Age 40-45: Moderate success (requires strong profile)',
+            '  • Age 45+: Lower success for points-based, consider alternatives',
+            '',
+            '✅ BOTTOM LINE:',
+            '  Age 35-44: Very viable with strong profile',
+            '  Key: Maximize education, experience, and language scores',
+            '  Strategy: Target countries/programs where age impact is minimal (Germany, UK)'
+        ],
+        related: [1, 5, 6, 10],
+        tags: ['age', 'eligibility', 'points', 'strategy', '35+', 'compensation']
+    },
+    {
+        id: 3,
+        category: 'age',
+        question: 'Can I take my family with me?',
+        answer: 'YES! Most countries allow family inclusion. Here\'s comprehensive guide with costs, rights, and requirements:',
+        details: [
+            '👨‍👩‍👧‍👦 WHO CAN BE INCLUDED:',
+            '  ✅ Spouse/Common-law Partner: Included in most applications',
+            '  ✅ Dependent Children: Usually under 18-22 (varies by country)',
+            '  ✅ Sometimes Parents: In specific programs (e.g., Canada Parent/Grandparent)',
+            '',
+            '🇨🇦 CANADA - Family Inclusion Details:',
+            '  ✅ Spouse Rights:',
+            '     • Can work immediately (Open Work Permit)',
+            '     • Can study without separate permit',
+            '     • Included in same application',
+            '     • Health and character checks required',
+            '  ✅ Children Rights:',
+            '     • Free public education (K-12)',
+            '     • Can work part-time if 16+',
+            '     • Dependent until age 22 (if full-time student)',
+            '  💰 Additional Costs:',
+            '     • Application fee: $1,325 CAD per adult, $225 per child',
+            '     • Medical exam: $200-400 per person',
+            '     • Biometrics: $85 per person',
+            '     • Proof of funds: +$3,000-4,000 CAD per family member',
+            '  📊 Points Impact:',
+            '     • Spouse language (CLB 4+): +5 adaptability points',
+            '     • Spouse education: +5 adaptability points',
+            '     • Canadian experience (spouse): +5 adaptability points',
+            '',
+            '🇦🇺 AUSTRALIA - Family Benefits:',
+            '  ✅ Spouse Rights:',
+            '     • Full work rights immediately',
+            '     • Can be included in same application',
+            '     • Health and character requirements',
+            '  ✅ Children Rights:',
+            '     • Free public education',
+            '     • Dependent until age 23 (if full-time student)',
+            '  💰 Additional Costs:',
+            '     • Application fee: $4,115 AUD per adult, $1,030 per child (Subclass 189)',
+            '     • Medical exam: $300-500 AUD per person',
+            '     • Police clearance: $50-100 per person',
+            '     • Proof of funds: +$5,000-8,000 AUD per family member',
+            '  📊 Points Impact (HUGE ADVANTAGE!):',
+            '     • Skilled partner: +10 points (major boost!)',
+            '     • Partner with competent English: +5 points',
+            '     • Single applicant: 0 points (no partner bonus)',
+            '  💡 Strategy: If your partner has skills/education, include them for +10 points!',
+            '',
+            '🇬🇧 UK - Family Inclusion:',
+            '  ✅ Spouse Rights:',
+            '     • Can work immediately (no restrictions)',
+            '     • Included in same application',
+            '     • Health surcharge: £624 per year per person',
+            '  ✅ Children Rights:',
+            '     • Free public education',
+            '     • Dependent until age 18 (or 19 if in full-time education)',
+            '  💰 Additional Costs:',
+            '     • Application fee: £625 per person (Skilled Worker)',
+            '     • Health surcharge: £624/year per person',
+            '     • Proof of funds: £285 per dependent (if outside UK)',
+            '',
+            '🇩🇪 GERMANY - Family Reunification:',
+            '  ✅ Spouse Rights:',
+            '     • Can work immediately',
+            '     • Can apply for family reunification visa',
+            '     • Basic German A1 required for spouse visa',
+            '  ✅ Children Rights:',
+            '     • Free public education',
+            '     • Dependent until age 18',
+            '  💰 Additional Costs:',
+            '     • Family reunification fee: €75 per person',
+            '     • Health insurance: €200-400/month per person',
+            '     • Proof of funds: €934/month per adult, €500/month per child',
+            '',
+            '📋 DOCUMENTATION REQUIRED FOR FAMILY:',
+            '  For Spouse:',
+            '     • Marriage certificate (translated if needed)',
+            '     • Relationship proof (photos, joint accounts, etc.)',
+            '     • Passport and photos',
+            '     • Medical exam results',
+            '     • Police clearance certificate',
+            '     • Language test (if required by country)',
+            '',
+            '  For Children:',
+            '     • Birth certificates',
+            '     • Passport and photos',
+            '     • Medical exam results',
+            '     • School records (if applicable)',
+            '     • Custody documents (if divorced)',
+            '',
+            '⏱️ PROCESSING TIME IMPACT:',
+            '  • Single applicant: Standard processing time',
+            '  • With family: May add 1-3 months due to additional checks',
+            '  • All family members processed together (same timeline)',
+            '',
+            '💰 TOTAL COST COMPARISON (Family of 4: 2 adults + 2 children):',
+            '  Canada: ~$5,000-7,000 CAD (fees + medicals + funds)',
+            '  Australia: ~$12,000-15,000 AUD (fees + medicals + funds)',
+            '  UK: ~£3,500-5,000 (fees + health surcharge)',
+            '  Germany: ~€2,000-3,000 (fees + insurance + funds)',
+            '',
+            '✅ ADVANTAGES OF INCLUDING FAMILY:',
+            '  1. Points Boost: Skilled spouse adds +10 points (Australia)',
+            '  2. Immediate Work Rights: Spouse can work and contribute',
+            '  3. Family Unity: No separation, everyone gets PR together',
+            '  4. Education Benefits: Children get free public education',
+            '  5. Healthcare Access: Family included in healthcare system',
+            '',
+            '⚠️ IMPORTANT CONSIDERATIONS:',
+            '  • All family members must pass medical and character checks',
+            '  • If one member fails, entire application may be affected',
+            '  • Proof of funds increases significantly with family',
+            '  • Processing time may be longer',
+            '  • All must maintain status together',
+            '',
+            '🎯 RECOMMENDATION:',
+            '  Include family if: You have strong relationship proof, sufficient funds, and spouse has skills',
+            '  Consider separate application if: Spouse has health issues, insufficient funds, or wants to apply later',
+            '  Best Strategy: Include skilled spouse for points boost (especially Australia +10 points)'
+        ],
+        related: [2, 5, 7, 11],
+        tags: ['family', 'dependents', 'spouse', 'children', 'costs', 'rights']
+    },
+    {
+        id: 4,
+        category: 'visa',
+        question: 'Can I work on a visitor visa?',
+        answer: '⚠️ STRICTLY NO for employment, but limited business activities are allowed. Here\'s detailed breakdown:',
+        details: [
+            '🚫 WHAT IS PROHIBITED (Employment):',
+            '  ❌ Taking any paid employment',
+            '  ❌ Working for a company (even remotely)',
+            '  ❌ Starting a business',
+            '  ❌ Freelancing or consulting for payment',
+            '  ❌ Any work that displaces a local worker',
+            '',
+            '✅ WHAT IS ALLOWED (Business Activities):',
+            '  ✅ Attending business meetings',
+            '  ✅ Attending conferences and seminars',
+            '  ✅ Job interviews (but cannot start work)',
+            '  ✅ Negotiating contracts (but cannot execute)',
+            '  ✅ Training sessions (as attendee, not trainer)',
+            '  ✅ Market research and business exploration',
+            '',
+            '🇨🇦 CANADA - Visitor Visa Rules:',
+            '  ✅ Allowed:',
+            '     • Business meetings and conferences',
+            '     • Job interviews',
+            '     • Short-term business activities (< 6 months)',
+            '  ❌ Prohibited:',
+            '     • Any paid work',
+            '     • Working remotely for foreign employer',
+            '  ⚠️ Penalties:',
+            '     • Immediate deportation',
+            '     • 5-year entry ban',
+            '     • Permanent record in immigration system',
+            '     • Future visa applications likely rejected',
+            '',
+            '🇦🇺 AUSTRALIA - Visitor Visa (Subclass 600):',
+            '  ✅ Allowed:',
+            '     • Business visitor activities',
+            '     • Job interviews',
+            '     • Attending conferences',
+            '  ❌ Prohibited:',
+            '     • Any form of employment',
+            '     • Working holiday activities (need separate visa)',
+            '  ⚠️ Penalties:',
+            '     • Deportation and 3-year exclusion period',
+            '     • Criminal charges possible',
+            '     • Future applications severely impacted',
+            '',
+            '🇬🇧 UK - Standard Visitor Visa:',
+            '  ✅ Allowed:',
+            '     • Business meetings (up to 6 months)',
+            '     • Job interviews',
+            '     • Attending conferences',
+            '     • Short-term work (specific permitted activities)',
+            '  ❌ Prohibited:',
+            '     • Taking employment',
+            '     • Doing work for a UK company',
+            '  ⚠️ Penalties:',
+            '     • Deportation',
+            '     • 10-year re-entry ban possible',
+            '     • Criminal record',
+            '',
+            '🇩🇪 GERMANY - Schengen Visa:',
+            '  ✅ Allowed:',
+            '     • Business meetings',
+            '     • Job interviews',
+            '     • Attending trade fairs',
+            '  ❌ Prohibited:',
+            '     • Any employment',
+            '     • Freelance work',
+            '  ⚠️ Penalties:',
+            '     • Immediate deportation',
+            '     • Schengen area ban (affects all EU countries)',
+            '     • Future visa rejections',
+            '',
+            '💰 FINANCIAL IMPACT OF ILLEGAL WORK:',
+            '  • Lost wages (if caught, wages may be confiscated)',
+            '  • Legal fees: $5,000-20,000+ for defense',
+            '  • Deportation costs: $1,000-3,000',
+            '  • Future visa application fees: Wasted if rejected',
+            '  • Lost opportunities: Cannot return for years',
+            '',
+            '📋 WHAT CONSTITUTES "WORK":',
+            '  • Any activity for which you receive payment',
+            '  • Providing services (even if unpaid, if it\'s work)',
+            '  • Remote work for foreign employer (still considered work)',
+            '  • Freelancing or consulting',
+            '  • Starting or running a business',
+            '',
+            '✅ LEGAL ALTERNATIVES:',
+            '  1. Business Visitor Visa:',
+            '     • For meetings, conferences, negotiations',
+            '     • Cannot take employment',
+            '     • Valid for 6-12 months typically',
+            '',
+            '  2. Work Permit/Work Visa:',
+            '     • Apply from home country after job offer',
+            '     • Proper authorization required',
+            '     • Allows legal employment',
+            '',
+            '  3. Working Holiday Visa (if eligible):',
+            '     • Age 18-30/35 (varies by country)',
+            '     • Allows work and travel',
+            '     • Limited duration (1-2 years)',
+            '',
+            '  4. Job Seeker Visa (some countries):',
+            '     • Germany: 6-month job seeker visa',
+            '     • Allows job search and interviews',
+            '     • Can convert to work visa if job found',
+            '',
+            '🔄 PROPER PROCESS IF YOU FIND A JOB:',
+            '  Step 1: Attend job interview on visitor visa (allowed)',
+            '  Step 2: Receive job offer',
+            '  Step 3: Exit the country (return home)',
+            '  Step 4: Apply for proper work visa from home country',
+            '  Step 5: Wait for approval (2-8 weeks typically)',
+            '  Step 6: Enter country with work visa',
+            '  Step 7: Start employment legally',
+            '',
+            '⚠️ COMMON MISTAKES TO AVOID:',
+            '  ❌ "I\'ll just work remotely for my home country employer" - Still illegal!',
+            '  ❌ "It\'s just a few days of work" - Still illegal!',
+            '  ❌ "I\'m not getting paid, so it\'s fine" - Still may be considered work!',
+            '  ❌ "I\'ll convert my visitor visa to work visa" - Usually not possible, must exit first',
+            '',
+            '📊 RISK ASSESSMENT:',
+            '  High Risk Activities:',
+            '     • Working in restaurants, construction, retail',
+            '     • Any visible employment',
+            '     • Activities that require work permits',
+            '',
+            '  Lower Risk (but still check rules):',
+            '     • Attending business meetings',
+            '     • Job interviews',
+            '     • Conferences and seminars',
+            '',
+            '✅ BOTTOM LINE:',
+            '  • NEVER work on a visitor visa - consequences are severe',
+            '  • Use visitor visa for: business meetings, job interviews, tourism',
+            '  • If you find a job: Exit country and apply for proper work visa',
+            '  • Better option: Apply for job seeker visa or work permit from start',
+            '  • When in doubt: Consult immigration lawyer before any work activity'
+        ],
+        related: [7, 8, 10, 15],
+        tags: ['visitor visa', 'work', 'illegal', 'penalties', 'business visa', 'legal']
+    },
+    {
+        id: 5,
+        category: 'pr',
+        question: 'Which country is easiest for PR?',
+        answer: 'Easiest depends on your profile! Here\'s comprehensive comparison with difficulty ratings, timelines, and success strategies:',
+        details: [
+            '🏆 RANKING BY DIFFICULTY (Easiest to Hardest):',
+            '',
+            '🥇 #1 GERMANY - Opportunity Card (Chancenkarte) - EASIEST',
+            '  ✅ Points Required: Only 6/14 points (very achievable!)',
+            '  ✅ Job Offer: NOT required initially',
+            '  ✅ Language: No English test, German A2-B2 gives points',
+            '  ✅ Age: No maximum age limit',
+            '  ✅ Processing: 3-6 months (fastest!)',
+            '  ✅ Cost: ~€1,500-2,500 (relatively low)',
+            '  ✅ Success Rate: High (if you meet 6 points)',
+            '  📊 Points Breakdown:',
+            '     • Recognized Degree: +4 points',
+            '     • 2+ years experience: +3 points',
+            '     • German A2: +1 point, B1: +2, B2: +3',
+            '     • Age under 35: +2 points',
+            '     • Previous stay in Germany: +1 point',
+            '     • Shortage occupation: +1 point',
+            '  💡 Best For: Skilled workers, IT professionals, engineers',
+            '  ⚠️ Considerations: Need to learn German, find job within 1 year',
+            '',
+            '🥈 #2 CANADA - Express Entry - MODERATE',
+            '  ✅ Points Required: 67/100 (FSW) + CRS 470+ (competitive)',
+            '  ✅ Job Offer: NOT mandatory (but helps with +50-200 points)',
+            '  ✅ Language: CLB 7 minimum, CLB 9+ recommended',
+            '  ✅ Age: 18-35 optimal, but 35-44 still viable',
+            '  ✅ Processing: 6 months after ITA (12-18 months total)',
+            '  ✅ Cost: ~$2,500-4,000 CAD',
+            '  ✅ Success Rate: Moderate-High (if CRS 470+)',
+            '  📊 CRS Score Factors:',
+            '     • Age: Up to 110 points',
+            '     • Education: Up to 150 points',
+            '     • Language: Up to 160 points',
+            '     • Experience: Up to 80 points',
+            '     • Job offer: +50 to +200 points',
+            '     • Provincial nomination: +600 points',
+            '  💡 Best For: Young professionals, high IELTS scores, IT/healthcare',
+            '  ⚠️ Considerations: Competitive, need high CRS score',
+            '',
+            '🥉 #3 AUSTRALIA - Skilled Migration - MODERATE-HARD',
+            '  ✅ Points Required: 65 minimum, but 80-90+ competitive',
+            '  ✅ Job Offer: NOT needed for Subclass 189',
+            '  ✅ Language: IELTS 6.0 minimum, 8.0+ gives 20 points',
+            '  ✅ Age: 25-32 optimal (30 points), 33-39 still good (25 points)',
+            '  ✅ Processing: 6-12 months after invitation',
+            '  ✅ Cost: ~$8,000-12,000 AUD (higher)',
+            '  ✅ Success Rate: Moderate (need 80+ points for competitiveness)',
+            '  📊 Points Breakdown:',
+            '     • Age: Up to 30 points',
+            '     • English: Up to 20 points',
+            '     • Experience: Up to 20 points',
+            '     • Education: Up to 20 points',
+            '     • State nomination: +5 points (190)',
+            '     • Regional nomination: +15 points (491)',
+            '     • Skilled partner: +10 points',
+            '  💡 Best For: Healthcare workers, IT, engineers, accountants',
+            '  ⚠️ Considerations: Higher costs, competitive points needed',
+            '',
+            '4️⃣ #4 UK - Skilled Worker Visa - MODERATE',
+            '  ✅ Points Required: 70 points (straightforward system)',
+            '  ✅ Job Offer: REQUIRED (sponsorship needed)',
+            '  ✅ Language: B1 level (IELTS 4.0-5.0) minimum',
+            '  ✅ Age: No restrictions',
+            '  ✅ Processing: 3-8 weeks (very fast!)',
+            '  ✅ Cost: ~£3,000-5,000',
+            '  ✅ Success Rate: High (if you have job offer)',
+            '  📊 Points Breakdown:',
+            '     • Job offer: 20 points',
+            '     • Skill level: 20 points',
+            '     • Salary threshold: 20 points',
+            '     • English language: 10 points',
+            '  💡 Best For: Those with job offers, healthcare, IT',
+            '  ⚠️ Considerations: Need employer sponsorship, salary thresholds',
+            '',
+            '5️⃣ #5 PORTUGAL - D7/D2 Visa - EASY (Specific Conditions)',
+            '  ✅ Requirements: Passive income (D7) or business investment (D2)',
+            '  ✅ Job Offer: NOT required',
+            '  ✅ Language: Portuguese helpful but not mandatory',
+            '  ✅ Age: No restrictions',
+            '  ✅ Processing: 2-4 months',
+            '  ✅ Cost: ~€2,000-5,000',
+            '  ✅ Success Rate: High (if you meet income requirements)',
+            '  💡 Best For: Retirees, remote workers, investors',
+            '  ⚠️ Considerations: Need passive income or investment capital',
+            '',
+            '📊 COMPREHENSIVE COMPARISON TABLE:',
+            '',
+            'Factor | Germany | Canada | Australia | UK | Portugal',
+            '-------|---------|--------|----------|----|---------',
+            'Difficulty | ⭐ Easy | ⭐⭐ Moderate | ⭐⭐⭐ Moderate-Hard | ⭐⭐ Moderate | ⭐ Easy*',
+            'Points Needed | 6/14 | 67+ & CRS 470+ | 65+ (80+ competitive) | 70 | Income-based',
+            'Job Offer | ❌ No | ❌ No (helps) | ❌ No (189) | ✅ Yes | ❌ No',
+            'Processing Time | 3-6 months | 12-18 months | 12-24 months | 3-8 weeks | 2-4 months',
+            'Cost | €1,500-2,500 | $2,500-4,000 | $8,000-12,000 | £3,000-5,000 | €2,000-5,000',
+            'Language Test | German A2+ | CLB 7+ | IELTS 6.0+ | B1 | Not required',
+            'Age Limit | ❌ No | ⚠️ 45+ (0 pts) | ⚠️ 45+ (0 pts) | ❌ No | ❌ No',
+            'Success Rate | High | Moderate-High | Moderate | High | High*',
+            '',
+            '*Portugal: Easy if you have passive income/investment',
+            '',
+            '🎯 PROFILE-BASED RECOMMENDATIONS:',
+            '',
+            'If you have:',
+            '  • High IELTS (8.0+): → Canada or Australia',
+            '  • Job offer: → UK (fastest)',
+            '  • Low points/age 40+: → Germany',
+            '  • Passive income: → Portugal',
+            '  • IT/Engineering skills: → Germany or Canada',
+            '  • Healthcare background: → Australia or UK',
+            '  • French language: → Canada (Quebec)',
+            '',
+            '💰 COST COMPARISON (Total including fees, medicals, funds):',
+            '  1. Germany: €1,500-2,500 (Lowest)',
+            '  2. Portugal: €2,000-5,000',
+            '  3. Canada: $2,500-4,000 CAD (~€1,700-2,700)',
+            '  4. UK: £3,000-5,000 (~€3,400-5,700)',
+            '  5. Australia: $8,000-12,000 AUD (~€5,000-7,500) (Highest)',
+            '',
+            '⏱️ TIMELINE COMPARISON (From application to PR):',
+            '  1. UK: 3-8 weeks (Fastest - but need job offer)',
+            '  2. Germany: 3-6 months',
+            '  3. Portugal: 2-4 months',
+            '  4. Canada: 12-18 months (6 months after ITA)',
+            '  5. Australia: 12-24 months (6-12 months after invitation)',
+            '',
+            '✅ SUCCESS STRATEGY BY COUNTRY:',
+            '',
+            'For Germany:',
+            '  • Get degree recognized',
+            '  • Learn German to A2-B2 level',
+            '  • Highlight shortage occupation experience',
+            '',
+            'For Canada:',
+            '  • Maximize IELTS to CLB 9+',
+            '  • Get ECA for education',
+            '  • Consider French language (+50 points)',
+            '  • Target Provincial Nominee Programs',
+            '',
+            'For Australia:',
+            '  • Aim for 80+ points',
+            '  • Include skilled partner (+10 points)',
+            '  • Consider regional visas (491) for +15 points',
+            '  • Get superior English (8.0+) for +20 points',
+            '',
+            'For UK:',
+            '  • Secure job offer first',
+            '  • Ensure salary meets threshold',
+            '  • Get employer sponsorship',
+            '',
+            '🎯 FINAL RECOMMENDATION:',
+            '  Easiest Overall: Germany (if you can learn German)',
+            '  Fastest: UK (if you have job offer)',
+            '  Best for High Scorers: Canada or Australia',
+            '  Best for Investors: Portugal',
+            '  Best Strategy: Apply to 2-3 countries where you score highest, accept first approval'
+        ],
+        related: [1, 2, 6, 8, 10],
+        tags: ['pr', 'easiest', 'comparison', 'strategy', 'germany', 'canada', 'australia', 'uk']
+    },
+    {
+        id: 6,
+        category: 'eligibility',
+        question: 'What is the minimum IELTS score required?',
+        answer: 'Minimum scores vary by country and visa type:',
+        details: [
+            'Canada (Express Entry): CLB 7 (IELTS 6.0 in all bands) minimum, but CLB 9+ (7.0+ bands) gives maximum points.',
+            'Australia: IELTS 6.0 (Competent) minimum for most visas, but 7.0+ (Proficient) gives 10 points, 8.0+ (Superior) gives 20 points.',
+            'UK: B1 level (IELTS 4.0-5.0) minimum for most visas, but higher scores improve application strength.',
+            'Germany: No IELTS required for Opportunity Card, but German A2-B2 gives points.',
+            'Important: Higher scores = More points = Better chances. Aim for CLB 9+ (Canada) or 7.0+ (Australia) for competitive profiles.'
+        ],
+        related: [1, 2, 5],
+        tags: ['ielts', 'language', 'minimum', 'scores']
+    },
+    {
+        id: 7,
+        category: 'work',
+        question: 'Can I change jobs after getting PR?',
+        answer: 'Yes, PR holders have job flexibility:',
+        details: [
+            'Canada: PR holders can work for any employer, change jobs freely, start businesses, or be self-employed. No restrictions.',
+            'Australia: PR holders have full work rights - can work anywhere, change employers, or start businesses.',
+            'UK: Indefinite Leave to Remain (ILR) holders can work without restrictions.',
+            'Germany: Permanent residence allows free job changes and self-employment.',
+            'Note: This is a major advantage of PR over temporary work visas, which are usually tied to specific employers.'
+        ],
+        related: [3, 4, 8],
+        tags: ['pr', 'work', 'job change', 'freedom']
+    },
+    {
+        id: 8,
+        category: 'process',
+        question: 'How long does the PR process take?',
+        answer: 'Processing times vary significantly:',
+        details: [
+            'Canada (Express Entry): 6 months from ITA (Invitation to Apply) to PR approval. Total timeline: 12-18 months including profile creation and waiting for ITA.',
+            'Australia: 6-12 months for skilled visas (189/190/491) after invitation. Total: 12-24 months including EOI submission.',
+            'Germany (Opportunity Card): 3-6 months for visa approval. Fastest among major destinations.',
+            'UK (Skilled Worker): 3-8 weeks for visa decision. ILR takes 5 years of residence.',
+            'Factors Affecting Time: Country, visa type, application completeness, background checks, medical exams, and current processing backlogs.'
+        ],
+        related: [5, 9, 10],
+        tags: ['processing time', 'timeline', 'duration']
+    },
+    {
+        id: 9,
+        category: 'process',
+        question: 'What documents do I need for PR application?',
+        answer: 'Required documents vary by country, but common requirements include:',
+        details: [
+            'Identity: Passport, birth certificate, marriage certificate (if applicable), photos.',
+            'Education: Degree certificates, transcripts, ECA (Educational Credential Assessment) for Canada/Australia.',
+            'Work Experience: Employment letters, salary slips, tax documents, reference letters with detailed job descriptions.',
+            'Language: IELTS/PTE/CELPIP test results (valid for 2 years).',
+            'Financial: Bank statements (6-12 months), proof of funds, employment contracts.',
+            'Medical: Immigration medical exam from approved panel physicians.',
+            'Police Clearance: Character certificates from all countries lived in (6+ months) in past 10 years.',
+            'Country-Specific: Some require job offers, provincial nominations, or additional forms.'
+        ],
+        related: [8, 10, 11],
+        tags: ['documents', 'requirements', 'checklist']
+    },
+    {
+        id: 10,
+        category: 'eligibility',
+        question: 'Do I need a job offer to migrate?',
+        answer: 'It depends on the country and visa program:',
+        details: [
+            'Canada: No job offer needed for Express Entry (FSW/CEC/FST). Job offer gives +50 to +200 CRS points but not mandatory.',
+            'Australia: No job offer needed for Subclass 189 (independent). Subclass 190/491 may require state nomination (not always job offer).',
+            'Germany: No job offer needed for Opportunity Card. You can search for jobs after arrival.',
+            'UK: Job offer and sponsorship required for Skilled Worker visa (most common route).',
+            'USA: Job offer and H1B sponsorship typically required for work-based immigration.',
+            'Best Option: Canada and Australia offer job-offer-free pathways, making them popular choices.'
+        ],
+        related: [5, 7, 8],
+        tags: ['job offer', 'sponsorship', 'requirements']
+    },
+    {
+        id: 11,
+        category: 'pr',
+        question: 'What is the difference between PR and Citizenship?',
+        answer: 'Key differences between Permanent Residence and Citizenship:',
+        details: [
+            'Permanent Residence (PR):',
+            '  • Can live and work indefinitely in the country',
+            '  • Can access healthcare and education',
+            '  • Must maintain PR status (residency requirements)',
+            '  • Cannot vote in elections',
+            '  • Cannot hold a passport of that country',
+            '  • Can be revoked for serious crimes',
+            '',
+            'Citizenship:',
+            '  • All PR rights PLUS:',
+            '  • Right to vote and run for office',
+            '  • Can hold that country\'s passport',
+            '  • Cannot be deported (except in extreme cases)',
+            '  • Can pass citizenship to children',
+            '  • Usually requires 3-5 years of PR status first'
+        ],
+        related: [3, 7, 12],
+        tags: ['pr', 'citizenship', 'difference', 'rights']
+    },
+    {
+        id: 12,
+        category: 'process',
+        question: 'Can I apply for multiple countries at once?',
+        answer: 'Yes, you can apply to multiple countries simultaneously:',
+        details: [
+            'Legal: There\'s no law preventing applications to multiple countries. Each country processes independently.',
+            'Costs: Each application requires separate fees (application fees, medical exams, police clearances, translations).',
+            'Time Management: Multiple applications require significant time for document preparation and follow-ups.',
+            'Strategy: Apply to 2-3 countries where you have strong profiles. Accept the first approval.',
+            'Important: You must withdraw other applications once you accept a PR and move, to avoid complications.',
+            'Best Practice: Focus on 1-2 primary countries where you score highest, rather than spreading too thin.'
+        ],
+        related: [5, 8, 10],
+        tags: ['multiple applications', 'strategy', 'simultaneous']
+    },
+    {
+        id: 13,
+        category: 'language',
+        question: 'Can I improve my IELTS score after submitting application?',
+        answer: 'It depends on the stage of your application:',
+        details: [
+            'Before Submission: Yes, you can retake IELTS and use the higher score. Most countries accept the best score.',
+            'After Submission (Canada Express Entry): You can update your profile with new IELTS scores to increase CRS points, even after creating profile (before ITA).',
+            'After ITA (Invitation): Generally cannot change IELTS scores, as application is locked. Must use scores from profile.',
+            'Australia: Can update EOI with new IELTS scores before invitation. After invitation, scores are locked.',
+            'Best Strategy: Retake IELTS if you\'re close to next band level (e.g., 6.5 to 7.0) before submitting final application.',
+            'Validity: IELTS scores are valid for 2 years. Ensure they\'re valid at time of application submission.'
+        ],
+        related: [1, 6, 14],
+        tags: ['ielts', 'improvement', 'retake', 'update']
+    },
+    {
+        id: 14,
+        category: 'eligibility',
+        question: 'What if my occupation is not in the skilled list?',
+        answer: 'Options if your occupation is not listed:',
+        details: [
+            'Alternative Pathways:',
+            '  • Study visa → Post-graduation work permit → PR (Canada/Australia)',
+            '  • Business/Investor visas (if you have capital)',
+            '  • Family sponsorship (if you have relatives)',
+            '  • Provincial/State nomination programs (may have different lists)',
+            '',
+            'Skill Assessment: Some occupations can be assessed under related codes. Consult with immigration consultants.',
+            'Wait for Updates: Occupation lists are updated annually. Your occupation might be added in future.',
+            'Change Occupation: Consider upskilling or gaining experience in an in-demand occupation.',
+            'Alternative Countries: Some countries (like Germany) don\'t have strict occupation lists.'
+        ],
+        related: [5, 10, 15],
+        tags: ['occupation', 'skilled list', 'alternatives']
+    },
+    {
+        id: 15,
+        category: 'work',
+        question: 'Can I study while on a work visa?',
+        answer: 'It depends on the visa type and country:',
+        details: [
+            'Canada: Work permit holders can study part-time without a study permit. Full-time study requires a separate study permit.',
+            'Australia: Temporary work visa holders can study, but may need to notify immigration. Student visa is separate.',
+            'UK: Skilled Worker visa allows part-time study. Full-time study requires switching to Student visa.',
+            'Germany: Work visa holders can study part-time. Full-time requires student visa conversion.',
+            'Important: Check your specific visa conditions. Some visas explicitly prohibit study or require permission.',
+            'Benefit: Studying can improve your PR application by adding points for education and language skills.'
+        ],
+        related: [7, 11, 14],
+        tags: ['study', 'work visa', 'education']
+    }
+];
+
+// FAQ State Management
+let faqState = {
+    currentCategory: 'all',
+    searchQuery: '',
+    filteredFAQs: FAQ_DATA
+};
+
+// Initialize FAQ System
+function initializeFAQs() {
+    renderFAQs();
+    setupFAQSearch();
+    setupFAQCategories();
+}
+
+// Render FAQ Accordion
+function renderFAQs() {
+    const accordion = document.getElementById('faqAccordion');
+    const noResults = document.getElementById('faqNoResults');
+    
+    if (!accordion) return;
+    
+    if (faqState.filteredFAQs.length === 0) {
+        accordion.style.display = 'none';
+        if (noResults) noResults.style.display = 'block';
+        return;
+    }
+    
+    accordion.style.display = 'block';
+    if (noResults) noResults.style.display = 'none';
+    
+    accordion.innerHTML = faqState.filteredFAQs.map(faq => {
+        const relatedQuestions = FAQ_DATA.filter(f => faq.related.includes(f.id));
+        const relatedHTML = relatedQuestions.length > 0 
+            ? `<div class="faq-related">
+                <strong><i class="fas fa-link"></i> Related Questions:</strong>
+                ${relatedQuestions.map(r => `<a href="#" onclick="event.preventDefault(); scrollToFAQ(${r.id}); return false;">${r.question}</a>`).join(', ')}
+               </div>`
+            : '';
+        
+        // Format details with better structure
+        const formattedDetails = faq.details.map(detail => {
+            // Handle table-like content
+            if (detail.includes('|') && detail.split('|').length > 2) {
+                return `<div class="faq-table-wrapper">${formatTableContent(detail)}</div>`;
+            }
+            // Handle section headers (lines starting with emoji + text)
+            if (/^[🇨🇦🇦🇺🇬🇧🇩🇪🇵🇹👨‍👩‍👧‍👦🚫✅⚠️💰📊💡🎯📋⏱️🔄📈🏆🥇🥈🥉1️⃣2️⃣3️⃣4️⃣5️⃣]/.test(detail.trim())) {
+                return `<div class="faq-section-header">${highlightSearch(detail)}</div>`;
+            }
+            // Handle bullet points with emojis
+            if (/^[\s]*[✅❌⚠️💡📊💰⏱️🎯📋]/.test(detail.trim())) {
+                return `<li class="faq-detail-item">${highlightSearch(detail)}</li>`;
+            }
+            // Regular list item
+            return `<li>${highlightSearch(detail)}</li>`;
+        }).join('');
+        
+        return `
+            <div class="faq-item" data-faq-id="${faq.id}">
+                <div class="faq-question" onclick="toggleFAQ(${faq.id})">
+                    <div class="faq-question-content">
+                        <span class="faq-category-badge category-${faq.category}">
+                            <i class="fas fa-${getCategoryIcon(faq.category)}"></i>
+                            ${faq.category.charAt(0).toUpperCase() + faq.category.slice(1)}
+                        </span>
+                        <h3>${highlightSearch(faq.question)}</h3>
+                    </div>
+                    <i class="fas fa-chevron-down faq-chevron"></i>
+                </div>
+                <div class="faq-answer" id="faq-answer-${faq.id}">
+                    <div class="faq-answer-content">
+                        <p class="faq-answer-intro">${faq.answer}</p>
+                        <ul class="faq-details-list">
+                            ${formattedDetails}
+                        </ul>
+                        ${relatedHTML}
+                    </div>
+                </div>
+            </div>
+        `;
+    }).join('');
+    
+    updateResultsCount();
+}
+
+// Format table-like content
+function formatTableContent(content) {
+    const lines = content.split('\n').filter(line => line.trim());
+    let tableHTML = '<div class="faq-comparison-table">';
+    
+    lines.forEach((line, index) => {
+        if (line.includes('|')) {
+            const cells = line.split('|').map(cell => cell.trim()).filter(cell => cell);
+            if (index === 0 || line.includes('---')) {
+                // Header row
+                if (index === 0) {
+                    tableHTML += '<div class="faq-table-row faq-table-header">';
+                    cells.forEach(cell => {
+                        tableHTML += `<div class="faq-table-cell">${cell}</div>`;
+                    });
+                    tableHTML += '</div>';
+                }
+            } else {
+                // Data row
+                tableHTML += '<div class="faq-table-row">';
+                cells.forEach((cell, cellIndex) => {
+                    const cellClass = cellIndex === 0 ? 'faq-table-cell faq-table-label' : 'faq-table-cell';
+                    tableHTML += `<div class="${cellClass}">${highlightSearch(cell)}</div>`;
+                });
+                tableHTML += '</div>';
+            }
+        } else {
+            // Non-table line
+            tableHTML += `<div class="faq-text-line">${highlightSearch(line)}</div>`;
+        }
+    });
+    
+    tableHTML += '</div>';
+    return tableHTML;
+}
+
+// Toggle FAQ Item
+function toggleFAQ(id) {
+    const answer = document.getElementById(`faq-answer-${id}`);
+    const question = document.querySelector(`.faq-item[data-faq-id="${id}"] .faq-question`);
+    const chevron = question.querySelector('.faq-chevron');
+    
+    if (!answer) return;
+    
+    const isOpen = answer.classList.contains('active');
+    
+    // Close all other FAQs (optional - remove if you want multiple open)
+    document.querySelectorAll('.faq-answer.active').forEach(item => {
+        if (item.id !== `faq-answer-${id}`) {
+            item.classList.remove('active');
+            item.style.maxHeight = null;
+            const otherChevron = item.previousElementSibling?.querySelector('.faq-chevron');
+            if (otherChevron) otherChevron.style.transform = 'rotate(0deg)';
+        }
+    });
+    
+    if (isOpen) {
+        answer.classList.remove('active');
+        answer.style.maxHeight = null;
+        chevron.style.transform = 'rotate(0deg)';
+    } else {
+        answer.classList.add('active');
+        answer.style.maxHeight = answer.scrollHeight + 'px';
+        chevron.style.transform = 'rotate(180deg)';
+        
+        // Smooth scroll to FAQ if it's not fully visible
+        setTimeout(() => {
+            question.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        }, 100);
+    }
+}
+
+// Scroll to specific FAQ
+function scrollToFAQ(id) {
+    const faqItem = document.querySelector(`.faq-item[data-faq-id="${id}"]`);
+    if (faqItem) {
+        faqItem.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        setTimeout(() => toggleFAQ(id), 300);
+    }
+}
+
+// Setup Search Functionality
+function setupFAQSearch() {
+    const searchInput = document.getElementById('faqSearch');
+    const clearBtn = document.getElementById('faqClearSearch');
+    
+    if (!searchInput) return;
+    
+    searchInput.addEventListener('input', (e) => {
+        faqState.searchQuery = e.target.value.toLowerCase().trim();
+        
+        if (faqState.searchQuery) {
+            if (clearBtn) clearBtn.style.display = 'flex';
+            filterFAQs();
+        } else {
+            if (clearBtn) clearBtn.style.display = 'none';
+            filterFAQs();
+        }
+    });
+    
+    if (clearBtn) {
+        clearBtn.addEventListener('click', () => {
+            searchInput.value = '';
+            faqState.searchQuery = '';
+            clearBtn.style.display = 'none';
+            filterFAQs();
+        });
+    }
+}
+
+// Setup Category Filters
+function setupFAQCategories() {
+    const categoryBtns = document.querySelectorAll('.faq-category-btn');
+    
+    categoryBtns.forEach(btn => {
+        btn.addEventListener('click', () => {
+            // Update active state
+            categoryBtns.forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            
+            // Update category filter
+            faqState.currentCategory = btn.dataset.category;
+            filterFAQs();
+        });
+    });
+}
+
+// Filter FAQs
+function filterFAQs() {
+    let filtered = FAQ_DATA;
+    
+    // Filter by category
+    if (faqState.currentCategory !== 'all') {
+        filtered = filtered.filter(faq => faq.category === faqState.currentCategory);
+    }
+    
+    // Filter by search query
+    if (faqState.searchQuery) {
+        const query = faqState.searchQuery;
+        filtered = filtered.filter(faq => {
+            const questionMatch = faq.question.toLowerCase().includes(query);
+            const answerMatch = faq.answer.toLowerCase().includes(query);
+            const detailsMatch = faq.details.some(d => d.toLowerCase().includes(query));
+            const tagsMatch = faq.tags.some(t => t.toLowerCase().includes(query));
+            return questionMatch || answerMatch || detailsMatch || tagsMatch;
+        });
+    }
+    
+    faqState.filteredFAQs = filtered;
+    renderFAQs();
+}
+
+// Highlight search terms
+function highlightSearch(text) {
+    if (!faqState.searchQuery || !text) return text;
+    
+    const regex = new RegExp(`(${faqState.searchQuery})`, 'gi');
+    return text.replace(regex, '<mark class="faq-highlight">$1</mark>');
+}
+
+// Get category icon
+function getCategoryIcon(category) {
+    const icons = {
+        'eligibility': 'check-circle',
+        'visa': 'passport',
+        'language': 'language',
+        'age': 'birthday-cake',
+        'pr': 'id-card',
+        'work': 'briefcase',
+        'process': 'cogs'
+    };
+    return icons[category] || 'question-circle';
+}
+
+// Update results count
+function updateResultsCount() {
+    const countEl = document.getElementById('faqResultsCount');
+    if (countEl) {
+        const count = faqState.filteredFAQs.length;
+        const total = FAQ_DATA.length;
+        countEl.textContent = count === total 
+            ? `${total} questions available`
+            : `Showing ${count} of ${total} questions`;
+    }
+}
+
+// Initialize on page load
+document.addEventListener('DOMContentLoaded', () => {
+    if (document.getElementById('faqs')) {
+        initializeFAQs();
+    }
+});
+
+// Go back to home page
+function goBack() {
+    window.location.href = 'index.html';
+}
+
+// Expose functions globally
+window.toggleFAQ = toggleFAQ;
+window.scrollToFAQ = scrollToFAQ;
+window.goBack = goBack;

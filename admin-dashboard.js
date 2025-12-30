@@ -1,4 +1,4 @@
-// Admin Dashboard JavaScript for Tonio & Senora
+// Admin Dashboard JavaScript for Gubicoo Migration Navigator
 
 // Theme Management
 let currentTheme = localStorage.getItem('theme') || 'light';
@@ -476,7 +476,15 @@ function loadDocumentReviews() {
                 <div class="document-review-item">
                     <div class="document-info">
                         <h4 style="color: inherit;">${escapeHtml(doc.title)}</h4>
-                        <p style="color: inherit; opacity: 0.9;">Uploaded: ${formatDate(doc.uploadedAt)} | Client: ${escapeHtml(doc.client || 'Unknown')}</p>
+                        <p style="color: inherit; opacity: 0.9;">
+                            Uploaded: ${formatDate(doc.uploadedAt)} | 
+                            Client: ${escapeHtml(doc.client || 'Unknown')}
+                            ${doc.clientEmail ? ` | Email: ${escapeHtml(doc.clientEmail)}` : ''}
+                        </p>
+                        <p style="color: inherit; opacity: 0.8; font-size: 0.875rem; margin-top: 0.25rem;">
+                            ${doc.country ? `Country: ${escapeHtml(doc.country)}` : ''}
+                            ${doc.visaType ? ` | Visa: ${escapeHtml(doc.visaType)}` : ''}
+                        </p>
                         <span class="document-type">${escapeHtml(doc.type)}</span>
                     </div>
                     <div class="document-actions">
@@ -518,7 +526,15 @@ function filterDocumentReviews() {
                 <div class="document-review-item">
                     <div class="document-info">
                         <h4 style="color: inherit;">${escapeHtml(doc.title)}</h4>
-                        <p style="color: inherit; opacity: 0.9;">Uploaded: ${formatDate(doc.uploadedAt)} | Client: ${escapeHtml(doc.client || 'Unknown')}</p>
+                        <p style="color: inherit; opacity: 0.9;">
+                            Uploaded: ${formatDate(doc.uploadedAt)} | 
+                            Client: ${escapeHtml(doc.client || 'Unknown')}
+                            ${doc.clientEmail ? ` | Email: ${escapeHtml(doc.clientEmail)}` : ''}
+                        </p>
+                        <p style="color: inherit; opacity: 0.8; font-size: 0.875rem; margin-top: 0.25rem;">
+                            ${doc.country ? `Country: ${escapeHtml(doc.country)}` : ''}
+                            ${doc.visaType ? ` | Visa: ${escapeHtml(doc.visaType)}` : ''}
+                        </p>
                         <span class="document-type">${escapeHtml(doc.type)}</span>
                     </div>
                     <div class="document-actions">
@@ -553,7 +569,12 @@ function previewDocument(documentId) {
                 <div style="margin-bottom: 1.5rem;">
                     <h3 style="color: inherit; margin-bottom: 0.5rem;">${escapeHtml(doc.title)}</h3>
                     <p style="color: inherit; opacity: 0.9;"><strong>Type:</strong> ${escapeHtml(doc.type)}</p>
-                    <p style="color: inherit; opacity: 0.9;"><strong>Client:</strong> ${escapeHtml(doc.client)}</p>
+                    <p style="color: inherit; opacity: 0.9;"><strong>Client:</strong> ${escapeHtml(doc.client || 'Unknown')}</p>
+                    <p style="color: inherit; opacity: 0.9;"><strong>Email:</strong> ${escapeHtml(doc.clientEmail || 'Not provided')}</p>
+                    ${doc.country ? `<p style="color: inherit; opacity: 0.9;"><strong>Country:</strong> ${escapeHtml(doc.country)}</p>` : ''}
+                    ${doc.visaType ? `<p style="color: inherit; opacity: 0.9;"><strong>Visa Type:</strong> ${escapeHtml(doc.visaType)}</p>` : ''}
+                    ${doc.fileName ? `<p style="color: inherit; opacity: 0.9;"><strong>File:</strong> ${escapeHtml(doc.fileName)}</p>` : ''}
+                    ${doc.fileSize ? `<p style="color: inherit; opacity: 0.9;"><strong>Size:</strong> ${escapeHtml(doc.fileSize)}</p>` : ''}
                     <p style="color: inherit; opacity: 0.9;"><strong>Uploaded:</strong> ${formatDate(doc.uploadedAt)}</p>
                     <p style="color: inherit; opacity: 0.9;"><strong>Status:</strong> <span class="status-badge status-${doc.status || 'pending'}">${(doc.status || 'pending').charAt(0).toUpperCase() + (doc.status || 'pending').slice(1)}</span></p>
                 </div>

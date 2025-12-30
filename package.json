@@ -1,7 +1,7 @@
 {
-  "name": "senora-groups",
+  "name": "gubicoo-migration-navigator",
   "version": "1.0.0",
-  "description": "Tonio & Senora Migration Law Firm - Complete visa application management system",
+  "description": "Gubicoo Migration Navigator - Complete visa application management system",
   "main": "index.html",
   "scripts": {
     "start": "npx serve ."
@@ -12,7 +12,13 @@
     "pwa",
     "progressive-web-app"
   ],
-  "author": "Tonio & Senora",
+  "author": "Gubicoo Migration Navigator",
   "license": "MIT"
 }
+
+
+
+
+
+
 
