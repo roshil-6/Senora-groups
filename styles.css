@@ -13256,3 +13256,274 @@ select, textarea, button {
         gap: 1rem;
     }
 }
+
+/* ============================================
+   MOBILE SIMPLIFICATION - ULTRA SIMPLE
+   Make everything minimal and clean on phones
+   ============================================ */
+@media (max-width: 768px) {
+    /* Global Simplification */
+    * {
+        border-radius: 4px !important;
+    }
+
+    /* Remove All Shadows and Effects */
+    .content-section,
+    .card,
+    .service-card,
+    .stat-card,
+    .report-card,
+    .summary-card {
+        box-shadow: 0 1px 3px rgba(0,0,0,0.1) !important;
+        border: 1px solid #e5e5e5 !important;
+    }
+
+    /* Ultra Compact Padding */
+    .content-section {
+        padding: 0.75rem !important;
+        margin-bottom: 0.75rem !important;
+    }
+
+    .section-header {
+        padding: 0.75rem 0 !important;
+        margin-bottom: 0.75rem !important;
+    }
+
+    .section-header h1 {
+        font-size: 1.25rem !important;
+        margin-bottom: 0.25rem !important;
+        padding-bottom: 0 !important;
+    }
+
+    .section-header h1::after {
+        display: none !important;
+    }
+
+    .section-header h1 i {
+        font-size: 1.1rem !important;
+        margin-right: 6px;
+    }
+
+    .section-header p {
+        font-size: 0.9rem !important;
+        padding: 0 !important;
+        margin: 0.5rem 0 !important;
+    }
+
+    .section-logo-wrapper {
+        margin-bottom: 0.75rem !important;
+    }
+
+    .section-owl-logo {
+        width: 50px !important;
+        height: 50px !important;
+    }
+
+    /* Simplify Cards */
+    .card,
+    .service-card,
+    .stat-card,
+    .report-card {
+        padding: 0.75rem !important;
+        margin-bottom: 0.75rem !important;
+    }
+
+    .card-header {
+        padding: 0.75rem !important;
+        border-bottom: 1px solid #e5e5e5 !important;
+    }
+
+    .card-header h3 {
+        font-size: 1rem !important;
+        margin: 0 !important;
+    }
+
+    .card-content {
+        padding: 0.75rem !important;
+    }
+
+    /* Simplify Stats */
+    .stat-card {
+        padding: 0.75rem !important;
+    }
+
+    .stat-icon {
+        width: 40px !important;
+        height: 40px !important;
+    }
+
+    .stat-icon i {
+        font-size: 1rem !important;
+    }
+
+    .stat-content h3 {
+        font-size: 1.25rem !important;
+        margin-bottom: 0.25rem !important;
+    }
+
+    .stat-content p {
+        font-size: 0.85rem !important;
+        margin: 0 !important;
+    }
+
+    /* Simplify Lists */
+    .activity-item,
+    .document-review-item {
+        padding: 0.5rem 0 !important;
+        margin-bottom: 0.5rem !important;
+    }
+
+    .activity-item i {
+        font-size: 0.9rem !important;
+    }
+
+    /* Simplify Text */
+    .dashboard-text h1 { font-size: 1.25rem !important; }
+    .dashboard-text h2 { font-size: 1.1rem !important; }
+    .dashboard-text h3 { font-size: 1rem !important; }
+    .dashboard-text h4 { font-size: 0.95rem !important; }
+    .dashboard-text p { font-size: 0.9rem !important; line-height: 1.5 !important; }
+    .dashboard-text ul,
+    .dashboard-text ol { padding-left: 1.25rem !important; }
+    .dashboard-text li { font-size: 0.9rem !important; margin-bottom: 0.25rem !important; }
+
+    /* Simplify Buttons */
+    .btn {
+        padding: 10px 16px !important;
+        font-size: 0.9rem !important;
+        margin-bottom: 0.5rem !important;
+    }
+
+    /* Simplify Forms */
+    input,
+    textarea,
+    select {
+        padding: 0.75rem !important;
+        font-size: 0.9rem !important;
+        margin-bottom: 0.75rem !important;
+    }
+
+    /* Simplify Tables */
+    .clients-table th,
+    .clients-table td {
+        padding: 0.5rem !important;
+        font-size: 0.85rem !important;
+    }
+
+    /* Simplify Summary Cards */
+    .summary-card,
+    .selected-path-info {
+        padding: 0.75rem !important;
+        margin-bottom: 0.75rem !important;
+    }
+
+    .summary-header {
+        padding: 0.75rem 0 !important;
+        margin-bottom: 0.75rem !important;
+    }
+
+    .summary-header h2 {
+        font-size: 1.25rem !important;
+    }
+
+    .path-item {
+        font-size: 0.9rem !important;
+        margin-bottom: 0.5rem !important;
+    }
+
+    /* Simplify Document Items */
+    .document-item,
+    .category-section,
+    .document-upload-container {
+        padding: 0.75rem !important;
+        margin-bottom: 0.75rem !important;
+    }
+
+    /* Remove Unnecessary Spacing */
+    .dashboard-cards,
+    .dashboard-stats,
+    .requirements-grid {
+        gap: 0.75rem !important;
+        margin-bottom: 0.75rem !important;
+    }
+
+    /* Simplify Filters */
+    .filter-group {
+        gap: 0.5rem !important;
+        margin-bottom: 0.75rem !important;
+    }
+
+    /* Simplify Modals */
+    .modal-content {
+        padding: 1rem !important;
+        margin: 5% auto !important;
+    }
+
+    /* Remove Complex Animations on Mobile */
+    .section-header h1,
+    .section-header p,
+    .section-logo-wrapper {
+        animation: none !important;
+    }
+
+    /* Simplify Progress Bars */
+    .progress-bar {
+        height: 6px !important;
+        margin: 0.5rem 0 !important;
+    }
+
+    .progress-text {
+        font-size: 0.8rem !important;
+    }
+
+    /* Simplify Badges */
+    .status-badge {
+        padding: 0.2rem 0.5rem !important;
+        font-size: 0.8rem !important;
+    }
+
+    /* Ultra Compact Main Content */
+    .main-content {
+        padding: 0.75rem !important;
+    }
+
+    /* Simplify All Headers */
+    h1 { font-size: 1.25rem !important; margin-bottom: 0.5rem !important; }
+    h2 { font-size: 1.1rem !important; margin-bottom: 0.5rem !important; }
+    h3 { font-size: 1rem !important; margin-bottom: 0.5rem !important; }
+    h4 { font-size: 0.95rem !important; margin-bottom: 0.5rem !important; }
+    p { font-size: 0.9rem !important; margin-bottom: 0.75rem !important; line-height: 1.5 !important; }
+
+    /* Simplify Lists */
+    ul, ol {
+        padding-left: 1.25rem !important;
+        margin-bottom: 0.75rem !important;
+    }
+
+    li {
+        font-size: 0.9rem !important;
+        margin-bottom: 0.25rem !important;
+        line-height: 1.5 !important;
+    }
+
+    /* Remove Complex Borders and Effects */
+    .card-header,
+    .content-section,
+    .summary-card {
+        border-left: none !important;
+        border-right: none !important;
+    }
+
+    /* Simplify Upload Areas */
+    .upload-area {
+        padding: 0.75rem !important;
+    }
+
+    .upload-content h3 {
+        font-size: 1rem !important;
+    }
+
+    .upload-content i {
+        font-size: 2rem !important;
+    }
+}
