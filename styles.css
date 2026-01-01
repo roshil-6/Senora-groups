@@ -13527,3 +13527,68 @@ select, textarea, button {
         font-size: 2rem !important;
     }
 }
+
+/* =====================================
+   MOBILE BASELINE RESET (CRITICAL)
+   DO NOT MODIFY
+   ===================================== */
+@media (max-width: 768px) {
+
+  /* 1. Kill ALL horizontal layouts */
+  *, *::before, *::after {
+    box-sizing: border-box;
+    max-width: 100% !important;
+  }
+
+  body {
+    margin: 0;
+    padding: 0;
+    overflow-x: hidden !important;
+  }
+
+  /* 2. Force everything into single column */
+  section,
+  div,
+  main,
+  article {
+    width: 100% !important;
+    min-width: 0 !important;
+  }
+
+  /* 3. Neutralize flex/grid disasters */
+  .dashboard-layout,
+  .section,
+  .content-section,
+  .cards,
+  .card-container,
+  .grid,
+  .row {
+    display: block !important;
+  }
+
+  /* 4. Hide sidebar completely */
+  .sidebar,
+  aside {
+    display: none !important;
+  }
+
+  /* 5. Normalize spacing */
+  section,
+  .content-section,
+  .main-content {
+    padding: 16px !important;
+    margin: 0 !important;
+  }
+
+  /* 6. Fix text wrapping */
+  h1, h2, h3, h4, h5, h6, p, span {
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+  }
+
+  /* 7. Images and media safety */
+  img, svg, video {
+    max-width: 100%;
+    height: auto;
+  }
+}
